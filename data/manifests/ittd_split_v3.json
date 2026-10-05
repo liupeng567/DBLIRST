@@ -1,0 +1,7837 @@
+{
+ "version": "v3",
+ "splits": {
+  "train-int": {
+   "seqs": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60,
+    61,
+    62,
+    63,
+    64,
+    71,
+    72,
+    73,
+    74,
+    75,
+    76
+   ]
+  },
+  "val-int": {
+   "seqs": [
+    21,
+    22,
+    23,
+    38,
+    39,
+    40,
+    65,
+    66,
+    67,
+    68,
+    69,
+    70
+   ]
+  },
+  "val-official": {
+   "seqs": [
+    77,
+    78,
+    79,
+    80,
+    81,
+    82,
+    83,
+    84,
+    85,
+    86,
+    87
+   ],
+   "read_only": true
+  }
+ },
+ "sequences": [
+  {
+   "seq_id": 1,
+   "scene": {
+    "value": "outdoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 3,
+   "n_instances": 674,
+   "track_ids": [
+    1,
+    2,
+    3
+   ],
+   "n_empty_frames": 4,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": true,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": true,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 2.347968816757202,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "外场",
+    "shake": "有",
+    "static_target": "有",
+    "moving_target": "无",
+    "occlusion": "无",
+    "crossing": "无",
+    "distractor": "有"
+   },
+   "mean_scr": 5.129010285030308,
+   "min_scr": 3.804707518395026,
+   "clutter_density": 2.347968816757202,
+   "reg_difficulty": 0.3095119595527649
+  },
+  {
+   "seq_id": 2,
+   "scene": {
+    "value": "outdoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 4,
+   "n_instances": 1000,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": true,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 2.5070571899414062,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "外场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "有",
+    "distractor": "无"
+   },
+   "mean_scr": 4.886393325224132,
+   "min_scr": 1.6656478767300387,
+   "clutter_density": 2.5070571899414062,
+   "reg_difficulty": 0.31170886754989624
+  },
+  {
+   "seq_id": 3,
+   "scene": {
+    "value": "outdoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 4,
+   "n_instances": 770,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": true,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 3.6558852195739746,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "外场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "无",
+    "crossing": "无",
+    "distractor": "有"
+   },
+   "mean_scr": 2.28900215792293,
+   "min_scr": 1.6277395124729102,
+   "clutter_density": 3.6558852195739746,
+   "reg_difficulty": 0.08824941515922546
+  },
+  {
+   "seq_id": 4,
+   "scene": {
+    "value": "outdoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 4,
+   "n_instances": 1000,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": true,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 3.6018359661102295,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "外场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "无",
+    "crossing": "无",
+    "distractor": "有"
+   },
+   "mean_scr": 4.070638592714435,
+   "min_scr": 1.8481404889045294,
+   "clutter_density": 3.6018359661102295,
+   "reg_difficulty": 0.10012105852365494
+  },
+  {
+   "seq_id": 5,
+   "scene": {
+    "value": "outdoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 4,
+   "n_instances": 1000,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": true,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": true,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 2.2079687118530273,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "外场",
+    "shake": "有",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "有",
+    "distractor": "无"
+   },
+   "mean_scr": 4.769231082544549,
+   "min_scr": 1.3311613922234546,
+   "clutter_density": 2.2079687118530273,
+   "reg_difficulty": 0.19768190383911133
+  },
+  {
+   "seq_id": 6,
+   "scene": {
+    "value": "outdoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 4,
+   "n_instances": 1000,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": true,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": true,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 2.1692447662353516,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "外场",
+    "shake": "有",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "无",
+    "distractor": "无"
+   },
+   "mean_scr": 5.393333122800505,
+   "min_scr": 4.18830667791183,
+   "clutter_density": 2.1692447662353516,
+   "reg_difficulty": 0.2761017680168152
+  },
+  {
+   "seq_id": 7,
+   "scene": {
+    "value": "outdoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 1,
+   "n_instances": 205,
+   "track_ids": [
+    1
+   ],
+   "n_empty_frames": 45,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": true,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": true,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 2.1887238025665283,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "外场",
+    "shake": "有",
+    "static_target": "无",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "无",
+    "distractor": "无"
+   },
+   "mean_scr": 1.6985077033028113,
+   "min_scr": 1.6985077033028113,
+   "clutter_density": 2.1887238025665283,
+   "reg_difficulty": 0.22976483404636383
+  },
+  {
+   "seq_id": 8,
+   "scene": {
+    "value": "outdoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 4,
+   "n_instances": 1000,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 2.3919663429260254,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "外场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "无",
+    "occlusion": "有",
+    "crossing": "无",
+    "distractor": "有"
+   },
+   "mean_scr": 2.290533353757545,
+   "min_scr": 1.405330414998311,
+   "clutter_density": 2.3919663429260254,
+   "reg_difficulty": 0.22378811240196228
+  },
+  {
+   "seq_id": 9,
+   "scene": {
+    "value": "outdoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 4,
+   "n_instances": 843,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 2.3516016006469727,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "外场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "无",
+    "occlusion": "有",
+    "crossing": "无",
+    "distractor": "无"
+   },
+   "mean_scr": 3.141444237718898,
+   "min_scr": 1.105378881603418,
+   "clutter_density": 2.3516016006469727,
+   "reg_difficulty": 0.210316002368927
+  },
+  {
+   "seq_id": 10,
+   "scene": {
+    "value": "outdoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 4,
+   "n_instances": 1000,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": true,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": true,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": true,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 2.8631772994995117,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "外场",
+    "shake": "有",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "无",
+    "crossing": "有",
+    "distractor": "无"
+   },
+   "mean_scr": 2.6414127536633303,
+   "min_scr": 1.7056549452229175,
+   "clutter_density": 2.8631772994995117,
+   "reg_difficulty": 0.20451666414737701
+  },
+  {
+   "seq_id": 11,
+   "scene": {
+    "value": "outdoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 4,
+   "n_instances": 1000,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 2.292421817779541,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "外场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "无",
+    "crossing": "无",
+    "distractor": "无"
+   },
+   "mean_scr": 4.44215483450007,
+   "min_scr": 2.2371709811090197,
+   "clutter_density": 2.292421817779541,
+   "reg_difficulty": 0.23054513335227966
+  },
+  {
+   "seq_id": 12,
+   "scene": {
+    "value": "outdoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 4,
+   "n_instances": 684,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 1.8742058277130127,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "外场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "有",
+    "distractor": "无"
+   },
+   "mean_scr": 3.78133841174628,
+   "min_scr": 1.269260783130196,
+   "clutter_density": 1.8742058277130127,
+   "reg_difficulty": 0.22253233194351196
+  },
+  {
+   "seq_id": 13,
+   "scene": {
+    "value": "outdoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 4,
+   "n_instances": 629,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": true,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": true,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 2.0310418605804443,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": true,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 72,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "外场",
+    "shake": "有",
+    "static_target": "无",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "无",
+    "distractor": "无"
+   },
+   "mean_scr": 2.297587295593258,
+   "min_scr": 0.4717492385497519,
+   "clutter_density": 2.0310418605804443,
+   "reg_difficulty": 0.2516016364097595
+  },
+  {
+   "seq_id": 14,
+   "scene": {
+    "value": "outdoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 6,
+   "n_instances": 767,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 2.145911693572998,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": true,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 70,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "外场",
+    "shake": "无",
+    "static_target": "无",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "无",
+    "distractor": "无"
+   },
+   "mean_scr": 2.155123976631516,
+   "min_scr": 0.5942420232620642,
+   "clutter_density": 2.145911693572998,
+   "reg_difficulty": 0.1664026826620102
+  },
+  {
+   "seq_id": 15,
+   "scene": {
+    "value": "outdoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 3,
+   "n_instances": 523,
+   "track_ids": [
+    1,
+    2,
+    3
+   ],
+   "n_empty_frames": 20,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": true,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 3.027799606323242,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": true,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 57,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "外场",
+    "shake": "无",
+    "static_target": "无",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "无",
+    "distractor": "无"
+   },
+   "mean_scr": 1.8966109631853536,
+   "min_scr": 1.2189529492053641,
+   "clutter_density": 3.027799606323242,
+   "reg_difficulty": 0.146945059299469
+  },
+  {
+   "seq_id": 16,
+   "scene": {
+    "value": "outdoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 3,
+   "n_instances": 391,
+   "track_ids": [
+    1,
+    2,
+    3
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": true,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 2.548919439315796,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "外场",
+    "shake": "无",
+    "static_target": "无",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "无",
+    "distractor": "有"
+   },
+   "mean_scr": 3.003375800455157,
+   "min_scr": 1.4341706295738241,
+   "clutter_density": 2.548919439315796,
+   "reg_difficulty": 0.20023606717586517
+  },
+  {
+   "seq_id": 17,
+   "scene": {
+    "value": "outdoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 2,
+   "n_instances": 457,
+   "track_ids": [
+    1,
+    2
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 1.9072785377502441,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "外场",
+    "shake": "无",
+    "static_target": "无",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "有",
+    "distractor": "有"
+   },
+   "mean_scr": 2.87472351226371,
+   "min_scr": 2.6162165284572785,
+   "clutter_density": 1.9072785377502441,
+   "reg_difficulty": 0.28848621249198914
+  },
+  {
+   "seq_id": 18,
+   "scene": {
+    "value": "outdoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 3,
+   "n_instances": 687,
+   "track_ids": [
+    1,
+    2,
+    3
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 1.7499349117279053,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": true,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 49,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "外场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "无",
+    "distractor": "无"
+   },
+   "mean_scr": 2.257746414499954,
+   "min_scr": 1.4602203578082795,
+   "clutter_density": 1.7499349117279053,
+   "reg_difficulty": 0.24556757509708405
+  },
+  {
+   "seq_id": 19,
+   "scene": {
+    "value": "outdoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 3,
+   "n_instances": 694,
+   "track_ids": [
+    1,
+    2,
+    3
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 2.329361915588379,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": true,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 45,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "外场",
+    "shake": "无",
+    "static_target": "无",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "有",
+    "distractor": "无"
+   },
+   "mean_scr": 3.156383609994844,
+   "min_scr": 2.121190834355231,
+   "clutter_density": 2.329361915588379,
+   "reg_difficulty": 0.20902131497859955
+  },
+  {
+   "seq_id": 20,
+   "scene": {
+    "value": "outdoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 3,
+   "n_instances": 750,
+   "track_ids": [
+    1,
+    2,
+    3
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 2.1323437690734863,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "外场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "无",
+    "distractor": "无"
+   },
+   "mean_scr": 3.7850507612000452,
+   "min_scr": 1.9024660008605219,
+   "clutter_density": 2.1323437690734863,
+   "reg_difficulty": 0.2103196531534195
+  },
+  {
+   "seq_id": 21,
+   "scene": {
+    "value": "outdoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 4,
+   "n_instances": 849,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": true,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 2.7354817390441895,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "外场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "无",
+    "distractor": "无"
+   },
+   "mean_scr": 3.335320092266681,
+   "min_scr": 1.4973730777466592,
+   "clutter_density": 2.7354817390441895,
+   "reg_difficulty": 0.24861299991607666
+  },
+  {
+   "seq_id": 22,
+   "scene": {
+    "value": "outdoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 4,
+   "n_instances": 978,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": true,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": true,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 1.9655207395553589,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "外场",
+    "shake": "有",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "无",
+    "distractor": "无"
+   },
+   "mean_scr": 4.072632330778832,
+   "min_scr": 2.024688181407612,
+   "clutter_density": 1.9655207395553589,
+   "reg_difficulty": 0.3348773717880249
+  },
+  {
+   "seq_id": 23,
+   "scene": {
+    "value": "outdoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 3,
+   "n_instances": 750,
+   "track_ids": [
+    1,
+    2,
+    3
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": true,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": true,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 1.4481769800186157,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "外场",
+    "shake": "有",
+    "static_target": "无",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "无",
+    "distractor": "无"
+   },
+   "mean_scr": 3.689848117848566,
+   "min_scr": 1.9852513613709957,
+   "clutter_density": 1.4481769800186157,
+   "reg_difficulty": 0.30510395765304565
+  },
+  {
+   "seq_id": 24,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 4,
+   "n_instances": 990,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": true,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 2.9884636402130127,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 10,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "内场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "无",
+    "distractor": "无"
+   },
+   "mean_scr": 3.1651703050424587,
+   "min_scr": 0.47329875858124343,
+   "clutter_density": 2.9884636402130127,
+   "reg_difficulty": 0.18428441882133484
+  },
+  {
+   "seq_id": 25,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 4,
+   "n_instances": 974,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": true,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": true,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": true,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 3.1262500286102295,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": true,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 26,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "内场",
+    "shake": "有",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "无",
+    "distractor": "有"
+   },
+   "mean_scr": 2.7468642957661142,
+   "min_scr": 0.4849715940044022,
+   "clutter_density": 3.1262500286102295,
+   "reg_difficulty": 0.20732463896274567
+  },
+  {
+   "seq_id": 26,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 6,
+   "n_instances": 1500,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 2.115234375,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "内场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "无",
+    "crossing": "无",
+    "distractor": "无"
+   },
+   "mean_scr": 1.2969382768709596,
+   "min_scr": 0.2719830955057265,
+   "clutter_density": 2.115234375,
+   "reg_difficulty": 0.26369038224220276
+  },
+  {
+   "seq_id": 27,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 7,
+   "n_instances": 1591,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": true,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": true,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": true,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 2.682786703109741,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "内场",
+    "shake": "有",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "无",
+    "distractor": "无"
+   },
+   "mean_scr": 1.533783387265353,
+   "min_scr": 0.33539450924186637,
+   "clutter_density": 2.682786703109741,
+   "reg_difficulty": 0.3018202781677246
+  },
+  {
+   "seq_id": 28,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 6,
+   "n_instances": 942,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 1.9968488216400146,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "内场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "无",
+    "distractor": "无"
+   },
+   "mean_scr": 2.1011678622297043,
+   "min_scr": 0.5844302284222707,
+   "clutter_density": 1.9968488216400146,
+   "reg_difficulty": 0.28864747285842896
+  },
+  {
+   "seq_id": 29,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 3,
+   "n_instances": 750,
+   "track_ids": [
+    1,
+    2,
+    3
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 1.7456769943237305,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "内场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "无",
+    "crossing": "无",
+    "distractor": "无"
+   },
+   "mean_scr": 2.0318503266837964,
+   "min_scr": 0.6754124582497714,
+   "clutter_density": 1.7456769943237305,
+   "reg_difficulty": 0.31819650530815125
+  },
+  {
+   "seq_id": 30,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 5,
+   "n_instances": 862,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 2.0992188453674316,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 9,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "内场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "无",
+    "crossing": "无",
+    "distractor": "无"
+   },
+   "mean_scr": 2.6333200739696196,
+   "min_scr": 0.633671456064032,
+   "clutter_density": 2.0992188453674316,
+   "reg_difficulty": 0.3130209445953369
+  },
+  {
+   "seq_id": 31,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 3,
+   "n_instances": 750,
+   "track_ids": [
+    1,
+    2,
+    3
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 1.8928256034851074,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "内场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "无",
+    "crossing": "无",
+    "distractor": "有"
+   },
+   "mean_scr": 2.6217244315967507,
+   "min_scr": 0.8135113496207943,
+   "clutter_density": 1.8928256034851074,
+   "reg_difficulty": 0.3482189476490021
+  },
+  {
+   "seq_id": 32,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 3,
+   "n_instances": 680,
+   "track_ids": [
+    1,
+    2,
+    3
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 1.5534504652023315,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": true,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 70,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "内场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "无",
+    "distractor": "无"
+   },
+   "mean_scr": 3.0303237528843217,
+   "min_scr": 1.5875773965158537,
+   "clutter_density": 1.5534504652023315,
+   "reg_difficulty": 0.33634305000305176
+  },
+  {
+   "seq_id": 33,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 6,
+   "n_instances": 1223,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": true,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": true,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": true,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 2.613997220993042,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "内场",
+    "shake": "有",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "无",
+    "distractor": "有"
+   },
+   "mean_scr": 2.17017564258784,
+   "min_scr": 0.21684083837815624,
+   "clutter_density": 2.613997220993042,
+   "reg_difficulty": 0.23799216747283936
+  },
+  {
+   "seq_id": 34,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 6,
+   "n_instances": 1500,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": true,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 3.126523494720459,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "内场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "无",
+    "crossing": "无",
+    "distractor": "无"
+   },
+   "mean_scr": 2.0055041892160874,
+   "min_scr": 0.23158891365800002,
+   "clutter_density": 3.126523494720459,
+   "reg_difficulty": 0.14348600804805756
+  },
+  {
+   "seq_id": 35,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 7,
+   "n_instances": 1750,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": true,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 2.806041717529297,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "内场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "无",
+    "distractor": "有"
+   },
+   "mean_scr": 2.863247970156837,
+   "min_scr": 0.32250607240210116,
+   "clutter_density": 2.806041717529297,
+   "reg_difficulty": 0.21598181128501892
+  },
+  {
+   "seq_id": 36,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 6,
+   "n_instances": 1280,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 2.4751691818237305,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "内场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "无",
+    "distractor": "有"
+   },
+   "mean_scr": 1.210800276651005,
+   "min_scr": 0.16853338242573368,
+   "clutter_density": 2.4751691818237305,
+   "reg_difficulty": 0.31293395161628723
+  },
+  {
+   "seq_id": 37,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 5,
+   "n_instances": 1050,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": true,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": true,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": true,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 2.534700393676758,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "内场",
+    "shake": "有",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "无",
+    "distractor": "有"
+   },
+   "mean_scr": 1.127247292294833,
+   "min_scr": 0.22526839877628194,
+   "clutter_density": 2.534700393676758,
+   "reg_difficulty": 0.330287367105484
+  },
+  {
+   "seq_id": 38,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 7,
+   "n_instances": 1520,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": true,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 2.5953776836395264,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "内场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "无",
+    "distractor": "有"
+   },
+   "mean_scr": 0.7665325364552482,
+   "min_scr": 0.23391225082817516,
+   "clutter_density": 2.5953776836395264,
+   "reg_difficulty": 0.29882383346557617
+  },
+  {
+   "seq_id": 39,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 7,
+   "n_instances": 1452,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 2.3403255939483643,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.003443526170798898,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "内场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "无",
+    "distractor": "有"
+   },
+   "mean_scr": 1.2388513283743219,
+   "min_scr": 0.4516162371622371,
+   "clutter_density": 2.3403255939483643,
+   "reg_difficulty": 0.2851427495479584
+  },
+  {
+   "seq_id": 40,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 6,
+   "n_instances": 1221,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": true,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 3.06069016456604,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": true,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 116,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "内场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "无",
+    "distractor": "无"
+   },
+   "mean_scr": 0.8682166133716481,
+   "min_scr": 0.08813802029076069,
+   "clutter_density": 3.06069016456604,
+   "reg_difficulty": 0.2542787492275238
+  },
+  {
+   "seq_id": 41,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "dusk",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 5,
+   "n_instances": 1161,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": true,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": true,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 2.5034115314483643,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "傍晚",
+    "scene": "内场",
+    "shake": "有",
+    "static_target": "有",
+    "moving_target": "无",
+    "occlusion": "无",
+    "crossing": "无",
+    "distractor": "无"
+   },
+   "mean_scr": 2.5191988581082625,
+   "min_scr": 1.7710849945507348,
+   "clutter_density": 2.5034115314483643,
+   "reg_difficulty": 0.3052266836166382
+  },
+  {
+   "seq_id": 42,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "dusk",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 5,
+   "n_instances": 1250,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": true,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": true,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 2.362057685852051,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "傍晚",
+    "scene": "内场",
+    "shake": "有",
+    "static_target": "有",
+    "moving_target": "无",
+    "occlusion": "无",
+    "crossing": "无",
+    "distractor": "有"
+   },
+   "mean_scr": 2.1506141757365493,
+   "min_scr": 1.5362209633666886,
+   "clutter_density": 2.362057685852051,
+   "reg_difficulty": 0.3183425962924957
+  },
+  {
+   "seq_id": 43,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "dusk",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 8,
+   "n_instances": 1629,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 2.201197862625122,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": true,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 61,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "傍晚",
+    "scene": "内场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "无",
+    "distractor": "有"
+   },
+   "mean_scr": 2.0542264819383265,
+   "min_scr": 0.5435428445463988,
+   "clutter_density": 2.201197862625122,
+   "reg_difficulty": 0.250495970249176
+  },
+  {
+   "seq_id": 44,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "dusk",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 4,
+   "n_instances": 1000,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 2.212434768676758,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "傍晚",
+    "scene": "内场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "无",
+    "distractor": "有"
+   },
+   "mean_scr": 3.6871452851154833,
+   "min_scr": 0.4362217455861482,
+   "clutter_density": 2.212434768676758,
+   "reg_difficulty": 0.21933816373348236
+  },
+  {
+   "seq_id": 45,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "dusk",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 5,
+   "n_instances": 1156,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 1.9758983850479126,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": true,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 58,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "傍晚",
+    "scene": "内场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "无",
+    "distractor": "有"
+   },
+   "mean_scr": 1.2606000689019186,
+   "min_scr": 0.6685588628187557,
+   "clutter_density": 1.9758983850479126,
+   "reg_difficulty": 0.2688605487346649
+  },
+  {
+   "seq_id": 46,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "dusk",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 5,
+   "n_instances": 1250,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": true,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": true,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": true,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 2.5141406059265137,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "傍晚",
+    "scene": "内场",
+    "shake": "有",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "无",
+    "distractor": "有"
+   },
+   "mean_scr": 1.672471065069151,
+   "min_scr": 0.7773121337188647,
+   "clutter_density": 2.5141406059265137,
+   "reg_difficulty": 0.31234291195869446
+  },
+  {
+   "seq_id": 47,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "dusk",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 5,
+   "n_instances": 1250,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 1.9517316818237305,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "傍晚",
+    "scene": "内场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "有",
+    "distractor": "有"
+   },
+   "mean_scr": 2.879498114615113,
+   "min_scr": 0.3927727331252972,
+   "clutter_density": 1.9517316818237305,
+   "reg_difficulty": 0.27595967054367065
+  },
+  {
+   "seq_id": 48,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "dusk",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 5,
+   "n_instances": 1250,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 1.9643359184265137,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "傍晚",
+    "scene": "内场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "无",
+    "crossing": "无",
+    "distractor": "有"
+   },
+   "mean_scr": 3.109324749119784,
+   "min_scr": 0.4636233825826181,
+   "clutter_density": 1.9643359184265137,
+   "reg_difficulty": 0.2965465784072876
+  },
+  {
+   "seq_id": 49,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "dusk",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 4,
+   "n_instances": 1000,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 2.0785937309265137,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "傍晚",
+    "scene": "内场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "无",
+    "crossing": "无",
+    "distractor": "有"
+   },
+   "mean_scr": 1.8166207972679864,
+   "min_scr": 0.6325448266905207,
+   "clutter_density": 2.0785937309265137,
+   "reg_difficulty": 0.27349552512168884
+  },
+  {
+   "seq_id": 50,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "dusk",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 5,
+   "n_instances": 1060,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 1.7210546731948853,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "傍晚",
+    "scene": "内场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "无",
+    "crossing": "无",
+    "distractor": "有"
+   },
+   "mean_scr": 3.247896252899815,
+   "min_scr": 0.9894553132139148,
+   "clutter_density": 1.7210546731948853,
+   "reg_difficulty": 0.23514202237129211
+  },
+  {
+   "seq_id": 51,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "dusk",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 6,
+   "n_instances": 1263,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": true,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": true,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 1.5806511640548706,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "傍晚",
+    "scene": "内场",
+    "shake": "有",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "无",
+    "crossing": "无",
+    "distractor": "有"
+   },
+   "mean_scr": 2.7082073127184785,
+   "min_scr": 1.010365085462349,
+   "clutter_density": 1.5806511640548706,
+   "reg_difficulty": 0.233884796500206
+  },
+  {
+   "seq_id": 52,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "dusk",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 7,
+   "n_instances": 1402,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 2.155768394470215,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "傍晚",
+    "scene": "内场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "无",
+    "crossing": "无",
+    "distractor": "无"
+   },
+   "mean_scr": 3.6930148417149025,
+   "min_scr": 0.8633549791867102,
+   "clutter_density": 2.155768394470215,
+   "reg_difficulty": 0.3496496379375458
+  },
+  {
+   "seq_id": 53,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "dusk",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 7,
+   "n_instances": 1603,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": true,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": true,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": true,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 2.9094011783599854,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "傍晚",
+    "scene": "内场",
+    "shake": "有",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "无",
+    "crossing": "无",
+    "distractor": "有"
+   },
+   "mean_scr": 3.011549128580239,
+   "min_scr": 0.8053937576971496,
+   "clutter_density": 2.9094011783599854,
+   "reg_difficulty": 0.3140801787376404
+  },
+  {
+   "seq_id": 54,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "dusk",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 6,
+   "n_instances": 1500,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 1.6935285329818726,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "傍晚",
+    "scene": "内场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "无",
+    "distractor": "有"
+   },
+   "mean_scr": 2.401707083923252,
+   "min_scr": 0.5888673085612098,
+   "clutter_density": 1.6935285329818726,
+   "reg_difficulty": 0.24371430277824402
+  },
+  {
+   "seq_id": 55,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "dusk",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 6,
+   "n_instances": 1500,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 1.7214713096618652,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "傍晚",
+    "scene": "内场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "无",
+    "crossing": "无",
+    "distractor": "有"
+   },
+   "mean_scr": 2.3549902274120393,
+   "min_scr": 0.8427894076035507,
+   "clutter_density": 1.7214713096618652,
+   "reg_difficulty": 0.30446600914001465
+  },
+  {
+   "seq_id": 56,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "dusk",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 6,
+   "n_instances": 1500,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 1.7232160568237305,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "傍晚",
+    "scene": "内场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "无",
+    "crossing": "有",
+    "distractor": "有"
+   },
+   "mean_scr": 2.7270727087047715,
+   "min_scr": 1.1854242045669774,
+   "clutter_density": 1.7232160568237305,
+   "reg_difficulty": 0.31602752208709717
+  },
+  {
+   "seq_id": 57,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "dusk",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 6,
+   "n_instances": 1500,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 1.830468773841858,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "傍晚",
+    "scene": "内场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "无",
+    "crossing": "无",
+    "distractor": "有"
+   },
+   "mean_scr": 2.799909683582768,
+   "min_scr": 0.6639149199184265,
+   "clutter_density": 1.830468773841858,
+   "reg_difficulty": 0.25171270966529846
+  },
+  {
+   "seq_id": 58,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "dusk",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 7,
+   "n_instances": 1650,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": true,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": true,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 2.2727863788604736,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "傍晚",
+    "scene": "内场",
+    "shake": "有",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "无",
+    "crossing": "无",
+    "distractor": "有"
+   },
+   "mean_scr": 2.7673027253130535,
+   "min_scr": 0.5137228951967344,
+   "clutter_density": 2.2727863788604736,
+   "reg_difficulty": 0.31285473704338074
+  },
+  {
+   "seq_id": 59,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "dusk",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 7,
+   "n_instances": 1547,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": true,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": true,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 2.428684711456299,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": true,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 55,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "傍晚",
+    "scene": "内场",
+    "shake": "有",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "无",
+    "distractor": "有"
+   },
+   "mean_scr": 3.5506752719300265,
+   "min_scr": 1.038757153294315,
+   "clutter_density": 2.428684711456299,
+   "reg_difficulty": 0.3096300959587097
+  },
+  {
+   "seq_id": 60,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "dusk",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 6,
+   "n_instances": 1375,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": true,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": true,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 2.284271001815796,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 12,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "傍晚",
+    "scene": "内场",
+    "shake": "有",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "无",
+    "crossing": "无",
+    "distractor": "有"
+   },
+   "mean_scr": 2.6809615368074016,
+   "min_scr": 1.4248990662827923,
+   "clutter_density": 2.284271001815796,
+   "reg_difficulty": 0.32346269488334656
+  },
+  {
+   "seq_id": 61,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "dusk",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 6,
+   "n_instances": 1500,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 1.660729169845581,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "傍晚",
+    "scene": "内场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "无",
+    "crossing": "无",
+    "distractor": "有"
+   },
+   "mean_scr": 2.025830354832723,
+   "min_scr": 0.6675100769965102,
+   "clutter_density": 1.660729169845581,
+   "reg_difficulty": 0.24607357382774353
+  },
+  {
+   "seq_id": 62,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "dusk",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 6,
+   "n_instances": 1500,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 1.6632031202316284,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "傍晚",
+    "scene": "内场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "无",
+    "crossing": "无",
+    "distractor": "有"
+   },
+   "mean_scr": 1.73478106190489,
+   "min_scr": 0.4327401506865917,
+   "clutter_density": 1.6632031202316284,
+   "reg_difficulty": 0.2062293440103531
+  },
+  {
+   "seq_id": 63,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "dusk",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 5,
+   "n_instances": 1250,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": true,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": true,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 2.163346290588379,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "傍晚",
+    "scene": "内场",
+    "shake": "有",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "有",
+    "distractor": "有"
+   },
+   "mean_scr": 2.4196348833709527,
+   "min_scr": 1.3326244942674235,
+   "clutter_density": 2.163346290588379,
+   "reg_difficulty": 0.2804683446884155
+  },
+  {
+   "seq_id": 64,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "dusk",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 7,
+   "n_instances": 1633,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 1.8235676288604736,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "傍晚",
+    "scene": "内场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "无",
+    "distractor": "有"
+   },
+   "mean_scr": 2.1098826835066644,
+   "min_scr": 0.5044856809582697,
+   "clutter_density": 1.8235676288604736,
+   "reg_difficulty": 0.28448864817619324
+  },
+  {
+   "seq_id": 65,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "dusk",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 7,
+   "n_instances": 1750,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 1.842604160308838,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "傍晚",
+    "scene": "内场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "无",
+    "distractor": "有"
+   },
+   "mean_scr": 2.4254188669476515,
+   "min_scr": 0.47601706601285004,
+   "clutter_density": 1.842604160308838,
+   "reg_difficulty": 0.2597081959247589
+  },
+  {
+   "seq_id": 66,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "dusk",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 6,
+   "n_instances": 1396,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 1.9646484851837158,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 13,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "傍晚",
+    "scene": "内场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "无",
+    "distractor": "有"
+   },
+   "mean_scr": 1.6987974447228777,
+   "min_scr": 0.40873528557043015,
+   "clutter_density": 1.9646484851837158,
+   "reg_difficulty": 0.23758932948112488
+  },
+  {
+   "seq_id": 67,
+   "scene": {
+    "value": "outdoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "dusk",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 3,
+   "n_instances": 617,
+   "track_ids": [
+    1,
+    2,
+    3
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": true,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": true,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 1.2268749475479126,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "傍晚",
+    "scene": "外场",
+    "shake": "有",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "无",
+    "distractor": "无"
+   },
+   "mean_scr": 4.793335412832804,
+   "min_scr": 1.2554891748704824,
+   "clutter_density": 1.2268749475479126,
+   "reg_difficulty": 0.16575415432453156
+  },
+  {
+   "seq_id": 68,
+   "scene": {
+    "value": "outdoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "dusk",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 2,
+   "n_instances": 500,
+   "track_ids": [
+    1,
+    2
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 1.7906770706176758,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "傍晚",
+    "scene": "外场",
+    "shake": "无",
+    "static_target": "无",
+    "moving_target": "有",
+    "occlusion": "无",
+    "crossing": "无",
+    "distractor": "无"
+   },
+   "mean_scr": 1.9397234599035746,
+   "min_scr": 1.4258719520425924,
+   "clutter_density": 1.7906770706176758,
+   "reg_difficulty": 0.17321890592575073
+  },
+  {
+   "seq_id": 69,
+   "scene": {
+    "value": "outdoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "dusk",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 1,
+   "n_instances": 250,
+   "track_ids": [
+    1
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 1.5732812881469727,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "傍晚",
+    "scene": "外场",
+    "shake": "无",
+    "static_target": "无",
+    "moving_target": "有",
+    "occlusion": "无",
+    "crossing": "无",
+    "distractor": "有"
+   },
+   "mean_scr": 1.5779682849341798,
+   "min_scr": 1.5779682849341798,
+   "clutter_density": 1.5732812881469727,
+   "reg_difficulty": 0.22692953050136566
+  },
+  {
+   "seq_id": 70,
+   "scene": {
+    "value": "outdoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "dusk",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 1,
+   "n_instances": 250,
+   "track_ids": [
+    1
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 1.924414038658142,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "傍晚",
+    "scene": "外场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "无",
+    "crossing": "无",
+    "distractor": "有"
+   },
+   "mean_scr": 1.1926978957527639,
+   "min_scr": 1.1926978957527639,
+   "clutter_density": 1.924414038658142,
+   "reg_difficulty": 0.18051940202713013
+  },
+  {
+   "seq_id": 71,
+   "scene": {
+    "value": "outdoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "dusk",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 2,
+   "n_instances": 500,
+   "track_ids": [
+    1,
+    2
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 1.3005338907241821,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "傍晚",
+    "scene": "外场",
+    "shake": "无",
+    "static_target": "无",
+    "moving_target": "有",
+    "occlusion": "无",
+    "crossing": "无",
+    "distractor": "无"
+   },
+   "mean_scr": 2.5406227620612487,
+   "min_scr": 1.4024117207021671,
+   "clutter_density": 1.3005338907241821,
+   "reg_difficulty": 0.0748634859919548
+  },
+  {
+   "seq_id": 72,
+   "scene": {
+    "value": "outdoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "dusk",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 2,
+   "n_instances": 500,
+   "track_ids": [
+    1,
+    2
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 1.5690884590148926,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "傍晚",
+    "scene": "外场",
+    "shake": "无",
+    "static_target": "无",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "无",
+    "distractor": "无"
+   },
+   "mean_scr": 2.339302447090346,
+   "min_scr": 1.9225409100637485,
+   "clutter_density": 1.5690884590148926,
+   "reg_difficulty": 0.09879490733146667
+  },
+  {
+   "seq_id": 73,
+   "scene": {
+    "value": "outdoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "dusk",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 2,
+   "n_instances": 287,
+   "track_ids": [
+    1,
+    2
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 1.2953646183013916,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "傍晚",
+    "scene": "外场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "无",
+    "crossing": "无",
+    "distractor": "有"
+   },
+   "mean_scr": 1.0904857066416396,
+   "min_scr": 0.908069421971738,
+   "clutter_density": 1.2953646183013916,
+   "reg_difficulty": 0.20548731088638306
+  },
+  {
+   "seq_id": 74,
+   "scene": {
+    "value": "outdoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "dusk",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 2,
+   "n_instances": 500,
+   "track_ids": [
+    1,
+    2
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 1.3450521230697632,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "傍晚",
+    "scene": "外场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "无",
+    "crossing": "无",
+    "distractor": "有"
+   },
+   "mean_scr": 3.698132025699272,
+   "min_scr": 1.0079056161464814,
+   "clutter_density": 1.3450521230697632,
+   "reg_difficulty": 0.20697109401226044
+  },
+  {
+   "seq_id": 75,
+   "scene": {
+    "value": "outdoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "dusk",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 2,
+   "n_instances": 500,
+   "track_ids": [
+    1,
+    2
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 1.333099126815796,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "傍晚",
+    "scene": "外场",
+    "shake": "无",
+    "static_target": "无",
+    "moving_target": "有",
+    "occlusion": "无",
+    "crossing": "无",
+    "distractor": "无"
+   },
+   "mean_scr": 4.297601959538177,
+   "min_scr": 1.3479031890057558,
+   "clutter_density": 1.333099126815796,
+   "reg_difficulty": 0.15615618228912354
+  },
+  {
+   "seq_id": 76,
+   "scene": {
+    "value": "outdoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "dusk",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 2,
+   "n_instances": 500,
+   "track_ids": [
+    1,
+    2
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 1.3159894943237305,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "傍晚",
+    "scene": "外场",
+    "shake": "无",
+    "static_target": "无",
+    "moving_target": "有",
+    "occlusion": "无",
+    "crossing": "有",
+    "distractor": "无"
+   },
+   "mean_scr": 2.377138332325987,
+   "min_scr": 0.6025411192232301,
+   "clutter_density": 1.3159894943237305,
+   "reg_difficulty": 0.19599440693855286
+  },
+  {
+   "seq_id": 77,
+   "scene": {
+    "value": "outdoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 4,
+   "n_instances": 946,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 2.3496224880218506,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "外场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "无",
+    "distractor": "无"
+   },
+   "mean_scr": 4.919476784132785,
+   "min_scr": 3.456458961436205,
+   "clutter_density": 2.3496224880218506,
+   "reg_difficulty": 0.30904248356819153
+  },
+  {
+   "seq_id": 78,
+   "scene": {
+    "value": "outdoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 4,
+   "n_instances": 1000,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": true,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 3.6423046588897705,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "外场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "无",
+    "crossing": "无",
+    "distractor": "有"
+   },
+   "mean_scr": 3.4092328296953176,
+   "min_scr": 1.6160631339815679,
+   "clutter_density": 3.6423046588897705,
+   "reg_difficulty": 0.08063583076000214
+  },
+  {
+   "seq_id": 79,
+   "scene": {
+    "value": "outdoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 4,
+   "n_instances": 836,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "n_empty_frames": 28,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": true,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": true,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 1.804296851158142,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "外场",
+    "shake": "有",
+    "static_target": "有",
+    "moving_target": "无",
+    "occlusion": "有",
+    "crossing": "无",
+    "distractor": "有"
+   },
+   "mean_scr": 5.364540209633114,
+   "min_scr": 4.134011619647526,
+   "clutter_density": 1.804296851158142,
+   "reg_difficulty": 0.3074733316898346
+  },
+  {
+   "seq_id": 80,
+   "scene": {
+    "value": "outdoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 2,
+   "n_instances": 494,
+   "track_ids": [
+    1,
+    2
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": true,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 2.6168100833892822,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 6,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "外场",
+    "shake": "无",
+    "static_target": "无",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "有",
+    "distractor": "无"
+   },
+   "mean_scr": 3.0282980154559227,
+   "min_scr": 2.696257096286354,
+   "clutter_density": 2.6168100833892822,
+   "reg_difficulty": 0.14509347081184387
+  },
+  {
+   "seq_id": 81,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 4,
+   "n_instances": 652,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 1.9669270515441895,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "内场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "无",
+    "distractor": "无"
+   },
+   "mean_scr": 3.481337217363584,
+   "min_scr": 1.4625003197125002,
+   "clutter_density": 1.9669270515441895,
+   "reg_difficulty": 0.22318939864635468
+  },
+  {
+   "seq_id": 82,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 8,
+   "n_instances": 1596,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 1.9430989027023315,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": true,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 46,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "内场",
+    "shake": "无",
+    "static_target": "无",
+    "moving_target": "有",
+    "occlusion": "无",
+    "crossing": "无",
+    "distractor": "有"
+   },
+   "mean_scr": 1.8381198412368955,
+   "min_scr": 0.49832383062250757,
+   "clutter_density": 1.9430989027023315,
+   "reg_difficulty": 0.27948155999183655
+  },
+  {
+   "seq_id": 83,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "day",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 6,
+   "n_instances": 1500,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": true,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": true,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": true,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 2.556302309036255,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "白天",
+    "scene": "内场",
+    "shake": "有",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "无",
+    "distractor": "无"
+   },
+   "mean_scr": 1.088849587762498,
+   "min_scr": 0.32626581640001767,
+   "clutter_density": 2.556302309036255,
+   "reg_difficulty": 0.30096253752708435
+  },
+  {
+   "seq_id": 84,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "dusk",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 4,
+   "n_instances": 935,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 2.027721405029297,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": true,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 65,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "傍晚",
+    "scene": "内场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "无",
+    "distractor": "有"
+   },
+   "mean_scr": 1.9710145319980301,
+   "min_scr": 0.5445890161051894,
+   "clutter_density": 2.027721405029297,
+   "reg_difficulty": 0.27086493372917175
+  },
+  {
+   "seq_id": 85,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "dusk",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 6,
+   "n_instances": 1500,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 1.4543880224227905,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "傍晚",
+    "scene": "内场",
+    "shake": "无",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "无",
+    "crossing": "无",
+    "distractor": "有"
+   },
+   "mean_scr": 2.5347379111824786,
+   "min_scr": 0.8437694368030889,
+   "clutter_density": 1.4543880224227905,
+   "reg_difficulty": 0.27744123339653015
+  },
+  {
+   "seq_id": 86,
+   "scene": {
+    "value": "indoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "dusk",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 5,
+   "n_instances": 1250,
+   "track_ids": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": true,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": true,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": true,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 1.9839322566986084,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "傍晚",
+    "scene": "内场",
+    "shake": "有",
+    "static_target": "有",
+    "moving_target": "有",
+    "occlusion": "有",
+    "crossing": "无",
+    "distractor": "有"
+   },
+   "mean_scr": 2.846182160957533,
+   "min_scr": 1.1415793018679696,
+   "clutter_density": 1.9839322566986084,
+   "reg_difficulty": 0.3116084933280945
+  },
+  {
+   "seq_id": 87,
+   "scene": {
+    "value": "outdoor",
+    "source": "official",
+    "confidence": "high"
+   },
+   "daytime": {
+    "value": "dusk",
+    "source": "official",
+    "confidence": "high"
+   },
+   "n_frames": 250,
+   "n_tracks": 2,
+   "n_instances": 500,
+   "track_ids": [
+    1,
+    2
+   ],
+   "n_empty_frames": 0,
+   "difficulty_tags": {
+    "crossing": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "occlusion": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "static_target": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "distractor_present": {
+     "value": false,
+     "source": "official",
+     "confidence": "high"
+    },
+    "motion_blur": {
+     "value": false,
+     "source": "official+auto",
+     "confidence": "medium",
+     "official_shake": false,
+     "auto_blur_ratio": 0.0,
+     "note": "官方晃动列 ∪ 拉普拉斯方差<0.3×序列中值的帧占比>10%"
+    },
+    "strong_clutter": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 1.5243488550186157,
+     "threshold": 2.5070571899414062
+    },
+    "long_occlusion": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0,
+     "threshold": 20
+    },
+    "small_target": {
+     "value": false,
+     "source": "auto",
+     "confidence": "high",
+     "raw": 0.0,
+     "threshold": 0.5
+    }
+   },
+   "official_raw": {
+    "daytime": "傍晚",
+    "scene": "外场",
+    "shake": "无",
+    "static_target": "无",
+    "moving_target": "有",
+    "occlusion": "无",
+    "crossing": "无",
+    "distractor": "无"
+   },
+   "mean_scr": 3.0840188508537296,
+   "min_scr": 1.3880222725507376,
+   "clutter_density": 1.5243488550186157,
+   "reg_difficulty": 0.08873388171195984
+  }
+ ],
+ "summary": {
+  "n_seqs": {
+   "train-int": 64,
+   "val-int": 12,
+   "val-official": 11
+  },
+  "n_frames": {
+   "train-int": 16000,
+   "val-int": 3000,
+   "val-official": 2750
+  },
+  "n_instances": {
+   "train-int": 66432,
+   "val-int": 11533,
+   "val-official": 11209
+  },
+  "n_tracks_total": 393
+ },
+ "created": "2026-10-05",
+ "changelog": [
+  {
+   "version": "v3",
+   "date": "2026-10-05",
+   "change": "M1 统计字段回填（1.4/1.6 第三类）：mean_scr/min_scr/clutter_density/reg_difficulty + strong_clutter/long_occlusion/small_target 标签 + motion_blur 并集；splits 与 v2 完全一致",
+   "caliber": "SCR=|μT−μB|/σB(背景环8px, 掩码对齐); clutter=背景局部极大/千像素; blur=拉普拉斯方差<0.3×中值帧占比>10%",
+   "source": "data/cache/ittd/seq_*/seq_meta.json (scripts/preprocess_all.py)"
+  }
+ ],
+ "checksum": "md5:f25e2dbaa469394e1fecf584a1bf6491"
+}

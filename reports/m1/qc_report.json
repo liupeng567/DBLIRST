@@ -1,0 +1,40 @@
+{
+ "n_seqs": 87,
+ "total_frames": 21750,
+ "reg": {
+  "n_failed": 287,
+  "n_flat": 0,
+  "methods": {
+   "n_klt": 17313,
+   "n_klt2": 1130,
+   "n_fm": 1227,
+   "n_fm2": 923,
+   "n_flat": 0,
+   "n_failed": 287
+  },
+  "success_rate_overall": 0.9868045977011495,
+  "rmse_p95_worst_seq": 0.49325793981552124
+ },
+ "nonzero": {
+  "min_of_mean": 0.41904518008232117,
+  "max_of_mean": 0.4851098656654358
+ },
+ "heatmap_peak_match_rate": 1.0,
+ "heatmap_merge_examples": [],
+ "throughput": {
+  "seqs": 87,
+  "wall_sec": 123.2,
+  "total_frames": 21750,
+  "throughput_fps_wall": 176.6,
+  "workers": 16,
+  "gate_throughput>=200": false
+ },
+ "gates": {
+  "1_配准成功率>=98%": true,
+  "2_RMSE_P95<=0.5px": true,
+  "3_非零占比∈[5%,95%]": true,
+  "4_热图峰值一致>=99%": true,
+  "5_拼图人工过目": "manual",
+  "6_吞吐>=200fps": false
+ }
+}

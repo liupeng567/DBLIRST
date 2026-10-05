@@ -1,0 +1,106 @@
+{
+ "summary": {
+  "seqs": 2,
+  "wall_sec": 9.7,
+  "total_frames": 500,
+  "throughput_fps_wall": 51.7,
+  "workers": 2,
+  "gate_throughput>=200": false
+ },
+ "per_seq": [
+  {
+   "seq_id": 2,
+   "n_frames": 250,
+   "n_instances": 1000,
+   "n_tracks": 4,
+   "n_empty_frames": 0,
+   "deadpix": 5,
+   "reg": {
+    "n_failed": 0,
+    "n_flat": 0,
+    "n_klt": 236,
+    "n_klt2": 4,
+    "n_fm": 0,
+    "n_fm2": 0,
+    "n_chained": 4,
+    "success_rate": 1.0,
+    "rmse_p50": 0.34426045417785645,
+    "rmse_p95": 0.446306437253952
+   },
+   "nonzero_frac": {
+    "min": 0.44232097268104553,
+    "mean": 0.4717082381248474,
+    "max": 0.4996874928474426
+   },
+   "lapvar_median": 186.41668701171875,
+   "blur_ratio": 0.0,
+   "clutter_density_mean": 2.5070571899414062,
+   "clutter_density_p75": 2.82958984375,
+   "mean_scr": 4.886393325224132,
+   "min_scr": 1.6656478767300387,
+   "max_track_gap": 0,
+   "long_occlusion": false,
+   "small_target_frac": 0.0,
+   "small_target": false,
+   "blur_tag": false,
+   "timings": {
+    "decode": 0.15,
+    "deadpix_nuc": 1.04,
+    "stats_qc": 2.04,
+    "register": 2.13,
+    "labels_heatmap": 0.08,
+    "masks": 2.58,
+    "scr": 0.35,
+    "total": 8.37
+   },
+   "fps": 29.9
+  },
+  {
+   "seq_id": 45,
+   "n_frames": 250,
+   "n_instances": 1156,
+   "n_tracks": 5,
+   "n_empty_frames": 0,
+   "deadpix": 6,
+   "reg": {
+    "n_failed": 0,
+    "n_flat": 0,
+    "n_klt": 215,
+    "n_klt2": 23,
+    "n_fm": 2,
+    "n_fm2": 0,
+    "n_chained": 23,
+    "success_rate": 1.0,
+    "rmse_p50": 0.24434787034988403,
+    "rmse_p95": 0.4819321036338806
+   },
+   "nonzero_frac": {
+    "min": 0.41081705689430237,
+    "mean": 0.45829421281814575,
+    "max": 0.4990755319595337
+   },
+   "lapvar_median": 301.4854736328125,
+   "blur_ratio": 0.0,
+   "clutter_density_mean": 1.9758983850479126,
+   "clutter_density_p75": 2.0833332538604736,
+   "mean_scr": 1.2606000689019186,
+   "min_scr": 0.6685588628187557,
+   "max_track_gap": 58,
+   "long_occlusion": true,
+   "small_target_frac": 0.0,
+   "small_target": false,
+   "blur_tag": false,
+   "timings": {
+    "decode": 0.15,
+    "deadpix_nuc": 1.04,
+    "stats_qc": 1.91,
+    "register": 3.02,
+    "labels_heatmap": 0.09,
+    "masks": 2.59,
+    "scr": 0.35,
+    "total": 9.16
+   },
+   "fps": 27.3
+  }
+ ]
+}
