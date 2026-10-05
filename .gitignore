@@ -1,0 +1,15 @@
+# ---- 运行时产物（不入库） ----
+__pycache__/
+*.pyc
+data/cache/
+experiments/
+/tmp/
+.hydra/
+outputs/
+
+# 大文件
+*.bmp
+*.npz
+*.npy
+*.pt
+*.pth

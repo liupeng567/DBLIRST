@@ -1,0 +1,170 @@
+{
+ "8": {
+  "gt_boxes_at_f1": 4,
+  "moving_regions": 3,
+  "outside_gt": 1,
+  "outside_detail": [
+   {
+    "center": [
+     196.5,
+     214.5
+    ],
+    "area_px": 37.0
+   }
+  ]
+ },
+ "9": {
+  "gt_boxes_at_f1": 3,
+  "moving_regions": 18,
+  "outside_gt": 18,
+  "outside_detail": [
+   {
+    "center": [
+     139.5,
+     470.0
+    ],
+    "area_px": 11.0
+   },
+   {
+    "center": [
+     631.0,
+     457.5
+    ],
+    "area_px": 99.5
+   },
+   {
+    "center": [
+     417.0,
+     433.5
+    ],
+    "area_px": 9.5
+   },
+   {
+    "center": [
+     532.0,
+     433.0
+    ],
+    "area_px": 13.0
+   },
+   {
+    "center": [
+     558.5,
+     418.5
+    ],
+    "area_px": 44.0
+   },
+   {
+    "center": [
+     483.0,
+     400.0
+    ],
+    "area_px": 6.5
+   },
+   {
+    "center": [
+     430.0,
+     387.5
+    ],
+    "area_px": 8.0
+   },
+   {
+    "center": [
+     409.0,
+     373.0
+    ],
+    "area_px": 46.5
+   },
+   {
+    "center": [
+     381.0,
+     367.5
+    ],
+    "area_px": 27.0
+   },
+   {
+    "center": [
+     630.5,
+     313.5
+    ],
+    "area_px": 68.5
+   },
+   {
+    "center": [
+     612.0,
+     310.0
+    ],
+    "area_px": 13.5
+   },
+   {
+    "center": [
+     595.5,
+     306.5
+    ],
+    "area_px": 49.0
+   },
+   {
+    "center": [
+     628.5,
+     305.0
+    ],
+    "area_px": 29.5
+   },
+   {
+    "center": [
+     459.5,
+     281.0
+    ],
+    "area_px": 21.5
+   },
+   {
+    "center": [
+     543.5,
+     270.5
+    ],
+    "area_px": 14.0
+   },
+   {
+    "center": [
+     577.0,
+     198.0
+    ],
+    "area_px": 57.0
+   },
+   {
+    "center": [
+     53.5,
+     192.0
+    ],
+    "area_px": 30.0
+   },
+   {
+    "center": [
+     21.5,
+     36.0
+    ],
+    "area_px": 12.0
+   }
+  ]
+ },
+ "42": {
+  "gt_boxes_at_f1": 5,
+  "moving_regions": 2,
+  "outside_gt": 2,
+  "outside_detail": [
+   {
+    "center": [
+     51.5,
+     376.0
+    ],
+    "area_px": 10.0
+   },
+   {
+    "center": [
+     65.5,
+     374.0
+    ],
+    "area_px": 6.0
+   }
+  ]
+ }
+}

@@ -1,0 +1,22 @@
+{
+ "checks": {
+  "A_段数87": true,
+  "B_总帧数21750": true,
+  "C_实例数89174": true,
+  "C_轨迹数393": true,
+  "D_GT交叉一致": true,
+  "E_BMP头8bit_640x480": true,
+  "F_空标注帧清单": true,
+  "无其他问题": true
+ },
+ "totals": {
+  "seqs": 87,
+  "frames": 21750,
+  "instances": 89174,
+  "tracks": 393,
+  "val_instances_77_87": 11209,
+  "full_score_hypothesis_2x_val": 22418
+ },
+ "n_problems": 0,
+ "problems": []
+}

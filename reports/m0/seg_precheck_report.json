@@ -1,0 +1,23 @@
+{
+ "generated": "2026-10-05 22:32:50",
+ "seg_root": "D:\\Datasets\\kongdixiaomubiaodataset\\seg_dataset",
+ "structure": {
+  "label_dirs": 87,
+  "id_dirs": 87,
+  "jsons": 87
+ },
+ "objects_total": 89174,
+ "suppressed": 36,
+ "score_lt_0.5": 18,
+ "invisible_non_suppressed": 0,
+ "empty_mask_for_annotated": 0,
+ "align_rate_visible": 1.0,
+ "gate_align_rate>=0.99": true,
+ "json_xml_box_mismatch_frames": 0,
+ "json_xml_checked_frames": 21750,
+ "png_spot_checks": 53,
+ "png_spot_fail": 0,
+ "distractor_conclusion": "ITTD GT 只标注感兴趣车辆目标（论文挑战③口径 + 393 轨迹全量核验）；行人/电瓶车等干扰目标无框无 ID → ROI 判别头走 10.7 半自动挖掘路线",
+ "problems": [],
+ "elapsed_sec": 11.7
+}

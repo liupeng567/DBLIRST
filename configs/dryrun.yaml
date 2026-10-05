@@ -1,0 +1,13 @@
+# M0 dry-run 配置：1 轮 × 合成窗口，验证 main.py 启动四步 + 训练链路
+# 继承 base（hydra defaults）
+defaults:
+  - base
+  - _self_
+
+experiment:
+  name: dryrun_m0
+  stage: DRY
+
+train:
+  epochs: 1
+  save_every: 1

@@ -1,0 +1,33 @@
+# DSLD 双状态液态动力学 —— Alirst 环境锁定版本（方案 9.1 规范要点①）
+# 创建：M0 基建阶段，版本取自本机 Alirst 实测（win32 + RTX 4090 + CUDA 12.1）
+# 用法：conda env create -f environment.yml && conda activate Alirst
+name: Alirst
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+dependencies:
+  - python=3.10.21
+  - pip
+  - pip:
+      # ---- 核心训练栈（实测锁定） ----
+      - torch==2.5.1+cu121          # 来源 https://download.pytorch.org/whl/cu121
+      - torchvision==0.20.1+cu121
+      - numpy==2.2.6
+      - scipy==1.15.3
+      - opencv-python==5.0.0.93
+      - pillow==12.3.0
+      # ---- 配置 / 训练工程 ----
+      - hydra-core==1.3.6
+      - omegaconf==2.3.1
+      - tqdm==4.70.0
+      - pyyaml==6.0.3
+      # ---- 液态单元（CfC 参考实现） ----
+      - ncps==1.0.1
+      # ---- 评测 ----
+      - ultralytics-thop==2.2.1     # FLOPs 统计
+      - motmetrics==1.4.0           # MOTA/IDF1（CLEAR-MOT）
+      - pycocotools==2.0.10         # mAP 交叉校验
+      - matplotlib==3.10.9
+      # ---- 测试 ----
+      - pytest==8.4.2

@@ -1,0 +1,571 @@
+===== PAGE 1 =====
+ 
+中国科学数据, 2022, 7(2) | 1 
+ 
+ISSN 2096-2223 
+CN 11-6035/N 
+ 
+ 
+ 
+ 
+文献 CSTR： 
+32001.14.11-6035.csd.2021.0085.zh 
+文献 DOI： 
+10.11922/11-6035.csd.2021.0085.zh 
+数据 DOI： 
+10.11922/sciencedb.j00001.00331 
+文献分类：信息科学 
+ 
+收稿日期：2021-12-05 
+开放同评：2022-01-17 
+录用日期：2022-05-18 
+发表日期：2022-06-30 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+* 论文通信作者 
+范红旗：fanhongqi@nudt.edu.cn 
+ 
+ 
+ 
+www.csdata.org 
+面向空地应用的红外时敏目标检测跟踪数据集  
+傅瑞罡 1，范红旗 1*，朱永锋 1，回丙伟 1，张志龙 1，钟平 1， 
+李冬冬 1，张少良 2，陈刚 2，王雒 1 
+1. 国防科技大学电子科学学院 ATR 重点实验室，长沙  410073 
+2. 武汉高德红外股份有限公司，武汉  430073 
+摘要：本数据集是一个面向红外时敏目标检测跟踪应用，以车辆为探测目标，以
+地面场景为探测背景的图像序列数据集。本数据集共计 21750 帧图像，89174 个
+目标，组成了 87 段视频序列、393 段目标轨迹。数据集的每帧图像对应一个标注
+文件， 标注文件标记了图像中每个感兴趣时敏目标的ID 号及其位置信息， 可为红
+外时敏目标检测跟踪、红外时敏目标特性等研究提供基础数据。 
+关键词：红外时敏目标；地面背景；目标检测；目标跟踪；序列图像 
+数据库（集）基本信息简介 
+数据库（集）名称 面向空地应用的红外时敏目标检测跟踪数据集 
+数据作者 
+傅瑞罡、范红旗、朱永锋、回丙伟、张志龙、钟平、李冬冬、张
+少良、陈刚、王雒 
+数据通信作者 范红旗（fanhongqi@nudt.edu.cn） 
+数据时间范围 2021年 
+地理区域 中国 
+数据量 4.42 GB 
+数据格式 *.bmp, *.xml 
+数据服务系统网址 http://www.doi.org/10.11922/sciencedb.j00001.00331 
+基金项目 
+国 家 自 然 科 学 基 金 （ 62001482 ） ； 湖 南 省 自 然 科 学 基 金
+（2021JJ40676）。 
+数据库（集）组成 
+本数据集由三个文件夹组成， 其中，Image文件夹放置有87个子文
+件夹， 分别对应不同时间的87段图像序列， 每段图像序列包含250
+帧图像；Annotation文件夹放置有这些序列图像对应的标注结果，
+标注信息包括每一帧图像中所有目标的 ID 号和位置坐标；
+Evaluation文件夹提供了用于评测算法性能的评分程序代码。 
+引  言                                                
+车辆作为典型的时敏目标，是陆地作战的重要力量、战场补给的重要载体，
+已成为现代军事对抗的重点目标之一[1]。 近年来， 随着无人机遥感的迅猛发展， 以
+无人机作为平台，挂载各式成像系统，已成为现代军事对抗系统中收集情报的重
+要组成部分。其中，红外传感器因其隐蔽性好、全天候工作、抗干扰能力强等独
+特优势[2]，是无人机遥感成像中最常见的传感器之一。 
+ChaoXing
+===== PAGE 2 =====
+面向空地应用的红外时敏目标检测跟踪数据集 
+www.csdata.org | 2 
+因此，为实现对战场态势高效的感知、监视、分析，发展红外时敏目标的智能检测跟踪技术具
+有宽阔的应用前景和重大的实用价值。而随着现代战争对抗程度的加深，红外时敏目标的智能检测
+跟踪面临严峻挑战， 主要表现在：1） 时敏目标成像不规则。 时敏目标在运动时， 其热辐射并不均匀，
+通常在发动机附近会有较高响应，其他部位相对较弱，体现在数据上表现为目标没有清晰轮廓；此
+外，由于热辐射与天时天候相关，目标在不同天时天候下的红外成像不同；2）受到平台载重限制，
+无人机可挂载传感器的空间分辨率不会太高，加之远距离成像，由此获得的目标通常为小目标，目
+标的形状结构不清晰；3） 目标所处的地面环境复杂， 特别是一些具有强红外辐射的地面杂波容易淹
+没感兴趣目标；4）目标非合作，典型的如多目标交汇、目标过遮挡物等问题一直是目标检测跟踪技
+术面临的重难点问题。 
+为发展红外时敏目标的智能检测跟踪技术， 一个大规模的实测红外数据集是非常必要的。 然而，
+与紧迫的需求不匹配的是，当前红外时敏目标的实测数据相对匮乏。为填补这一空白，本文通过外
+场实地拍摄制备了一个面向空地应用的红外时敏目标检测跟踪数据集，可为红外目标检测跟踪、红
+外目标特性等研究提供基础数据。 
+1  数据采集和处理方法                                              
+1.1  数据采集方法 
+1.1.1  试验设备和传感器简介 
+数据采集用到的主要设备为多旋翼无人机(UA V , Unmanned Aerial Vehicle)，其基本参数如表 1 所
+示，外形图如图 1 所示。旋翼无人机采用锂电池供电方式，最大载重量 10 公斤，最大续航时间 30
+分钟，将传感器安装至无人机后，无人机可按照预先设定的轨迹逼近目标。 
+表 1  无人机基本参数 
+Table 1  Basic parameters of UA V 
+指标项 性能参数 
+动力形式 锂电池 
+无人机最大载重量 10KG 
+续航能力 30 分钟（空载）；20 分钟（满载） 
+最大飞行高度 500m 
+工作温度 -20℃-50℃ 
+抗风能力 6 级 
+数据采集使用的传感器为长波非制冷红外传感器，传感器后端加装数据链，可将实时红外图像
+以 25Hz 的帧频传递至地面操控端。同时通过地面操控端控制传感器搜索目标、锁定目标和跟踪目
+标，可以维持目标始终位于传感器视场内。传感器基本参数如表2 所示。 
+表 2  传感器基本参数 
+Table 2  Basic parameters of the UA V sensor 
+指标项 性能参数 
+波段 8μm-12μm 
+分辨率 640×512 
+最大拍摄帧频 50Hz 
+视场角 5.3°×4.0° 
+ChaoXing
+===== PAGE 3 =====
+面向空地应用的红外时敏目标检测跟踪数据集 
+中国科学数据, 2022, 7(2) | 3 
+ 
+图 1  数据采集过程中使用的多旋翼无人机 
+Figure 1  The UA V used for data acquisition 
+1.1.2  采集场景设置 
+数据采集过程中，我们主要设计了两种不同情况的实际场景，一是路面相对开阔的内场场景，
+二是路面相对复杂的外场场景， 分别如图2(a)、2(b)所示。 内场场景的特点是目标的行进路线可规划，
+行车场景可设计；外场场景的特点是背景更复杂，很容易产生多目标交汇、目标过遮挡物等现象。 
+同时，考虑到环境温度对红外成像结果的影响很大，为使数据集更加完备，我们采集了不同天
+时下的数据。图 2(c)、2(d)分别为图 2(a)、2(b)中两个场地对应不同天时下的成像。可以看出，白天
+的场地整体更加明亮，傍晚的场地则相对暗淡。 
+  
+(a) 白天的内场场景 (b) 白天的外场场景 
+  
+(c) 傍晚的内场场景 (d) 傍晚的外场场景 
+图 2  本数据集的主要场景示例 
+Figure 2  Samples of the main scenarios in the dataset 
+ChaoXing
+===== PAGE 4 =====
+面向空地应用的红外时敏目标检测跟踪数据集 
+www.csdata.org | 4 
+1.2  数据处理与标注 
+1.2.1  数据预处理 
+本次数据采集共获得了上百 GBytes 的原始数据。 但这些数据中存在大量的无效数据， 例如无人
+机在起飞阶段、寻的阶段、降落阶段录制的数据一般不包含感兴趣时敏目标，均属于无效数据，需
+要在预处理阶段进行筛除。 此外， 预处理还包括对原始视频进行解码， 将其转换为8bit 位深的 windows
+位图格式。 
+1.2.2  数据标注 
+数据标注是向数据集图像添加标签的过程。在本数据集中，我们不仅要指定所有感兴趣时敏目
+标的外接矩形框，还要给予不同目标不同的 ID 号。此 ID 号主要用于关联目标，从而标记出各个目
+标的轨迹。在同一图像序列内，同一目标的 ID 号始终保持一致。 
+具体的标注工作由人工标注完成： 通过labelimg 软件[3]逐帧对采集到的所有图像做标注， 如图3
+所示。 
+ 
+图 3  使用 labelimg 软件对图像做标注 
+Figure 3  Annotating the images by using labelimg software 
+2  数据样本描述                                                    
+本数据集的数据部分由两部分组成，其中，Image 文件夹放置有 87 个子文件夹，分别对应不同
+时间的 87 段图像序列，每段图像序列包含 250 帧图像；Annotation 文件夹放置有这些序列图像对应
+的标注结果。本小节将对图像数据和标注数据的典型样本分别展开描述和分析。 
+2.1  图像数据样本 
+数据集中的每幅红外图像的分辨率为 640×480 像素、8 bit 位深、 大小约为300KB， 图像存储格
+式为 windows 位图，后缀名为 bmp。每段图像序列包含 250 帧图像，图像文件名从 001.bmp 开始依
+ChaoXing
+===== PAGE 5 =====
+面向空地应用的红外时敏目标检测跟踪数据集 
+中国科学数据, 2022, 7(2) | 5 
+次递增至 250.bmp，如图 4 所示。 
+ 
+图 4  某段图像序列示例 
+Figure 4   Image sequence sample in the dataset 
+通过对这些图像数据的整理和分析，我们认为本数据集的主要挑战集中在以下两方面： 
+（1） 复杂环境干扰，包括地面杂波干扰、多目标互相干扰、其他类型时敏目标干扰以及障碍
+物遮挡干扰等。 
+① 地面杂波干扰： 
+目标所处的地面环境复杂，特别是一些具有强红外辐射的地面杂波容易淹没感兴趣目标，如图
+5(a)所示。 
+② 多目标互相干扰： 
+多目标互相干扰主要表现为车辆时敏目标的交汇， 它体现在图像上表现为多个目标融为一个 “目
+标” ， 如图5(b)所示。 在这种情况下， 要保证目标检测的高召回率是对检测跟踪算法的考验。 此外，
+目标交汇还会带来多目标的轨迹交叠，保证目标交汇前后各自ID 的一致性并不容易。 
+③ 其他类型时敏目标干扰： 
+除了车辆这类感兴趣时敏目标外，本数据集还包括一些其他类型的时敏目标，例如行人、电瓶
+车等， 如图5(c)所示。 因此， 要把感兴趣时敏目标从图像中检测出来， 仅仅利用目标的运动信息是不
+够的。 
+④ 障碍物遮挡干扰： 
+时敏目标在运动过程中可能出现被遮挡的情况，如图 5(d)所示。此时，由于目标信息的丢失，
+容易导致检测跟踪算法失效。 特别是， 若目标被完全遮挡， 如何保证遮挡前后目标ID 的一致性也是
+一大难题。 
+ChaoXing
+===== PAGE 6 =====
+面向空地应用的红外时敏目标检测跟踪数据集 
+www.csdata.org | 6 
+  
+(a) 地面杂波干扰 (b) 多目标互相干扰 
+  
+(c) 其他类型时敏目标干扰 (d) 障碍物遮挡干扰 
+图 5  复杂环境干扰示例 
+Figure 5  Samples of complicated interference environment 
+（2） 复杂成像条件，包括时敏目标成像不规则、平台移动/晃动导致图像模糊等。 
+车辆在运动时，其热辐射并不均匀，通常在发动机附近会有较高响应，其他部分相对较弱，体
+现在数据上表现为目标没有清晰轮廓；同时，时敏目标的成像还受到天时天候影响，不同条件下成
+像各异， 如图6(a)所示， 一个良好的目标检测跟踪算法必须具备鲁棒这种成像不规则的能力； 此外，
+如图 6(b)所示，平台的移动/晃动会导致传感器成像模糊，如何保证在低质图像上检测到目标、或者
+保证检测到的目标在成像模糊前后 ID 的一致性，是算法贴近实际应用必须考虑的问题。 
+  
+(a) 时敏目标成像不规则 (b) 平台移动/晃动导致图像模糊 
+图 6  复杂成像条件示例 
+Figure 6 Samples of complicated imaging condition 
+2.2  标注数据样本 
+本数据集所有图像均有与之对应的标注结果，标注结果的文件格式为 xml 文件。标注文件的内
+ChaoXing
+===== PAGE 7 =====
+面向空地应用的红外时敏目标检测跟踪数据集 
+中国科学数据, 2022, 7(2) | 7 
+容与 VOC 数据集[4]基本相同，下面以数据集中第 77 段图像序列下第一张图像的标注结果为例进行
+解释说明，如图 7 所示。 
+ 
+(a) 图像标注文件（xml） 
+ 
+(b) 图像标注结果可视化 
+图 7  数据标注文件格式说明 
+Figure 7  File format description of image annotation 
+如图 7(a)所示， 标注结果中，folder、filename、path 等元素给出了标注结果对应的图像路径信息；
+size 元素则给出了对应图像的属性信息：该图为长480、宽 640 的单通道图像；object 元素则给出了
+各个时敏目标的 ID 号及其位置信息，图中的目标数由object 元素个数给出：例如，图7(a)表明该图
+共存在 3 个目标，它们的 ID 由 name 子元素给出，分别为“1”、“2”、“3”，这些 ID 用于对目
+ChaoXing
+===== PAGE 8 =====
+面向空地应用的红外时敏目标检测跟踪数据集 
+www.csdata.org | 8 
+标的轨迹做分析， 在当前图像序列的所有帧中不会改变； 它们的位置可以通过读取子元素xmin、ymin、
+xmax、ymax 来得到：(xmin、ymin)决定了目标的左上角坐标，(xmax、ymax)则决定了目标的右下角
+坐标，如图 7(b)所示。 
+3  数据质量控制和评估                                             
+本数据集中的所有图像都是通过无人机挂载长波红外成像设备，在外场实地拍摄获得的，目标
+和地面背景的红外辐射特性真实可靠。目标在图像中的位置信息均为人工标注并由专家核查检验的
+结果，标注质量有保障。 
+本数据集已在第三届“空天杯”创新创意大赛（2021）——探测识别算法挑战赛（光学识别赛
+道）中作为官方比赛数据使用。大赛的圆满举办表明本数据集的数据质量是科学可信的，可作为数
+据素材，供更广泛的科研人员使用。 
+4  数据价值                                                        
+4.1  本数据集特色 
+本数据集面向日益迫切的红外图像智能化处理和军事应用需求，是一个通过外场实地拍摄形成
+的，以车辆目标为探测对象，以地面场景为探测背景的图像序列数据集，可为相关科研人员研究红
+外目标检测跟踪技术提供实验数据。 
+本数据集共计 21750 帧图像，89174 个目标，组成了 87 段视频序列、393 段目标轨迹，规模较
+大；提供了目标真值位置以及目标真值轨迹（如图 8 所示），可以支撑多种视觉任务的开展，例如
+目标检测[4]、单目标跟踪[5]、多目标检测跟踪[6]等，应用广泛；场景覆盖了典型的天时天候、地形环
+境（附录 1 给出了每段图像序列的场景），贴近实际应用，具有较大难度与挑战性。 
+ 
+图 8  数据集提供了目标边界框（蓝框）以及目标轨迹（红线） 
+Figure 8  The target bounding boxes (blue boxes) and the target trajectories (red lines) in the dataset 
+ChaoXing
+===== PAGE 9 =====
+面向空地应用的红外时敏目标检测跟踪数据集 
+中国科学数据, 2022, 7(2) | 9 
+4.2  与其他数据集的区别 
+近些年，国内外大量优质数据集[7-15]的公开，为推动遥感目标检测技术的发展提供了强大动力。
+然而， 其中的大部分遥感数据集都是可见光数据集[8-12]， 红外遥感数据集相对较少， 较为有名的红外
+遥感数据集包括 VEDAI[7]、DroneVehicle[13]、地/空背景下红外图像弱小飞机目标检测数据集[12]以及
+复杂背景下红外弱小运动目标检测数据集[13]等。 
+与本数据集相同，VEDAI[7]、DroneVehicle[13]均为以车辆作为探测目标的数据集。然而，它们采
+集的数据不是序列图像， 因此无法支持时敏目标跟踪等视觉任务， 在数据用途上不如本数据集广泛。
+此外，VEDAI 数据集是卫星航拍图像，在图像获取的方式上与本数据集不同；Drone Vehicle 数据集
+虽然是无人机拍摄图像，但多为正下视（如图9(a)所示），且车辆轮廓比较清晰，说明DroneVehicle
+的成像距离较近，然而实际战场很难获取这种近程遥感数据。本数据集相比 DroneVehicle 成像距离
+更远，更贴近战场实际需求。 
+回丙伟等人[14]于 2019 年发布的地/空背景下红外图像弱小飞机目标检测数据集 （如图9(b)所示） ，
+以及孙晓亮等人[15]于 2021 年发布的复杂背景下红外弱小运动目标检测数据集均可以支撑红外目标
+的检测跟踪研究，但他们面向的是地空应用，针对的是空中飞行目标，并非车辆时敏目标。 
+综上，本数据集填补了红外时敏目标超视距探测识别领域中的数据空白，可为红外时敏目标检
+测跟踪等研究提供基础数据，具有宽阔的应用前景和重大的实用价值。 
+  
+(a) DroneVehicle 数据集[7] 
+包含可见光图像（第一行）和红外图像（第二行） 
+(b) 红外小目标数据集[8] 
+图 9  其他相关数据集 
+Figure 9  Other relevant datasets 
+5  数据使用方法和建议                                             
+本数据集提供了序列图像中目标的精准位置框，在使用方式上具有灵活性和多样性，可支撑如
+目标检测[4]、单目标跟踪[5]、多目标检测跟踪[6]等多种视觉任务的开展。使用者可从数据网站下载本
+数据集，然后根据实际任务需求，编写相应算法。 
+本文推荐将本数据集应用在红外图像目标检测跟踪上，具体使用步骤如下： 
+（1） 将数据集中的第 1-76 段图像序列作为训练集，使用者设计并编写红外图像目标检测跟踪
+算法； 
+ChaoXing
+===== PAGE 10 =====
+面向空地应用的红外时敏目标检测跟踪数据集 
+www.csdata.org | 10 
+（2） 将数据集中的第 77-87 段图像序列作为验证集，使用者利用自己的算法读取验证集中的
+图像序列，完成目标检测跟踪任务（对每个目标输出一个坐标点即可）； 
+（3） 将验证集中每一段图像序列的检测跟踪结果以*.txt 格式进行保存， 其中*为对应的图像序
+列文件夹名称（如 1、2 等），具体文件内容如表 3 所示。本数据集提供输出样例，可在 Evaluation
+文件夹中查到（输出样例为“1.txt”）。 
+表 3  输出文件格式示例 
+Table 3  Format of the expected output file 
+第 1 行 targetnum: 该段图像序列中总目标数 
+第 2 行 frame:001 目标数 object:1 x 坐标 y 坐标 object:2 x 坐标 y 坐标 ... 
+第 3 行 frame:002 目标数 object:1 x 坐标 y 坐标 object:2 x 坐标 y 坐标 ... 
+... ... ... ... ... ... ... ... ... ... 
+第 251 行 frame:250 目标数 object:1 x 坐标 y 坐标 object:2 x 坐标 y 坐标 ... 
+（4） 通过比对本数据集提供的真值结果，计算验证集中每一段检测跟踪结果的检测准确性得
+分与航迹连续性得分。总得分越高，表明算法性能越优。 
+① 检测准确性得分 
+➢ 每个正确检测[即真值标注框内（含）有检测结果]，得 1 分； 
+➢ 每个漏检[即真值标注框内（含）无检测结果]，减 1 分； 
+➢ 每个虚警[即在真值标注框外出现检测结果]，减 2 分； 
+② 航迹连续性得分 
+航迹连续性得分面向的是每条真值航迹。具体为，计算真值航迹与预测航迹两两之间的重合度
+（即正确检测的数量），并使用匈牙利算法[16]获得真值航迹与预测航迹两个集合之间的最优匹配。
+而航迹连续性得分为匹配后所有真值航迹获得的重合度之和×1 分。 
+在上述评价准则下， 验证集测试结果满分为22418 分。Evaluation 文件夹提供了上述评价准则的
+评分程序代码。 
+致  谢                                                              
+本数据集已在第三届“空天杯”创新创意大赛（2021）——探测识别算法挑战赛（光学识别赛
+道） 使用， 感谢大赛组委会对本数据集的认可和采纳， 感谢来自全国各大高校的50 余支参赛队伍对
+本数据集提出的宝贵建议和意见。 
+数据作者分工职责                                                    
+傅瑞罡，男，浙江省金华市人，博士，讲师，研究方向为光学成像自动目标识别技术，主要承担工
+作：数据加工与标注，数据集制作。 
+范红旗，男，陕西省渭南市人，博士，副教授，研究方向为数据科学与雷达目标识别，主要承担工
+作：数据集设计。 
+朱永锋，男，江苏省南通市人，博士，副研究员，研究方向为雷达目标识别与抗干扰，主要承担工
+作：数据集设计。 
+ChaoXing
+===== PAGE 11 =====
+面向空地应用的红外时敏目标检测跟踪数据集 
+中国科学数据, 2022, 7(2) | 11 
+回丙伟， 男， 河北省衡水市人， 博士， 讲师， 研究方向为目标识别数据工程， 主要承担工作： 数据集
+制作，数据使用评价。 
+张志龙， 男， 陕西省渭南市人， 博士， 研究员， 研究方向为光学图像目标自动识别， 主要承担工作：
+数据集设计，数据集制作。 
+钟平，男，四川省内江市人，博士，研究员，研究方向为智能目标识别，主要承担工作：数据集设
+计，数据使用评价。 
+李冬冬， 男， 湖南省长沙市人， 博士， 副研究员， 研究方向为无人机视频目标跟踪， 主要承担工作：
+数据集制作。 
+张少良，男，湖北省孝感市人，本科，高级工程师，研究方向为精确制导，主要承担工作：数据采
+集。 
+陈刚， 男， 湖北省襄阳市人， 硕士， 高级工程师， 研究方向为红外目标识别， 主要承担工作： 数据采
+集。 
+王雒， 男， 辽宁省营口市人， 硕士研究生， 研究方向为光学成像自动目标识别技术， 主要承担工作：
+数据加工与标注。 
+参考文献                                                            
+[1] 侯旺, 孙晓亮, 尚洋, 等. 红外弱小目标检测技术研究现状与发展趋势[J]. 红外技术, 2015, 37(1): 
+1-10. DOI:10.11846/j.issn.1001_8891.201501001. [HOU W, SUN X L, SHANG Y , et al. Present state and 
+perspectives of small infrared targets detection technology[J]. Infrared Technology, 2015, 37(1): 1 -10. 
+DOI:10.11846/j.issn.1001_8891.201501001.] 
+[2] 朱红, 赵亦工. 基于背景自适应预测的红外弱小运动目标检测[J]. 红外与毫米波学报, 1999, 18(4): 
+305-310. DOI:10.3321/j.issn: 1001 -9014.1999.04.009. [ZHU H, ZHAO Y G. Infrared dim moving ta rget 
+detection based on background adaptive prediction [J]. Journal of Infrared and Millimeter Waves, 1999, 18(4): 
+305-310. DOI:10.3321/j.issn: 1001-9014.1999.04.009.] 
+[3] TZUTALIN. LabelImg[EB/OL]. (2015) [2021 -11-29]. https://github.com/tzutalin/labelImg. 
+[4] EVERINGHAM M, GOOL L, WILLIAMS C K I, et al. The pascal visual object classes (VOC) 
+challenge[J]. International Journal of Computer Vision, 2010, 88(2): 303 -338. DOI:10.1007/s11263-009-
+0275-4. 
+[5] WU Y , LIM J, Y ANG M. Object Tracking Benchmark[J]. IEEE Transactions on Pattern Analysis and 
+Machine Intelligence, 2015, 37(9): 1834-1848. 
+[6] MILAN A, LEAL-TAIXE L, REID I, et al. MOT16: a benchmark for multi -object tracking[J]. arXiv 
+preprint arXiv:1603.00831, 2016. 
+[7] RAZAKARIVONY S, JURIE F. Vehicle detection in aerial imagery: A small target detection 
+benchmark[J]. Journal of Visual Communication and Image Representation, 2016, 34: 187-203. 
+[8] HSIEH M R, LIN Y L, HSU W H. Drone-based object counting by spatially regularized regional proposal 
+network[C]. Proceedings of the IEEE International Conference on Computer Vision. 2017: 4145-4153. 
+[9] DU D, QI Y , YU H, et al. The unmanned aerial vehicle benchmark: Object detection and tracking[C]. 
+Proceedings of the European Conference on Computer Vision. 2018: 370-386. 
+ChaoXing
+===== PAGE 12 =====
+面向空地应用的红外时敏目标检测跟踪数据集 
+www.csdata.org | 12 
+[10] XIA G S, BAI X, DING J, et al. DOTA: A large-scale dataset for object detection in aerial images[C]. 
+Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition. 2018: 3974-3983. 
+[11] AZIMI S M, BAHMANY AR R, HENRY C, et al. Eagle: Large-scale vehicle detection dataset in real-
+world scenarios using aerial imagery[C]. International Conference on Pattern Recognition, 2021: 6920-6927. 
+[12] ZHU P, WEN L, BIAN X, et al. Vision meets drones: A challenge[J]. arXiv preprint arXiv:1
+804.07437, 2018. https://www.researchgate.net/profile/Anton_Milan/publication/301872959_MOT16_A_
+Benchmark_for_Multi-Object_Tracking/. 
+[13] ZHU P F, SUN Y M, WEN L Y , et al. Drone based RGBT vehicle dete ction and counting: 
+a challenge[J]. arXiv preprint arXiv:2003.02437, 2020. https://www.researchgate.net/publication/33973
+7269_Drone_Based_RGBT_Vehicle_Detection_and_Counting_A_Challenge. 
+[14] 回丙伟, 宋志勇, 范红旗, 等. 地/空背景下红外图像弱小飞机目标检测跟踪数据集[J/OL]. 中国
+科学数据, 2020, 5(3). (2020-01-20). DOI: 10.11922/csdata.2019.0074.zh.[HUI B W, SONG Z Y , FAN H Q, 
+et al. A dataset for infrared detection and tracking of dim -small aircraft targets under ground/air 
+background[J]. China Scientific Data, 2020, 5(3). (2020-01-20). DOI:10.11922/csdata.2019.0074.zh.] 
+[15] 孙晓亮, 郭良超, 张文龙, 等. 复杂背景下红外弱小运动目标检测数据集[J/OL]. 中国科学数据, 
+2021. (2021-04-25). DOI: 10.11922/csdata.2021.0015.zh. [SUN X L, GUO L C, ZHANG W L, et al. A 
+dataset for small infrared m oving target detection under clutter background[J/OL]. China Scientific Data, 
+2021. (2021-04-25). DOI: 10.11922/csdata.2021.0015.zh.] 
+[16] KUHN H W. The Hungarian method for the assignment problem[J]. Naval research logistics quarterly, 
+1955, 2: 83-97. 
+论文引用格式                                                       
+傅瑞罡, 范红旗, 朱永锋, 等. 面向空地应用的红外时敏目标检测跟踪数据集 [J/OL]. 中国科学数据, 
+2022, 7(2). (2022-06-28). DOI: 10.11922/11-6035.csd.2021.0085.zh. 
+数据引用格式                                                       
+傅瑞罡, 范红旗, 朱永锋, 等. 面向空地应用的红外时敏目标检测跟踪数据集 [DB/OL]. Science Data 
+Bank, 2022. (2022-01-17). DOI: 10.11922/sciencedb.j00001.00331. 
+附录 1                                                              
+序号 天候 场地 
+平台大幅
+晃动 
+有无静目标 有无动目标 有无遮挡 有无会车 
+有无其他动
+目标干扰 
+1 白天 外场 有 有 无 无 无 有 
+2 白天 外场 无 有 有 有 有 无 
+3 白天 外场 无 有 有 无 无 有 
+4 白天 外场 无 有 有 无 无 有 
+ChaoXing
+===== PAGE 13 =====
+面向空地应用的红外时敏目标检测跟踪数据集 
+中国科学数据, 2022, 7(2) | 13 
+序号 天候 场地 
+平台大幅
+晃动 
+有无静目标 有无动目标 有无遮挡 有无会车 
+有无其他动
+目标干扰 
+5 白天 外场 有 有 有 有 有 无 
+6 白天 外场 有 有 有 有 无 无 
+7 白天 外场 有 无 有 有 无 无 
+8 白天 外场 无 有 无 有 无 有 
+9 白天 外场 无 有 无 有 无 无 
+10 白天 外场 有 有 有 无 有 无 
+11 白天 外场 无 有 有 无 无 无 
+12 白天 外场 无 有 有 有 有 无 
+13 白天 外场 有 无 有 有 无 无 
+14 白天 外场 无 无 有 有 无 无 
+15 白天 外场 无 无 有 有 无 无 
+16 白天 外场 无 无 有 有 无 有 
+17 白天 外场 无 无 有 有 有 有 
+18 白天 外场 无 有 有 有 无 无 
+19 白天 外场 无 无 有 有 有 无 
+20 白天 外场 无 有 有 有 无 无 
+21 白天 外场 无 有 有 有 无 无 
+22 白天 外场 有 有 有 有 无 无 
+23 白天 外场 有 无 有 有 无 无 
+24 白天 内场 无 有 有 有 无 无 
+25 白天 内场 有 有 有 有 无 有 
+26 白天 内场 无 有 有 无 无 无 
+27 白天 内场 有 有 有 有 无 无 
+28 白天 内场 无 有 有 有 无 无 
+29 白天 内场 无 有 有 无 无 无 
+30 白天 内场 无 有 有 无 无 无 
+31 白天 内场 无 有 有 无 无 有 
+32 白天 内场 无 有 有 有 无 无 
+33 白天 内场 有 有 有 有 无 有 
+34 白天 内场 无 有 有 无 无 无 
+35 白天 内场 无 有 有 有 无 有 
+36 白天 内场 无 有 有 有 无 有 
+37 白天 内场 有 有 有 有 无 有 
+38 白天 内场 无 有 有 有 无 有 
+39 白天 内场 无 有 有 有 无 有 
+ChaoXing
+===== PAGE 14 =====
+面向空地应用的红外时敏目标检测跟踪数据集 
+www.csdata.org | 14 
+序号 天候 场地 
+平台大幅
+晃动 
+有无静目标 有无动目标 有无遮挡 有无会车 
+有无其他动
+目标干扰 
+40 白天 内场 无 有 有 有 无 无 
+41 傍晚 内场 有 有 无 无 无 无 
+42 傍晚 内场 有 有 无 无 无 有 
+43 傍晚 内场 无 有 有 有 无 有 
+44 傍晚 内场 无 有 有 有 无 有 
+45 傍晚 内场 无 有 有 有 无 有 
+46 傍晚 内场 有 有 有 有 无 有 
+47 傍晚 内场 无 有 有 有 有 有 
+48 傍晚 内场 无 有 有 无 无 有 
+49 傍晚 内场 无 有 有 无 无 有 
+50 傍晚 内场 无 有 有 无 无 有 
+51 傍晚 内场 有 有 有 无 无 有 
+52 傍晚 内场 无 有 有 无 无 无 
+53 傍晚 内场 有 有 有 无 无 有 
+54 傍晚 内场 无 有 有 有 无 有 
+55 傍晚 内场 无 有 有 无 无 有 
+56 傍晚 内场 无 有 有 无 有 有 
+57 傍晚 内场 无 有 有 无 无 有 
+58 傍晚 内场 有 有 有 无 无 有 
+59 傍晚 内场 有 有 有 有 无 有 
+60 傍晚 内场 有 有 有 无 无 有 
+61 傍晚 内场 无 有 有 无 无 有 
+62 傍晚 内场 无 有 有 无 无 有 
+63 傍晚 内场 有 有 有 有 有 有 
+64 傍晚 内场 无 有 有 有 无 有 
+65 傍晚 内场 无 有 有 有 无 有 
+66 傍晚 内场 无 有 有 有 无 有 
+67 傍晚 外场 有 有 有 有 无 无 
+68 傍晚 外场 无 无 有 无 无 无 
+69 傍晚 外场 无 无 有 无 无 有 
+70 傍晚 外场 无 有 有 无 无 有 
+71 傍晚 外场 无 无 有 无 无 无 
+72 傍晚 外场 无 无 有 有 无 无 
+73 傍晚 外场 无 有 有 无 无 有 
+74 傍晚 外场 无 有 有 无 无 有 
+ChaoXing
+===== PAGE 15 =====
+面向空地应用的红外时敏目标检测跟踪数据集 
+中国科学数据, 2022, 7(2) | 15 
+序号 天候 场地 
+平台大幅
+晃动 
+有无静目标 有无动目标 有无遮挡 有无会车 
+有无其他动
+目标干扰 
+75 傍晚 外场 无 无 有 无 无 无 
+76 傍晚 外场 无 无 有 无 有 无 
+77 白天 外场 无 有 有 有 无 无 
+78 白天 外场 无 有 有 无 无 有 
+79 白天 外场 有 有 无 有 无 有 
+80 白天 外场 无 无 有 有 有 无 
+81 白天 内场 无 有 有 有 无 无 
+82 白天 内场 无 无 有 无 无 有 
+83 白天 内场 有 有 有 有 无 无 
+84 傍晚 内场 无 有 有 有 无 有 
+85 傍晚 内场 无 有 有 无 无 有 
+86 傍晚 内场 有 有 有 有 无 有 
+87 傍晚 外场 无 无 有 无 无 无 
+A dataset for infrared time-sensitive target detection and tracking 
+for air-ground application 
+FU Ruigang1, FAN Hongqi1＊, ZHU Yongfeng1, HUI Bingwei1, ZHANG Zhilong1,  
+ZHONG Ping1, LI Dongdong1, ZHANG Shaoliang2, CHEN Gang2, WANG Luo1 
+1. A TR Key Laboratory, College of Electronic Science and Technology, National University of Defense 
+Technology, Changsha 410073, P.R. China 
+2. Wuhan Guide Infrared Co., Ltd, Wuhan 430073, P.R. China 
+*Email: fanhongqi@nudt.edu.cn 
+Abstract: This is an image sequence dataset for infrared time -sensitive target detection and tracking., with 
+vehicles as the detection target and the ground scene as the background. The dataset includes 21,750 frames 
+of images and 89,174 targets in total, which constitute 87 image sequences and 393 target trajectories. For 
+each image of the dataset, there is a corresponding annotation file containing the ID number and coordinate 
+location of all the vehicles in the specific image. This dataset provides statistical b asis for researches 
+concerning infrared time-sensitive target detection and tracking, infrared time-sensitive target characteristics. 
+Keywords: infrared time -sensitive target; ground background; target detection; target tracking; infrared 
+image sequence 
+Dataset Profile 
+Title 
+A dataset for infrared time -sensitive target detection and tracking for air -ground 
+application 
+Data corresponding author FAN Hongqi (fanhongqi@nudt.edu.cn) 
+ChaoXing
+===== PAGE 16 =====
+面向空地应用的红外时敏目标检测跟踪数据集 
+www.csdata.org | 16 
+Data authors 
+FU Ruigan, FAN Hongqi, ZHU Yongfeng, HUI Bingwei, ZHANG Zhilong, ZHONG 
+Ping, LI Dongdong, ZHANG Shaoliang, CHEN Gang, WANG Luo 
+Time range 2021 
+Geographical scope China 
+Data volume 4.42 GB 
+Data format *.bmp, *.xml 
+Data service system <http://www.doi.org/10.11922/sciencedb.j00001.00331> 
+Sources of funding 
+National Natural Science Foundation of China ( 62001482); Natural Science 
+Foundation of Hunan Province, China (2021JJ40676). 
+Dataset composition 
+The dataset consists of 3 folders. The “Image” folder contains 87 subfolders ; e ach 
+subfolder stores an infrared image sequence contain ing 250 frames of images . The 
+“Annotation” folder stores the corresponding annotation files for those sequence 
+images; for each image, the ID number and coordinate location of all the targets are 
+provided in the corresponding annotation file . The “Evaluation” folder provides  
+grading codes for the algorithms performance evaluation. 
+ 
+ChaoXing

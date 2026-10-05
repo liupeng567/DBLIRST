@@ -1,0 +1,15 @@
+# ITTD 微调配置（阶段 B）——M0 起占位，M1 数据管线就绪后启用真实窗口
+defaults:
+  - base
+  - _self_
+
+experiment:
+  name: ittd_finetune_B
+  stage: B
+
+model:
+  type: dryrun   # M3 替换为 dsld
+
+train:
+  epochs: 357            # 方案 9.1: 微调 40k iter ≈ 357 轮（1 轮 = 112 step 等效批 16 窗）
+  save_every: 4

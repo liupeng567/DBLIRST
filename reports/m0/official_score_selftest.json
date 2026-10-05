@@ -1,0 +1,452 @@
+{
+ "per_seq": {
+  "77": {
+   "seq_id": 0,
+   "detection": 946,
+   "continuity": 946,
+   "total": 1892,
+   "detection_details": {
+    "hit": 946,
+    "miss": 0,
+    "false_alarm": 0
+   },
+   "continuity_details": {
+    "matched": [
+     {
+      "gt_track": 1,
+      "pred_track": 1,
+      "overlap": 250
+     },
+     {
+      "gt_track": 2,
+      "pred_track": 2,
+      "overlap": 250
+     },
+     {
+      "gt_track": 3,
+      "pred_track": 3,
+      "overlap": 250
+     },
+     {
+      "gt_track": 4,
+      "pred_track": 4,
+      "overlap": 196
+     }
+    ],
+    "n_gt_tracks": 4,
+    "n_pred_tracks": 4
+   },
+   "mode": "literal"
+  },
+  "78": {
+   "seq_id": 0,
+   "detection": 1000,
+   "continuity": 1000,
+   "total": 2000,
+   "detection_details": {
+    "hit": 1000,
+    "miss": 0,
+    "false_alarm": 0
+   },
+   "continuity_details": {
+    "matched": [
+     {
+      "gt_track": 1,
+      "pred_track": 1,
+      "overlap": 250
+     },
+     {
+      "gt_track": 2,
+      "pred_track": 2,
+      "overlap": 250
+     },
+     {
+      "gt_track": 3,
+      "pred_track": 3,
+      "overlap": 250
+     },
+     {
+      "gt_track": 4,
+      "pred_track": 4,
+      "overlap": 250
+     }
+    ],
+    "n_gt_tracks": 4,
+    "n_pred_tracks": 4
+   },
+   "mode": "literal"
+  },
+  "79": {
+   "seq_id": 0,
+   "detection": 836,
+   "continuity": 836,
+   "total": 1672,
+   "detection_details": {
+    "hit": 836,
+    "miss": 0,
+    "false_alarm": 0
+   },
+   "continuity_details": {
+    "matched": [
+     {
+      "gt_track": 1,
+      "pred_track": 1,
+      "overlap": 222
+     },
+     {
+      "gt_track": 2,
+      "pred_track": 2,
+      "overlap": 216
+     },
+     {
+      "gt_track": 3,
+      "pred_track": 3,
+      "overlap": 205
+     },
+     {
+      "gt_track": 4,
+      "pred_track": 4,
+      "overlap": 193
+     }
+    ],
+    "n_gt_tracks": 4,
+    "n_pred_tracks": 4
+   },
+   "mode": "literal"
+  },
+  "80": {
+   "seq_id": 0,
+   "detection": 494,
+   "continuity": 494,
+   "total": 988,
+   "detection_details": {
+    "hit": 494,
+    "miss": 0,
+    "false_alarm": 0
+   },
+   "continuity_details": {
+    "matched": [
+     {
+      "gt_track": 1,
+      "pred_track": 1,
+      "overlap": 250
+     },
+     {
+      "gt_track": 2,
+      "pred_track": 2,
+      "overlap": 244
+     }
+    ],
+    "n_gt_tracks": 2,
+    "n_pred_tracks": 2
+   },
+   "mode": "literal"
+  },
+  "81": {
+   "seq_id": 0,
+   "detection": 652,
+   "continuity": 652,
+   "total": 1304,
+   "detection_details": {
+    "hit": 652,
+    "miss": 0,
+    "false_alarm": 0
+   },
+   "continuity_details": {
+    "matched": [
+     {
+      "gt_track": 1,
+      "pred_track": 1,
+      "overlap": 137
+     },
+     {
+      "gt_track": 2,
+      "pred_track": 2,
+      "overlap": 250
+     },
+     {
+      "gt_track": 3,
+      "pred_track": 3,
+      "overlap": 250
+     },
+     {
+      "gt_track": 4,
+      "pred_track": 4,
+      "overlap": 15
+     }
+    ],
+    "n_gt_tracks": 4,
+    "n_pred_tracks": 4
+   },
+   "mode": "literal"
+  },
+  "82": {
+   "seq_id": 0,
+   "detection": 1596,
+   "continuity": 1596,
+   "total": 3192,
+   "detection_details": {
+    "hit": 1596,
+    "miss": 0,
+    "false_alarm": 0
+   },
+   "continuity_details": {
+    "matched": [
+     {
+      "gt_track": 1,
+      "pred_track": 1,
+      "overlap": 250
+     },
+     {
+      "gt_track": 2,
+      "pred_track": 2,
+      "overlap": 250
+     },
+     {
+      "gt_track": 3,
+      "pred_track": 3,
+      "overlap": 250
+     },
+     {
+      "gt_track": 4,
+      "pred_track": 4,
+      "overlap": 250
+     },
+     {
+      "gt_track": 5,
+      "pred_track": 5,
+      "overlap": 250
+     },
+     {
+      "gt_track": 6,
+      "pred_track": 6,
+      "overlap": 250
+     },
+     {
+      "gt_track": 7,
+      "pred_track": 7,
+      "overlap": 49
+     },
+     {
+      "gt_track": 8,
+      "pred_track": 8,
+      "overlap": 47
+     }
+    ],
+    "n_gt_tracks": 8,
+    "n_pred_tracks": 8
+   },
+   "mode": "literal"
+  },
+  "83": {
+   "seq_id": 0,
+   "detection": 1500,
+   "continuity": 1500,
+   "total": 3000,
+   "detection_details": {
+    "hit": 1500,
+    "miss": 0,
+    "false_alarm": 0
+   },
+   "continuity_details": {
+    "matched": [
+     {
+      "gt_track": 1,
+      "pred_track": 1,
+      "overlap": 250
+     },
+     {
+      "gt_track": 2,
+      "pred_track": 2,
+      "overlap": 250
+     },
+     {
+      "gt_track": 3,
+      "pred_track": 3,
+      "overlap": 250
+     },
+     {
+      "gt_track": 4,
+      "pred_track": 4,
+      "overlap": 250
+     },
+     {
+      "gt_track": 5,
+      "pred_track": 5,
+      "overlap": 250
+     },
+     {
+      "gt_track": 6,
+      "pred_track": 6,
+      "overlap": 250
+     }
+    ],
+    "n_gt_tracks": 6,
+    "n_pred_tracks": 6
+   },
+   "mode": "literal"
+  },
+  "84": {
+   "seq_id": 0,
+   "detection": 935,
+   "continuity": 935,
+   "total": 1870,
+   "detection_details": {
+    "hit": 935,
+    "miss": 0,
+    "false_alarm": 0
+   },
+   "continuity_details": {
+    "matched": [
+     {
+      "gt_track": 1,
+      "pred_track": 1,
+      "overlap": 185
+     },
+     {
+      "gt_track": 2,
+      "pred_track": 2,
+      "overlap": 250
+     },
+     {
+      "gt_track": 3,
+      "pred_track": 3,
+      "overlap": 250
+     },
+     {
+      "gt_track": 4,
+      "pred_track": 4,
+      "overlap": 250
+     }
+    ],
+    "n_gt_tracks": 4,
+    "n_pred_tracks": 4
+   },
+   "mode": "literal"
+  },
+  "85": {
+   "seq_id": 0,
+   "detection": 1500,
+   "continuity": 1500,
+   "total": 3000,
+   "detection_details": {
+    "hit": 1500,
+    "miss": 0,
+    "false_alarm": 0
+   },
+   "continuity_details": {
+    "matched": [
+     {
+      "gt_track": 1,
+      "pred_track": 1,
+      "overlap": 250
+     },
+     {
+      "gt_track": 2,
+      "pred_track": 2,
+      "overlap": 250
+     },
+     {
+      "gt_track": 3,
+      "pred_track": 3,
+      "overlap": 250
+     },
+     {
+      "gt_track": 4,
+      "pred_track": 4,
+      "overlap": 250
+     },
+     {
+      "gt_track": 5,
+      "pred_track": 5,
+      "overlap": 250
+     },
+     {
+      "gt_track": 6,
+      "pred_track": 6,
+      "overlap": 250
+     }
+    ],
+    "n_gt_tracks": 6,
+    "n_pred_tracks": 6
+   },
+   "mode": "literal"
+  },
+  "86": {
+   "seq_id": 0,
+   "detection": 1250,
+   "continuity": 1250,
+   "total": 2500,
+   "detection_details": {
+    "hit": 1250,
+    "miss": 0,
+    "false_alarm": 0
+   },
+   "continuity_details": {
+    "matched": [
+     {
+      "gt_track": 1,
+      "pred_track": 1,
+      "overlap": 250
+     },
+     {
+      "gt_track": 2,
+      "pred_track": 2,
+      "overlap": 250
+     },
+     {
+      "gt_track": 3,
+      "pred_track": 3,
+      "overlap": 250
+     },
+     {
+      "gt_track": 4,
+      "pred_track": 4,
+      "overlap": 250
+     },
+     {
+      "gt_track": 5,
+      "pred_track": 5,
+      "overlap": 250
+     }
+    ],
+    "n_gt_tracks": 5,
+    "n_pred_tracks": 5
+   },
+   "mode": "literal"
+  },
+  "87": {
+   "seq_id": 0,
+   "detection": 500,
+   "continuity": 500,
+   "total": 1000,
+   "detection_details": {
+    "hit": 500,
+    "miss": 0,
+    "false_alarm": 0
+   },
+   "continuity_details": {
+    "matched": [
+     {
+      "gt_track": 1,
+      "pred_track": 1,
+      "overlap": 250
+     },
+     {
+      "gt_track": 2,
+      "pred_track": 2,
+      "overlap": 250
+     }
+    ],
+    "n_gt_tracks": 2,
+    "n_pred_tracks": 2
+   },
+   "mode": "literal"
+  }
+ },
+ "detection_total": 11209,
+ "continuity_total": 11209,
+ "grand_total": 22418,
+ "full_score": 22418,
+ "ratio": 1.0
+}

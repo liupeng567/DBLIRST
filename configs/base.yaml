@@ -1,0 +1,34 @@
+# DSLD 基础配置（方案 3.6 模板；M0 阶段真实模型字段以注释占位，M3 起启用）
+experiment:
+  name: dryrun_m0
+  stage: A
+
+model:
+  type: dryrun            # M3 起替换为 dsld（GhostNetV2+液态核心+门控）
+  in_ch: 1
+  width: 8                # dry-run 专用宽度
+
+data:
+  manifest: ittd_split_v2.json
+  seg_root: D:/Datasets/kongdixiaomubiaodataset/seg_dataset
+  ittd_root: D:/Datasets/面向空地应用的红外时敏目标检测跟踪数据集
+  val_official_read_only: true
+  dryrun:
+    n_windows: 64
+    height: 240
+    width: 320
+
+train:
+  seed: 0
+  epochs: 1               # M0 dry-run: 1 轮验收
+  save_every: 1
+  grad_clip: 1.0
+  ckpt: null
+  window: {T: 8}
+  batch:
+    windows_per_gpu: 4
+    accum: 2
+  optim: {lr: 3.0e-4, wd: 0.01, warmup: 0, cosine_min: 3.0e-5}
+
+infer:
+  threshold: {k: 3.0, alpha_th: 0.5}
