@@ -23,9 +23,9 @@
  "heatmap_merge_examples": [],
  "throughput": {
   "seqs": 87,
-  "wall_sec": 123.2,
+  "wall_sec": 118.6,
   "total_frames": 21750,
-  "throughput_fps_wall": 176.6,
+  "throughput_fps_wall": 183.4,
   "workers": 16,
   "gate_throughput>=200": false
  },

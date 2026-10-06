@@ -1,9 +1,9 @@
 {
  "summary": {
   "seqs": 87,
-  "wall_sec": 123.2,
+  "wall_sec": 118.6,
   "total_frames": 21750,
-  "throughput_fps_wall": 176.6,
+  "throughput_fps_wall": 183.4,
   "workers": 16,
   "gate_throughput>=200": false
  },
@@ -44,16 +44,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.51,
-    "deadpix_nuc": 1.72,
-    "stats_qc": 6.75,
-    "register": 6.08,
-    "labels_heatmap": 0.15,
-    "masks": 3.08,
-    "scr": 0.81,
-    "total": 19.11
+    "decode": 0.68,
+    "deadpix_nuc": 1.67,
+    "stats_qc": 7.06,
+    "register": 6.59,
+    "labels_heatmap": 0.14,
+    "masks": 2.94,
+    "scr": 0.84,
+    "total": 19.92
    },
-   "fps": 13.1
+   "fps": 12.5
   },
   {
    "seq_id": 2,
@@ -91,16 +91,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.22,
-    "deadpix_nuc": 1.7,
-    "stats_qc": 2.7,
-    "register": 5.98,
-    "labels_heatmap": 0.17,
+    "decode": 0.32,
+    "deadpix_nuc": 1.79,
+    "stats_qc": 2.76,
+    "register": 6.47,
+    "labels_heatmap": 0.16,
     "masks": 4.68,
-    "scr": 0.79,
-    "total": 16.24
+    "scr": 0.86,
+    "total": 17.06
    },
-   "fps": 15.4
+   "fps": 14.7
   },
   {
    "seq_id": 3,
@@ -138,16 +138,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.72,
-    "deadpix_nuc": 1.64,
-    "stats_qc": 7.43,
-    "register": 5.38,
-    "labels_heatmap": 0.17,
-    "masks": 3.18,
-    "scr": 0.98,
-    "total": 19.49
+    "decode": 0.82,
+    "deadpix_nuc": 1.57,
+    "stats_qc": 7.3,
+    "register": 6.11,
+    "labels_heatmap": 0.13,
+    "masks": 3.2,
+    "scr": 0.95,
+    "total": 20.09
    },
-   "fps": 12.8
+   "fps": 12.4
   },
   {
    "seq_id": 4,
@@ -185,16 +185,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.81,
-    "deadpix_nuc": 1.54,
-    "stats_qc": 7.82,
-    "register": 4.95,
-    "labels_heatmap": 0.15,
-    "masks": 3.51,
-    "scr": 1.19,
-    "total": 19.97
+    "decode": 1.0,
+    "deadpix_nuc": 1.48,
+    "stats_qc": 7.74,
+    "register": 5.32,
+    "labels_heatmap": 0.14,
+    "masks": 3.55,
+    "scr": 1.03,
+    "total": 20.26
    },
-   "fps": 12.5
+   "fps": 12.3
   },
   {
    "seq_id": 5,
@@ -232,16 +232,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.84,
+    "decode": 0.9,
     "deadpix_nuc": 1.42,
-    "stats_qc": 7.09,
-    "register": 5.39,
-    "labels_heatmap": 0.15,
-    "masks": 3.51,
-    "scr": 0.96,
-    "total": 19.36
+    "stats_qc": 7.48,
+    "register": 5.76,
+    "labels_heatmap": 0.13,
+    "masks": 3.52,
+    "scr": 1.05,
+    "total": 20.26
    },
-   "fps": 12.9
+   "fps": 12.3
   },
   {
    "seq_id": 6,
@@ -279,16 +279,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 1.0,
-    "deadpix_nuc": 1.36,
-    "stats_qc": 7.64,
-    "register": 4.71,
-    "labels_heatmap": 0.2,
-    "masks": 3.5,
-    "scr": 0.95,
-    "total": 19.36
+    "decode": 1.17,
+    "deadpix_nuc": 1.27,
+    "stats_qc": 8.05,
+    "register": 5.06,
+    "labels_heatmap": 0.15,
+    "masks": 3.51,
+    "scr": 1.07,
+    "total": 20.28
    },
-   "fps": 12.9
+   "fps": 12.3
   },
   {
    "seq_id": 7,
@@ -326,16 +326,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 1.15,
-    "deadpix_nuc": 1.22,
-    "stats_qc": 7.36,
-    "register": 5.17,
+    "decode": 1.17,
+    "deadpix_nuc": 1.18,
+    "stats_qc": 7.37,
+    "register": 5.64,
     "labels_heatmap": 0.13,
-    "masks": 2.03,
-    "scr": 0.46,
-    "total": 17.52
+    "masks": 1.95,
+    "scr": 0.51,
+    "total": 17.94
    },
-   "fps": 14.3
+   "fps": 13.9
   },
   {
    "seq_id": 8,
@@ -373,16 +373,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 1.21,
-    "deadpix_nuc": 1.2,
-    "stats_qc": 8.06,
-    "register": 5.63,
+    "decode": 1.26,
+    "deadpix_nuc": 1.16,
+    "stats_qc": 8.16,
+    "register": 6.16,
     "labels_heatmap": 0.15,
-    "masks": 3.74,
-    "scr": 0.97,
-    "total": 20.97
+    "masks": 3.82,
+    "scr": 0.92,
+    "total": 21.64
    },
-   "fps": 11.9
+   "fps": 11.6
   },
   {
    "seq_id": 9,
@@ -420,14 +420,14 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 1.19,
-    "deadpix_nuc": 1.11,
-    "stats_qc": 8.44,
-    "register": 4.9,
-    "labels_heatmap": 0.16,
-    "masks": 3.55,
-    "scr": 1.01,
-    "total": 20.37
+    "decode": 1.23,
+    "deadpix_nuc": 1.06,
+    "stats_qc": 7.94,
+    "register": 5.47,
+    "labels_heatmap": 0.12,
+    "masks": 3.26,
+    "scr": 1.2,
+    "total": 20.28
    },
    "fps": 12.3
   },
@@ -467,16 +467,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 1.12,
-    "deadpix_nuc": 1.06,
-    "stats_qc": 8.19,
-    "register": 6.34,
+    "decode": 1.17,
+    "deadpix_nuc": 1.11,
+    "stats_qc": 8.07,
+    "register": 6.81,
     "labels_heatmap": 0.12,
-    "masks": 3.81,
-    "scr": 0.98,
-    "total": 21.63
+    "masks": 3.99,
+    "scr": 0.94,
+    "total": 22.2
    },
-   "fps": 11.6
+   "fps": 11.3
   },
   {
    "seq_id": 11,
@@ -514,13 +514,13 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 1.2,
-    "deadpix_nuc": 1.17,
-    "stats_qc": 8.58,
-    "register": 5.33,
-    "labels_heatmap": 0.13,
-    "masks": 3.88,
-    "scr": 0.98,
+    "decode": 1.14,
+    "deadpix_nuc": 1.13,
+    "stats_qc": 8.2,
+    "register": 6.0,
+    "labels_heatmap": 0.14,
+    "masks": 3.8,
+    "scr": 0.84,
     "total": 21.26
    },
    "fps": 11.8
@@ -561,16 +561,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 1.17,
-    "deadpix_nuc": 1.15,
-    "stats_qc": 8.14,
-    "register": 4.69,
-    "labels_heatmap": 0.13,
-    "masks": 3.09,
-    "scr": 1.07,
-    "total": 19.43
+    "decode": 1.08,
+    "deadpix_nuc": 1.13,
+    "stats_qc": 8.23,
+    "register": 5.51,
+    "labels_heatmap": 0.11,
+    "masks": 2.99,
+    "scr": 1.19,
+    "total": 20.24
    },
-   "fps": 12.9
+   "fps": 12.4
   },
   {
    "seq_id": 13,
@@ -608,16 +608,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 1.16,
-    "deadpix_nuc": 1.17,
-    "stats_qc": 8.14,
-    "register": 10.37,
-    "labels_heatmap": 0.17,
-    "masks": 3.41,
-    "scr": 1.1,
-    "total": 25.52
+    "decode": 1.05,
+    "deadpix_nuc": 1.14,
+    "stats_qc": 7.97,
+    "register": 11.79,
+    "labels_heatmap": 0.13,
+    "masks": 3.54,
+    "scr": 1.03,
+    "total": 26.66
    },
-   "fps": 9.8
+   "fps": 9.4
   },
   {
    "seq_id": 14,
@@ -655,16 +655,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 1.19,
-    "deadpix_nuc": 1.16,
-    "stats_qc": 8.28,
-    "register": 6.81,
-    "labels_heatmap": 0.14,
-    "masks": 3.69,
-    "scr": 0.97,
-    "total": 22.24
+    "decode": 1.02,
+    "deadpix_nuc": 1.15,
+    "stats_qc": 8.11,
+    "register": 8.09,
+    "labels_heatmap": 0.12,
+    "masks": 3.74,
+    "scr": 0.84,
+    "total": 23.07
    },
-   "fps": 11.2
+   "fps": 10.8
   },
   {
    "seq_id": 15,
@@ -702,16 +702,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 1.16,
-    "deadpix_nuc": 1.15,
+    "decode": 0.94,
+    "deadpix_nuc": 1.1,
     "stats_qc": 8.33,
-    "register": 9.28,
-    "labels_heatmap": 0.15,
-    "masks": 2.95,
-    "scr": 1.09,
-    "total": 24.12
+    "register": 10.55,
+    "labels_heatmap": 0.13,
+    "masks": 2.89,
+    "scr": 1.11,
+    "total": 25.06
    },
-   "fps": 10.4
+   "fps": 10.0
   },
   {
    "seq_id": 16,
@@ -749,16 +749,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 1.16,
-    "deadpix_nuc": 1.16,
-    "stats_qc": 8.36,
-    "register": 8.47,
-    "labels_heatmap": 0.19,
-    "masks": 2.99,
-    "scr": 1.03,
-    "total": 23.36
+    "decode": 0.92,
+    "deadpix_nuc": 1.06,
+    "stats_qc": 8.39,
+    "register": 10.47,
+    "labels_heatmap": 0.12,
+    "masks": 2.79,
+    "scr": 1.2,
+    "total": 24.95
    },
-   "fps": 10.7
+   "fps": 10.0
   },
   {
    "seq_id": 17,
@@ -796,16 +796,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.5,
-    "deadpix_nuc": 1.07,
-    "stats_qc": 6.19,
-    "register": 7.79,
-    "labels_heatmap": 0.16,
-    "masks": 4.01,
-    "scr": 0.66,
-    "total": 20.39
+    "decode": 0.44,
+    "deadpix_nuc": 1.09,
+    "stats_qc": 5.73,
+    "register": 8.06,
+    "labels_heatmap": 0.1,
+    "masks": 3.29,
+    "scr": 0.63,
+    "total": 19.33
    },
-   "fps": 12.3
+   "fps": 12.9
   },
   {
    "seq_id": 18,
@@ -843,16 +843,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.53,
-    "deadpix_nuc": 1.06,
-    "stats_qc": 6.31,
-    "register": 8.52,
-    "labels_heatmap": 0.18,
-    "masks": 3.46,
-    "scr": 0.69,
-    "total": 20.75
+    "decode": 0.4,
+    "deadpix_nuc": 1.04,
+    "stats_qc": 6.43,
+    "register": 7.93,
+    "labels_heatmap": 0.13,
+    "masks": 3.21,
+    "scr": 0.71,
+    "total": 19.84
    },
-   "fps": 12.0
+   "fps": 12.6
   },
   {
    "seq_id": 19,
@@ -892,14 +892,14 @@
    "timings": {
     "decode": 0.64,
     "deadpix_nuc": 1.16,
-    "stats_qc": 6.86,
-    "register": 9.39,
-    "labels_heatmap": 0.14,
-    "masks": 3.42,
-    "scr": 0.82,
-    "total": 22.43
+    "stats_qc": 6.68,
+    "register": 8.42,
+    "labels_heatmap": 0.15,
+    "masks": 3.32,
+    "scr": 0.77,
+    "total": 21.13
    },
-   "fps": 11.1
+   "fps": 11.8
   },
   {
    "seq_id": 20,
@@ -937,16 +937,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.68,
+    "decode": 0.64,
     "deadpix_nuc": 1.13,
-    "stats_qc": 7.03,
-    "register": 6.53,
-    "labels_heatmap": 0.15,
-    "masks": 3.55,
-    "scr": 0.9,
-    "total": 19.96
+    "stats_qc": 6.9,
+    "register": 5.56,
+    "labels_heatmap": 0.11,
+    "masks": 3.23,
+    "scr": 0.82,
+    "total": 18.39
    },
-   "fps": 12.5
+   "fps": 13.6
   },
   {
    "seq_id": 21,
@@ -984,16 +984,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.65,
-    "deadpix_nuc": 1.1,
-    "stats_qc": 7.09,
-    "register": 7.24,
-    "labels_heatmap": 0.13,
-    "masks": 3.8,
-    "scr": 0.69,
-    "total": 20.71
+    "decode": 0.6,
+    "deadpix_nuc": 1.16,
+    "stats_qc": 6.79,
+    "register": 6.57,
+    "labels_heatmap": 0.15,
+    "masks": 3.57,
+    "scr": 0.72,
+    "total": 19.56
    },
-   "fps": 12.1
+   "fps": 12.8
   },
   {
    "seq_id": 22,
@@ -1031,16 +1031,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.63,
+    "decode": 0.62,
     "deadpix_nuc": 1.14,
-    "stats_qc": 7.34,
-    "register": 8.04,
-    "labels_heatmap": 0.17,
-    "masks": 3.91,
-    "scr": 0.81,
-    "total": 22.03
+    "stats_qc": 6.79,
+    "register": 7.18,
+    "labels_heatmap": 0.27,
+    "masks": 3.78,
+    "scr": 0.74,
+    "total": 20.53
    },
-   "fps": 11.3
+   "fps": 12.2
   },
   {
    "seq_id": 23,
@@ -1078,16 +1078,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.57,
-    "deadpix_nuc": 1.12,
-    "stats_qc": 7.41,
-    "register": 12.09,
-    "labels_heatmap": 0.12,
-    "masks": 3.48,
-    "scr": 1.02,
-    "total": 25.83
+    "decode": 0.62,
+    "deadpix_nuc": 1.17,
+    "stats_qc": 7.03,
+    "register": 11.45,
+    "labels_heatmap": 0.25,
+    "masks": 3.59,
+    "scr": 0.79,
+    "total": 24.9
    },
-   "fps": 9.7
+   "fps": 10.0
   },
   {
    "seq_id": 24,
@@ -1125,16 +1125,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.57,
-    "deadpix_nuc": 1.06,
-    "stats_qc": 7.39,
-    "register": 4.43,
-    "labels_heatmap": 0.17,
-    "masks": 3.95,
-    "scr": 0.76,
-    "total": 18.33
+    "decode": 0.59,
+    "deadpix_nuc": 1.12,
+    "stats_qc": 6.86,
+    "register": 3.7,
+    "labels_heatmap": 0.12,
+    "masks": 3.78,
+    "scr": 0.66,
+    "total": 16.84
    },
-   "fps": 13.6
+   "fps": 14.8
   },
   {
    "seq_id": 25,
@@ -1172,16 +1172,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.57,
-    "deadpix_nuc": 1.06,
-    "stats_qc": 7.53,
-    "register": 5.79,
-    "labels_heatmap": 0.15,
-    "masks": 3.9,
-    "scr": 0.7,
-    "total": 19.7
+    "decode": 0.53,
+    "deadpix_nuc": 1.08,
+    "stats_qc": 6.77,
+    "register": 5.39,
+    "labels_heatmap": 0.12,
+    "masks": 3.64,
+    "scr": 0.76,
+    "total": 18.3
    },
-   "fps": 12.7
+   "fps": 13.7
   },
   {
    "seq_id": 26,
@@ -1219,16 +1219,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.56,
-    "deadpix_nuc": 1.03,
-    "stats_qc": 7.64,
-    "register": 5.42,
-    "labels_heatmap": 0.17,
-    "masks": 4.75,
-    "scr": 0.86,
-    "total": 20.42
+    "decode": 0.54,
+    "deadpix_nuc": 1.07,
+    "stats_qc": 7.18,
+    "register": 4.76,
+    "labels_heatmap": 0.19,
+    "masks": 4.51,
+    "scr": 0.84,
+    "total": 19.1
    },
-   "fps": 12.2
+   "fps": 13.1
   },
   {
    "seq_id": 27,
@@ -1266,16 +1266,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.6,
-    "deadpix_nuc": 1.08,
-    "stats_qc": 7.82,
-    "register": 7.86,
-    "labels_heatmap": 0.14,
-    "masks": 4.76,
-    "scr": 1.11,
-    "total": 23.37
+    "decode": 0.55,
+    "deadpix_nuc": 1.07,
+    "stats_qc": 7.19,
+    "register": 7.39,
+    "labels_heatmap": 0.19,
+    "masks": 4.85,
+    "scr": 0.96,
+    "total": 22.2
    },
-   "fps": 10.7
+   "fps": 11.3
   },
   {
    "seq_id": 28,
@@ -1313,16 +1313,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.51,
-    "deadpix_nuc": 1.08,
-    "stats_qc": 7.79,
-    "register": 5.24,
-    "labels_heatmap": 0.16,
-    "masks": 3.81,
-    "scr": 0.86,
-    "total": 19.45
+    "decode": 0.49,
+    "deadpix_nuc": 1.1,
+    "stats_qc": 7.18,
+    "register": 4.54,
+    "labels_heatmap": 0.2,
+    "masks": 3.72,
+    "scr": 0.77,
+    "total": 18.0
    },
-   "fps": 12.9
+   "fps": 13.9
   },
   {
    "seq_id": 29,
@@ -1360,16 +1360,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.55,
-    "deadpix_nuc": 1.08,
-    "stats_qc": 7.75,
-    "register": 6.4,
-    "labels_heatmap": 0.2,
-    "masks": 3.43,
-    "scr": 0.43,
-    "total": 19.85
+    "decode": 0.57,
+    "deadpix_nuc": 1.1,
+    "stats_qc": 7.09,
+    "register": 5.89,
+    "labels_heatmap": 0.17,
+    "masks": 3.54,
+    "scr": 0.44,
+    "total": 18.79
    },
-   "fps": 12.6
+   "fps": 13.3
   },
   {
    "seq_id": 30,
@@ -1407,16 +1407,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.71,
-    "deadpix_nuc": 1.06,
-    "stats_qc": 5.05,
-    "register": 7.88,
-    "labels_heatmap": 0.22,
-    "masks": 3.59,
-    "scr": 0.71,
-    "total": 19.22
+    "decode": 0.29,
+    "deadpix_nuc": 1.08,
+    "stats_qc": 4.47,
+    "register": 7.2,
+    "labels_heatmap": 0.13,
+    "masks": 3.67,
+    "scr": 0.75,
+    "total": 17.58
    },
-   "fps": 13.0
+   "fps": 14.2
   },
   {
    "seq_id": 31,
@@ -1454,16 +1454,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.63,
-    "deadpix_nuc": 1.1,
-    "stats_qc": 7.65,
-    "register": 6.34,
-    "labels_heatmap": 0.12,
-    "masks": 3.45,
-    "scr": 0.58,
-    "total": 19.88
+    "decode": 0.64,
+    "deadpix_nuc": 1.07,
+    "stats_qc": 6.85,
+    "register": 6.23,
+    "labels_heatmap": 0.29,
+    "masks": 3.52,
+    "scr": 0.54,
+    "total": 19.15
    },
-   "fps": 12.6
+   "fps": 13.1
   },
   {
    "seq_id": 32,
@@ -1501,16 +1501,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.72,
-    "deadpix_nuc": 1.11,
-    "stats_qc": 7.09,
-    "register": 5.35,
-    "labels_heatmap": 0.12,
-    "masks": 3.3,
-    "scr": 0.54,
-    "total": 18.23
+    "decode": 0.77,
+    "deadpix_nuc": 1.06,
+    "stats_qc": 6.35,
+    "register": 5.37,
+    "labels_heatmap": 0.25,
+    "masks": 3.42,
+    "scr": 0.53,
+    "total": 17.76
    },
-   "fps": 13.7
+   "fps": 14.1
   },
   {
    "seq_id": 33,
@@ -1548,16 +1548,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.62,
-    "deadpix_nuc": 1.06,
-    "stats_qc": 5.67,
-    "register": 6.97,
-    "labels_heatmap": 0.19,
-    "masks": 4.83,
-    "scr": 0.66,
-    "total": 20.0
+    "decode": 0.54,
+    "deadpix_nuc": 1.04,
+    "stats_qc": 5.36,
+    "register": 6.54,
+    "labels_heatmap": 0.2,
+    "masks": 4.92,
+    "scr": 0.57,
+    "total": 19.17
    },
-   "fps": 12.5
+   "fps": 13.0
   },
   {
    "seq_id": 34,
@@ -1595,16 +1595,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.63,
-    "deadpix_nuc": 1.05,
-    "stats_qc": 6.0,
-    "register": 6.16,
-    "labels_heatmap": 0.16,
-    "masks": 5.1,
-    "scr": 0.83,
-    "total": 19.95
+    "decode": 0.53,
+    "deadpix_nuc": 1.1,
+    "stats_qc": 5.68,
+    "register": 5.73,
+    "labels_heatmap": 0.21,
+    "masks": 4.92,
+    "scr": 0.82,
+    "total": 18.97
    },
-   "fps": 12.5
+   "fps": 13.2
   },
   {
    "seq_id": 35,
@@ -1642,16 +1642,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.62,
-    "deadpix_nuc": 1.05,
-    "stats_qc": 5.8,
-    "register": 6.34,
-    "labels_heatmap": 0.18,
-    "masks": 5.4,
-    "scr": 0.65,
-    "total": 20.05
+    "decode": 0.51,
+    "deadpix_nuc": 1.1,
+    "stats_qc": 5.58,
+    "register": 5.73,
+    "labels_heatmap": 0.22,
+    "masks": 5.22,
+    "scr": 0.67,
+    "total": 19.04
    },
-   "fps": 12.5
+   "fps": 13.1
   },
   {
    "seq_id": 36,
@@ -1689,16 +1689,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.44,
-    "deadpix_nuc": 1.05,
-    "stats_qc": 6.19,
-    "register": 7.02,
-    "labels_heatmap": 0.15,
-    "masks": 4.57,
-    "scr": 0.57,
-    "total": 19.99
+    "decode": 0.49,
+    "deadpix_nuc": 1.07,
+    "stats_qc": 5.85,
+    "register": 6.34,
+    "labels_heatmap": 0.2,
+    "masks": 4.37,
+    "scr": 0.66,
+    "total": 18.98
    },
-   "fps": 12.5
+   "fps": 13.2
   },
   {
    "seq_id": 37,
@@ -1736,16 +1736,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.46,
-    "deadpix_nuc": 1.06,
-    "stats_qc": 6.23,
-    "register": 9.48,
-    "labels_heatmap": 0.13,
-    "masks": 3.92,
-    "scr": 0.64,
-    "total": 21.92
+    "decode": 0.49,
+    "deadpix_nuc": 1.07,
+    "stats_qc": 6.09,
+    "register": 9.16,
+    "labels_heatmap": 0.17,
+    "masks": 3.8,
+    "scr": 0.52,
+    "total": 21.31
    },
-   "fps": 11.4
+   "fps": 11.7
   },
   {
    "seq_id": 38,
@@ -1783,16 +1783,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.51,
-    "deadpix_nuc": 1.11,
-    "stats_qc": 6.35,
-    "register": 6.97,
+    "decode": 0.53,
+    "deadpix_nuc": 1.12,
+    "stats_qc": 6.09,
+    "register": 6.66,
     "labels_heatmap": 0.18,
-    "masks": 4.7,
-    "scr": 0.65,
-    "total": 20.48
+    "masks": 4.56,
+    "scr": 0.54,
+    "total": 19.69
    },
-   "fps": 12.2
+   "fps": 12.7
   },
   {
    "seq_id": 39,
@@ -1830,16 +1830,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.53,
-    "deadpix_nuc": 1.05,
-    "stats_qc": 6.6,
-    "register": 6.1,
-    "labels_heatmap": 0.16,
-    "masks": 4.59,
-    "scr": 0.61,
-    "total": 19.64
+    "decode": 0.67,
+    "deadpix_nuc": 1.1,
+    "stats_qc": 6.36,
+    "register": 5.59,
+    "labels_heatmap": 0.19,
+    "masks": 4.49,
+    "scr": 0.53,
+    "total": 18.92
    },
-   "fps": 12.7
+   "fps": 13.2
   },
   {
    "seq_id": 40,
@@ -1877,16 +1877,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.55,
-    "deadpix_nuc": 1.04,
-    "stats_qc": 6.81,
-    "register": 6.42,
-    "labels_heatmap": 0.15,
-    "masks": 4.16,
-    "scr": 0.62,
-    "total": 19.75
+    "decode": 0.73,
+    "deadpix_nuc": 1.07,
+    "stats_qc": 6.2,
+    "register": 5.89,
+    "labels_heatmap": 0.17,
+    "masks": 4.07,
+    "scr": 0.49,
+    "total": 18.63
    },
-   "fps": 12.7
+   "fps": 13.4
   },
   {
    "seq_id": 41,
@@ -1924,16 +1924,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.55,
-    "deadpix_nuc": 1.08,
-    "stats_qc": 7.15,
-    "register": 13.28,
-    "labels_heatmap": 0.19,
-    "masks": 4.87,
-    "scr": 1.21,
-    "total": 28.34
+    "decode": 0.82,
+    "deadpix_nuc": 1.13,
+    "stats_qc": 6.51,
+    "register": 12.66,
+    "labels_heatmap": 0.21,
+    "masks": 4.55,
+    "scr": 1.01,
+    "total": 26.9
    },
-   "fps": 8.8
+   "fps": 9.3
   },
   {
    "seq_id": 42,
@@ -1971,16 +1971,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.51,
-    "deadpix_nuc": 1.05,
-    "stats_qc": 7.11,
-    "register": 10.14,
-    "labels_heatmap": 0.14,
-    "masks": 4.29,
-    "scr": 1.01,
-    "total": 24.25
+    "decode": 0.7,
+    "deadpix_nuc": 1.1,
+    "stats_qc": 6.63,
+    "register": 9.58,
+    "labels_heatmap": 0.18,
+    "masks": 4.43,
+    "scr": 0.79,
+    "total": 23.42
    },
-   "fps": 10.3
+   "fps": 10.7
   },
   {
    "seq_id": 43,
@@ -2018,16 +2018,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.49,
-    "deadpix_nuc": 1.06,
-    "stats_qc": 7.33,
-    "register": 4.8,
-    "labels_heatmap": 0.17,
-    "masks": 4.96,
-    "scr": 0.9,
-    "total": 19.72
+    "decode": 0.52,
+    "deadpix_nuc": 1.12,
+    "stats_qc": 6.69,
+    "register": 4.43,
+    "labels_heatmap": 0.21,
+    "masks": 4.9,
+    "scr": 0.84,
+    "total": 18.72
    },
-   "fps": 12.7
+   "fps": 13.4
   },
   {
    "seq_id": 44,
@@ -2065,16 +2065,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.52,
-    "deadpix_nuc": 1.09,
-    "stats_qc": 7.3,
-    "register": 4.0,
-    "labels_heatmap": 0.14,
-    "masks": 3.83,
-    "scr": 0.65,
-    "total": 17.53
+    "decode": 0.6,
+    "deadpix_nuc": 1.1,
+    "stats_qc": 6.94,
+    "register": 3.64,
+    "labels_heatmap": 0.18,
+    "masks": 3.77,
+    "scr": 0.81,
+    "total": 17.04
    },
-   "fps": 14.3
+   "fps": 14.7
   },
   {
    "seq_id": 45,
@@ -2112,16 +2112,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.65,
-    "deadpix_nuc": 1.08,
-    "stats_qc": 7.09,
-    "register": 7.2,
-    "labels_heatmap": 0.14,
-    "masks": 4.16,
-    "scr": 1.02,
-    "total": 21.36
+    "decode": 0.55,
+    "deadpix_nuc": 1.15,
+    "stats_qc": 6.85,
+    "register": 7.06,
+    "labels_heatmap": 0.28,
+    "masks": 4.24,
+    "scr": 1.01,
+    "total": 21.15
    },
-   "fps": 11.7
+   "fps": 11.8
   },
   {
    "seq_id": 46,
@@ -2159,14 +2159,14 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.67,
-    "deadpix_nuc": 1.05,
-    "stats_qc": 7.1,
-    "register": 6.89,
-    "labels_heatmap": 0.14,
-    "masks": 4.33,
-    "scr": 1.04,
-    "total": 21.22
+    "decode": 0.77,
+    "deadpix_nuc": 1.1,
+    "stats_qc": 6.86,
+    "register": 6.61,
+    "labels_heatmap": 0.26,
+    "masks": 4.49,
+    "scr": 1.1,
+    "total": 21.19
    },
    "fps": 11.8
   },
@@ -2206,16 +2206,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.62,
-    "deadpix_nuc": 1.09,
-    "stats_qc": 6.9,
-    "register": 4.13,
-    "labels_heatmap": 0.13,
-    "masks": 4.24,
-    "scr": 0.86,
-    "total": 17.97
+    "decode": 0.76,
+    "deadpix_nuc": 1.11,
+    "stats_qc": 6.56,
+    "register": 3.88,
+    "labels_heatmap": 0.18,
+    "masks": 4.22,
+    "scr": 0.82,
+    "total": 17.55
    },
-   "fps": 13.9
+   "fps": 14.2
   },
   {
    "seq_id": 48,
@@ -2253,16 +2253,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.67,
-    "deadpix_nuc": 1.09,
-    "stats_qc": 6.93,
-    "register": 3.58,
-    "labels_heatmap": 0.14,
-    "masks": 4.28,
-    "scr": 0.82,
-    "total": 17.5
+    "decode": 0.75,
+    "deadpix_nuc": 1.08,
+    "stats_qc": 6.77,
+    "register": 3.24,
+    "labels_heatmap": 0.2,
+    "masks": 4.19,
+    "scr": 0.85,
+    "total": 17.09
    },
-   "fps": 14.3
+   "fps": 14.6
   },
   {
    "seq_id": 49,
@@ -2300,16 +2300,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.55,
-    "deadpix_nuc": 1.1,
-    "stats_qc": 5.67,
-    "register": 4.58,
-    "labels_heatmap": 0.17,
-    "masks": 4.79,
-    "scr": 1.07,
-    "total": 17.93
+    "decode": 0.51,
+    "deadpix_nuc": 1.11,
+    "stats_qc": 5.23,
+    "register": 4.29,
+    "labels_heatmap": 0.27,
+    "masks": 4.39,
+    "scr": 0.87,
+    "total": 16.67
    },
-   "fps": 13.9
+   "fps": 15.0
   },
   {
    "seq_id": 50,
@@ -2347,16 +2347,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.5,
-    "deadpix_nuc": 1.11,
-    "stats_qc": 5.65,
-    "register": 4.68,
-    "labels_heatmap": 0.17,
-    "masks": 4.86,
-    "scr": 0.88,
-    "total": 17.85
+    "decode": 0.55,
+    "deadpix_nuc": 1.13,
+    "stats_qc": 5.42,
+    "register": 4.11,
+    "labels_heatmap": 0.19,
+    "masks": 4.37,
+    "scr": 0.99,
+    "total": 16.75
    },
-   "fps": 14.0
+   "fps": 14.9
   },
   {
    "seq_id": 51,
@@ -2394,16 +2394,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.51,
-    "deadpix_nuc": 1.11,
-    "stats_qc": 5.81,
-    "register": 11.05,
-    "labels_heatmap": 0.15,
-    "masks": 4.41,
-    "scr": 0.95,
-    "total": 24.01
+    "decode": 0.5,
+    "deadpix_nuc": 1.12,
+    "stats_qc": 5.53,
+    "register": 10.08,
+    "labels_heatmap": 0.28,
+    "masks": 4.29,
+    "scr": 0.83,
+    "total": 22.63
    },
-   "fps": 10.4
+   "fps": 11.0
   },
   {
    "seq_id": 52,
@@ -2441,16 +2441,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.42,
-    "deadpix_nuc": 1.07,
-    "stats_qc": 6.34,
-    "register": 5.24,
-    "labels_heatmap": 0.18,
-    "masks": 5.15,
-    "scr": 0.78,
-    "total": 19.2
+    "decode": 0.47,
+    "deadpix_nuc": 1.08,
+    "stats_qc": 5.68,
+    "register": 4.83,
+    "labels_heatmap": 0.25,
+    "masks": 5.03,
+    "scr": 0.81,
+    "total": 18.16
    },
-   "fps": 13.0
+   "fps": 13.8
   },
   {
    "seq_id": 53,
@@ -2488,16 +2488,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.57,
+    "decode": 0.83,
     "deadpix_nuc": 1.11,
-    "stats_qc": 6.94,
-    "register": 13.87,
-    "labels_heatmap": 0.25,
-    "masks": 5.25,
-    "scr": 1.12,
-    "total": 29.1
+    "stats_qc": 6.42,
+    "register": 13.17,
+    "labels_heatmap": 0.22,
+    "masks": 4.71,
+    "scr": 1.08,
+    "total": 27.53
    },
-   "fps": 8.6
+   "fps": 9.1
   },
   {
    "seq_id": 54,
@@ -2535,16 +2535,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.57,
-    "deadpix_nuc": 1.16,
-    "stats_qc": 7.19,
-    "register": 7.21,
-    "labels_heatmap": 0.17,
-    "masks": 4.8,
-    "scr": 0.98,
-    "total": 22.08
+    "decode": 0.77,
+    "deadpix_nuc": 1.15,
+    "stats_qc": 6.82,
+    "register": 6.68,
+    "labels_heatmap": 0.29,
+    "masks": 4.7,
+    "scr": 1.0,
+    "total": 21.4
    },
-   "fps": 11.3
+   "fps": 11.7
   },
   {
    "seq_id": 55,
@@ -2582,16 +2582,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.58,
-    "deadpix_nuc": 1.11,
-    "stats_qc": 6.88,
-    "register": 5.58,
-    "labels_heatmap": 0.28,
-    "masks": 4.79,
-    "scr": 0.6,
-    "total": 19.82
+    "decode": 0.7,
+    "deadpix_nuc": 1.13,
+    "stats_qc": 6.37,
+    "register": 4.87,
+    "labels_heatmap": 0.24,
+    "masks": 4.8,
+    "scr": 0.64,
+    "total": 18.75
    },
-   "fps": 12.6
+   "fps": 13.3
   },
   {
    "seq_id": 56,
@@ -2629,16 +2629,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.52,
-    "deadpix_nuc": 1.11,
-    "stats_qc": 7.34,
-    "register": 5.62,
-    "labels_heatmap": 0.18,
-    "masks": 4.76,
-    "scr": 0.96,
-    "total": 20.49
+    "decode": 0.72,
+    "deadpix_nuc": 1.12,
+    "stats_qc": 6.75,
+    "register": 5.27,
+    "labels_heatmap": 0.21,
+    "masks": 4.66,
+    "scr": 0.91,
+    "total": 19.64
    },
-   "fps": 12.2
+   "fps": 12.7
   },
   {
    "seq_id": 57,
@@ -2676,16 +2676,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.48,
-    "deadpix_nuc": 1.13,
-    "stats_qc": 7.36,
-    "register": 5.27,
-    "labels_heatmap": 0.19,
-    "masks": 4.78,
-    "scr": 1.02,
-    "total": 20.22
+    "decode": 0.71,
+    "deadpix_nuc": 1.15,
+    "stats_qc": 6.71,
+    "register": 4.93,
+    "labels_heatmap": 0.28,
+    "masks": 4.6,
+    "scr": 0.88,
+    "total": 19.27
    },
-   "fps": 12.4
+   "fps": 13.0
   },
   {
    "seq_id": 58,
@@ -2723,16 +2723,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.54,
-    "deadpix_nuc": 1.13,
-    "stats_qc": 7.19,
-    "register": 8.17,
-    "labels_heatmap": 0.17,
-    "masks": 4.99,
-    "scr": 0.58,
-    "total": 22.77
+    "decode": 0.49,
+    "deadpix_nuc": 1.14,
+    "stats_qc": 6.43,
+    "register": 7.67,
+    "labels_heatmap": 0.18,
+    "masks": 4.9,
+    "scr": 0.57,
+    "total": 21.39
    },
-   "fps": 11.0
+   "fps": 11.7
   },
   {
    "seq_id": 59,
@@ -2770,16 +2770,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.62,
-    "deadpix_nuc": 1.1,
-    "stats_qc": 7.51,
-    "register": 9.22,
-    "labels_heatmap": 0.27,
-    "masks": 4.8,
-    "scr": 0.79,
-    "total": 24.31
+    "decode": 0.55,
+    "deadpix_nuc": 1.11,
+    "stats_qc": 6.66,
+    "register": 9.08,
+    "labels_heatmap": 0.28,
+    "masks": 4.63,
+    "scr": 0.67,
+    "total": 22.98
    },
-   "fps": 10.3
+   "fps": 10.9
   },
   {
    "seq_id": 60,
@@ -2817,16 +2817,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.56,
-    "deadpix_nuc": 1.08,
-    "stats_qc": 7.99,
-    "register": 10.21,
-    "labels_heatmap": 0.24,
-    "masks": 4.69,
-    "scr": 1.06,
-    "total": 25.83
+    "decode": 0.55,
+    "deadpix_nuc": 1.09,
+    "stats_qc": 6.9,
+    "register": 9.91,
+    "labels_heatmap": 0.16,
+    "masks": 4.44,
+    "scr": 1.04,
+    "total": 24.09
    },
-   "fps": 9.7
+   "fps": 10.4
   },
   {
    "seq_id": 61,
@@ -2864,16 +2864,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.71,
-    "deadpix_nuc": 1.1,
-    "stats_qc": 7.48,
-    "register": 4.32,
-    "labels_heatmap": 0.16,
-    "masks": 4.79,
-    "scr": 0.69,
-    "total": 19.24
+    "decode": 0.68,
+    "deadpix_nuc": 1.11,
+    "stats_qc": 6.9,
+    "register": 4.01,
+    "labels_heatmap": 0.23,
+    "masks": 4.59,
+    "scr": 0.63,
+    "total": 18.16
    },
-   "fps": 13.0
+   "fps": 13.8
   },
   {
    "seq_id": 62,
@@ -2911,16 +2911,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.69,
+    "decode": 0.73,
     "deadpix_nuc": 1.12,
-    "stats_qc": 7.57,
-    "register": 6.33,
-    "labels_heatmap": 0.24,
-    "masks": 4.79,
-    "scr": 1.05,
-    "total": 21.79
+    "stats_qc": 6.96,
+    "register": 6.35,
+    "labels_heatmap": 0.2,
+    "masks": 4.5,
+    "scr": 1.08,
+    "total": 20.94
    },
-   "fps": 11.5
+   "fps": 11.9
   },
   {
    "seq_id": 63,
@@ -2958,16 +2958,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.68,
-    "deadpix_nuc": 1.15,
-    "stats_qc": 7.52,
-    "register": 15.4,
-    "labels_heatmap": 0.19,
-    "masks": 4.45,
-    "scr": 1.13,
-    "total": 30.51
+    "decode": 0.71,
+    "deadpix_nuc": 1.1,
+    "stats_qc": 6.47,
+    "register": 14.9,
+    "labels_heatmap": 0.17,
+    "masks": 5.33,
+    "scr": 1.12,
+    "total": 29.82
    },
-   "fps": 8.2
+   "fps": 8.4
   },
   {
    "seq_id": 64,
@@ -3005,16 +3005,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.71,
+    "decode": 0.65,
     "deadpix_nuc": 1.09,
-    "stats_qc": 6.78,
-    "register": 11.51,
-    "labels_heatmap": 0.25,
-    "masks": 5.22,
-    "scr": 1.41,
-    "total": 26.98
+    "stats_qc": 6.38,
+    "register": 10.8,
+    "labels_heatmap": 0.24,
+    "masks": 5.36,
+    "scr": 1.19,
+    "total": 25.72
    },
-   "fps": 9.3
+   "fps": 9.7
   },
   {
    "seq_id": 65,
@@ -3052,16 +3052,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.7,
+    "decode": 0.69,
     "deadpix_nuc": 1.12,
-    "stats_qc": 5.73,
-    "register": 7.38,
-    "labels_heatmap": 0.26,
-    "masks": 5.54,
-    "scr": 1.31,
-    "total": 22.05
+    "stats_qc": 5.65,
+    "register": 7.09,
+    "labels_heatmap": 0.2,
+    "masks": 5.53,
+    "scr": 1.34,
+    "total": 21.64
    },
-   "fps": 11.3
+   "fps": 11.6
   },
   {
    "seq_id": 66,
@@ -3099,16 +3099,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.61,
-    "deadpix_nuc": 1.09,
-    "stats_qc": 5.58,
-    "register": 14.59,
+    "decode": 0.63,
+    "deadpix_nuc": 1.1,
+    "stats_qc": 5.63,
+    "register": 12.43,
     "labels_heatmap": 0.23,
-    "masks": 4.98,
-    "scr": 0.98,
-    "total": 28.06
+    "masks": 5.71,
+    "scr": 0.94,
+    "total": 26.68
    },
-   "fps": 8.9
+   "fps": 9.4
   },
   {
    "seq_id": 67,
@@ -3146,16 +3146,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.53,
-    "deadpix_nuc": 1.07,
-    "stats_qc": 5.37,
-    "register": 9.22,
+    "decode": 0.54,
+    "deadpix_nuc": 1.08,
+    "stats_qc": 5.31,
+    "register": 8.07,
     "labels_heatmap": 0.17,
-    "masks": 4.06,
-    "scr": 0.71,
-    "total": 21.13
+    "masks": 4.27,
+    "scr": 0.98,
+    "total": 20.42
    },
-   "fps": 11.8
+   "fps": 12.2
   },
   {
    "seq_id": 68,
@@ -3193,16 +3193,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.62,
-    "deadpix_nuc": 1.1,
-    "stats_qc": 5.66,
-    "register": 10.57,
-    "labels_heatmap": 0.16,
-    "masks": 3.46,
-    "scr": 1.18,
-    "total": 22.75
+    "decode": 0.54,
+    "deadpix_nuc": 1.09,
+    "stats_qc": 5.08,
+    "register": 9.96,
+    "labels_heatmap": 0.18,
+    "masks": 3.84,
+    "scr": 1.22,
+    "total": 21.9
    },
-   "fps": 11.0
+   "fps": 11.4
   },
   {
    "seq_id": 69,
@@ -3240,16 +3240,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.57,
-    "deadpix_nuc": 1.12,
-    "stats_qc": 5.77,
-    "register": 3.59,
-    "labels_heatmap": 0.14,
-    "masks": 2.74,
-    "scr": 1.06,
-    "total": 14.98
+    "decode": 0.64,
+    "deadpix_nuc": 1.11,
+    "stats_qc": 5.06,
+    "register": 3.24,
+    "labels_heatmap": 0.13,
+    "masks": 3.0,
+    "scr": 1.09,
+    "total": 14.29
    },
-   "fps": 16.7
+   "fps": 17.5
   },
   {
    "seq_id": 70,
@@ -3287,16 +3287,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.56,
-    "deadpix_nuc": 1.09,
-    "stats_qc": 6.09,
-    "register": 3.55,
-    "labels_heatmap": 0.16,
-    "masks": 2.97,
-    "scr": 1.23,
-    "total": 15.66
+    "decode": 0.6,
+    "deadpix_nuc": 1.1,
+    "stats_qc": 5.39,
+    "register": 3.23,
+    "labels_heatmap": 0.13,
+    "masks": 3.18,
+    "scr": 1.31,
+    "total": 14.95
    },
-   "fps": 16.0
+   "fps": 16.7
   },
   {
    "seq_id": 71,
@@ -3335,15 +3335,15 @@
    "blur_tag": false,
    "timings": {
     "decode": 0.54,
-    "deadpix_nuc": 1.07,
-    "stats_qc": 6.29,
-    "register": 13.71,
-    "labels_heatmap": 0.2,
-    "masks": 3.1,
-    "scr": 0.78,
-    "total": 25.7
+    "deadpix_nuc": 1.14,
+    "stats_qc": 6.0,
+    "register": 13.99,
+    "labels_heatmap": 0.17,
+    "masks": 3.41,
+    "scr": 0.84,
+    "total": 26.09
    },
-   "fps": 9.7
+   "fps": 9.6
   },
   {
    "seq_id": 72,
@@ -3381,14 +3381,14 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.52,
-    "deadpix_nuc": 1.05,
-    "stats_qc": 6.8,
-    "register": 13.59,
-    "labels_heatmap": 0.26,
-    "masks": 2.89,
-    "scr": 0.87,
-    "total": 25.97
+    "decode": 0.47,
+    "deadpix_nuc": 1.11,
+    "stats_qc": 6.11,
+    "register": 13.88,
+    "labels_heatmap": 0.22,
+    "masks": 3.45,
+    "scr": 0.9,
+    "total": 26.14
    },
    "fps": 9.6
   },
@@ -3430,14 +3430,14 @@
    "timings": {
     "decode": 0.52,
     "deadpix_nuc": 1.09,
-    "stats_qc": 7.22,
-    "register": 4.44,
-    "labels_heatmap": 0.17,
-    "masks": 2.58,
-    "scr": 0.91,
-    "total": 16.93
+    "stats_qc": 6.22,
+    "register": 4.43,
+    "labels_heatmap": 0.19,
+    "masks": 2.99,
+    "scr": 0.77,
+    "total": 16.22
    },
-   "fps": 14.8
+   "fps": 15.4
   },
   {
    "seq_id": 74,
@@ -3475,16 +3475,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.54,
+    "decode": 0.53,
     "deadpix_nuc": 1.07,
-    "stats_qc": 7.29,
-    "register": 10.21,
+    "stats_qc": 6.21,
+    "register": 10.47,
     "labels_heatmap": 0.21,
-    "masks": 3.05,
-    "scr": 0.94,
-    "total": 23.31
+    "masks": 3.54,
+    "scr": 0.9,
+    "total": 22.94
    },
-   "fps": 10.7
+   "fps": 10.9
   },
   {
    "seq_id": 75,
@@ -3522,16 +3522,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.71,
-    "deadpix_nuc": 1.09,
-    "stats_qc": 7.49,
-    "register": 8.58,
-    "labels_heatmap": 0.15,
-    "masks": 3.0,
+    "decode": 0.59,
+    "deadpix_nuc": 1.1,
+    "stats_qc": 7.5,
+    "register": 8.83,
+    "labels_heatmap": 0.18,
+    "masks": 3.7,
     "scr": 0.73,
-    "total": 21.75
+    "total": 22.65
    },
-   "fps": 11.5
+   "fps": 11.0
   },
   {
    "seq_id": 76,
@@ -3569,16 +3569,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.69,
-    "deadpix_nuc": 1.1,
-    "stats_qc": 7.51,
-    "register": 7.44,
-    "labels_heatmap": 0.18,
-    "masks": 3.02,
-    "scr": 0.9,
-    "total": 20.83
+    "decode": 0.71,
+    "deadpix_nuc": 1.07,
+    "stats_qc": 7.53,
+    "register": 7.7,
+    "labels_heatmap": 0.2,
+    "masks": 3.61,
+    "scr": 0.69,
+    "total": 21.51
    },
-   "fps": 12.0
+   "fps": 11.6
   },
   {
    "seq_id": 77,
@@ -3616,16 +3616,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.7,
+    "decode": 0.67,
     "deadpix_nuc": 1.11,
-    "stats_qc": 7.44,
-    "register": 4.86,
-    "labels_heatmap": 0.21,
-    "masks": 4.09,
-    "scr": 0.98,
-    "total": 19.39
+    "stats_qc": 7.7,
+    "register": 5.41,
+    "labels_heatmap": 0.17,
+    "masks": 4.25,
+    "scr": 0.93,
+    "total": 20.25
    },
-   "fps": 12.9
+   "fps": 12.3
   },
   {
    "seq_id": 78,
@@ -3663,16 +3663,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.68,
-    "deadpix_nuc": 1.06,
-    "stats_qc": 7.37,
-    "register": 5.96,
-    "labels_heatmap": 0.19,
-    "masks": 4.02,
-    "scr": 0.57,
-    "total": 19.86
+    "decode": 0.64,
+    "deadpix_nuc": 1.11,
+    "stats_qc": 7.45,
+    "register": 6.33,
+    "labels_heatmap": 0.27,
+    "masks": 4.45,
+    "scr": 0.8,
+    "total": 21.06
    },
-   "fps": 12.6
+   "fps": 11.9
   },
   {
    "seq_id": 79,
@@ -3712,12 +3712,12 @@
    "timings": {
     "decode": 0.86,
     "deadpix_nuc": 1.19,
-    "stats_qc": 7.06,
-    "register": 7.15,
-    "labels_heatmap": 0.14,
-    "masks": 2.84,
+    "stats_qc": 7.59,
+    "register": 6.95,
+    "labels_heatmap": 0.11,
+    "masks": 2.54,
     "scr": 0.41,
-    "total": 19.63
+    "total": 19.66
    },
    "fps": 12.7
   },
@@ -3759,14 +3759,14 @@
    "timings": {
     "decode": 0.83,
     "deadpix_nuc": 1.13,
-    "stats_qc": 7.13,
-    "register": 8.2,
-    "labels_heatmap": 0.12,
-    "masks": 2.43,
-    "scr": 0.44,
-    "total": 20.29
+    "stats_qc": 7.54,
+    "register": 7.15,
+    "labels_heatmap": 0.14,
+    "masks": 2.41,
+    "scr": 0.39,
+    "total": 19.6
    },
-   "fps": 12.3
+   "fps": 12.8
   },
   {
    "seq_id": 81,
@@ -3804,16 +3804,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.83,
-    "deadpix_nuc": 1.05,
-    "stats_qc": 7.07,
-    "register": 3.29,
-    "labels_heatmap": 0.14,
-    "masks": 3.33,
-    "scr": 0.47,
-    "total": 16.19
+    "decode": 0.77,
+    "deadpix_nuc": 1.12,
+    "stats_qc": 7.73,
+    "register": 3.74,
+    "labels_heatmap": 0.21,
+    "masks": 3.02,
+    "scr": 0.38,
+    "total": 16.97
    },
-   "fps": 15.4
+   "fps": 14.7
   },
   {
    "seq_id": 82,
@@ -3851,16 +3851,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.79,
-    "deadpix_nuc": 1.05,
-    "stats_qc": 7.06,
-    "register": 4.59,
-    "labels_heatmap": 0.16,
-    "masks": 4.39,
-    "scr": 0.58,
-    "total": 18.63
+    "decode": 0.7,
+    "deadpix_nuc": 1.19,
+    "stats_qc": 7.38,
+    "register": 4.52,
+    "labels_heatmap": 0.19,
+    "masks": 3.58,
+    "scr": 0.48,
+    "total": 18.05
    },
-   "fps": 13.4
+   "fps": 13.9
   },
   {
    "seq_id": 83,
@@ -3898,16 +3898,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.62,
-    "deadpix_nuc": 1.07,
-    "stats_qc": 6.74,
-    "register": 8.0,
-    "labels_heatmap": 0.16,
-    "masks": 3.93,
-    "scr": 0.41,
-    "total": 20.92
+    "decode": 0.77,
+    "deadpix_nuc": 1.14,
+    "stats_qc": 7.22,
+    "register": 6.54,
+    "labels_heatmap": 0.18,
+    "masks": 3.44,
+    "scr": 0.29,
+    "total": 19.57
    },
-   "fps": 11.9
+   "fps": 12.8
   },
   {
    "seq_id": 84,
@@ -3945,16 +3945,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.58,
-    "deadpix_nuc": 1.08,
-    "stats_qc": 6.46,
-    "register": 5.0,
-    "labels_heatmap": 0.14,
-    "masks": 3.16,
-    "scr": 0.48,
-    "total": 16.91
+    "decode": 0.73,
+    "deadpix_nuc": 1.17,
+    "stats_qc": 7.57,
+    "register": 4.48,
+    "labels_heatmap": 0.13,
+    "masks": 2.91,
+    "scr": 0.36,
+    "total": 17.34
    },
-   "fps": 14.8
+   "fps": 14.4
   },
   {
    "seq_id": 85,
@@ -3992,16 +3992,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.8,
-    "deadpix_nuc": 1.11,
-    "stats_qc": 5.72,
-    "register": 3.64,
+    "decode": 0.78,
+    "deadpix_nuc": 1.21,
+    "stats_qc": 6.75,
+    "register": 2.86,
     "labels_heatmap": 0.14,
-    "masks": 3.89,
-    "scr": 0.51,
-    "total": 15.82
+    "masks": 3.45,
+    "scr": 0.39,
+    "total": 15.57
    },
-   "fps": 15.8
+   "fps": 16.1
   },
   {
    "seq_id": 86,
@@ -4039,16 +4039,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.93,
-    "deadpix_nuc": 1.06,
-    "stats_qc": 5.06,
-    "register": 7.13,
-    "labels_heatmap": 0.13,
-    "masks": 3.3,
-    "scr": 0.47,
-    "total": 18.09
+    "decode": 0.92,
+    "deadpix_nuc": 1.16,
+    "stats_qc": 6.44,
+    "register": 5.37,
+    "labels_heatmap": 0.16,
+    "masks": 2.85,
+    "scr": 0.33,
+    "total": 17.23
    },
-   "fps": 13.8
+   "fps": 14.5
   },
   {
    "seq_id": 87,
@@ -4086,16 +4086,16 @@
    "small_target": false,
    "blur_tag": false,
    "timings": {
-    "decode": 0.69,
-    "deadpix_nuc": 1.05,
-    "stats_qc": 4.77,
-    "register": 7.18,
-    "labels_heatmap": 0.1,
-    "masks": 2.21,
-    "scr": 0.34,
-    "total": 16.35
+    "decode": 0.92,
+    "deadpix_nuc": 1.12,
+    "stats_qc": 6.17,
+    "register": 5.94,
+    "labels_heatmap": 0.09,
+    "masks": 1.99,
+    "scr": 0.29,
+    "total": 16.52
    },
-   "fps": 15.3
+   "fps": 15.1
   }
  ]
 }

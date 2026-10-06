@@ -50,7 +50,13 @@ def count_peaks(hm: np.ndarray, thr: int = 48) -> int:
 
 
 def make_montage(seq_id: int, n_windows: int = 3, seed: int = 0) -> np.ndarray | None:
-    """单段拼图：n_windows × [原图 | 配准差分 | 热图叠加]。"""
+    """单段拼图：n_windows × [原图 | 配准差分 | 热图叠加]。
+
+    差分用 M2 采样器口径：相邻两帧经 align_to_anchor 复合对齐到前一帧
+    （可跨参考块边界过桥），未对齐差分会因滑动参考边界出现假性跳变。
+    """
+    from dsld.data.preprocess.register import align_to_anchor
+
     cache = CACHE / f"seq_{seq_id:04d}"
     if not (cache / "seq_meta.json").exists():
         return None
@@ -62,16 +68,22 @@ def make_montage(seq_id: int, n_windows: int = 3, seed: int = 0) -> np.ndarray |
 
     rows = []
     M = reg["M"]
+    ref_idx = reg["ref_idx"]
+    bridge = reg["bridge_M"] if "bridge_M" in reg else None
     for s in starts:
         t_mid = s + WINDOW // 2
         t2 = min(s + WINDOW - 1, t_mid + 1)
-        img_mid = frames[t_mid]
-        # 配准差分：相邻两帧各自对齐到参考帧后的残差（运动应被消除）
-        warp_mid = cv2.warpAffine(np.asarray(frames[t_mid]), M[t_mid].astype(np.float64),
-                                  (640, 480), flags=cv2.INTER_LINEAR | cv2.WARP_INVERSE_MAP)
-        warp_2 = cv2.warpAffine(np.asarray(frames[t2]), M[t2].astype(np.float64),
-                                (640, 480), flags=cv2.INTER_LINEAR | cv2.WARP_INVERSE_MAP)
-        diff = np.abs(warp_mid.astype(np.int16) - warp_2.astype(np.int16)).astype(np.uint8)
+        img_mid = np.asarray(frames[t_mid])
+        # 配准差分：t2 复合对齐到 t_mid（M2 口径），与 t_mid 原图作差
+        if bridge is not None:
+            W = align_to_anchor(M[t2].astype(np.float64), int(ref_idx[t2]),
+                                M[t_mid].astype(np.float64), int(ref_idx[t_mid]),
+                                bridge)
+        else:
+            W = M[t2]
+        w2 = cv2.warpAffine(np.asarray(frames[t2]), W, (640, 480),
+                            flags=cv2.INTER_LINEAR | cv2.WARP_INVERSE_MAP)
+        diff = np.abs(img_mid.astype(np.int16) - w2.astype(np.int16)).astype(np.uint8)
         hm_mid = np.asarray(hm[t_mid])
         overlay = cv2.cvtColor(img_mid, cv2.COLOR_GRAY2RGB)
         m = hm_mid > 48

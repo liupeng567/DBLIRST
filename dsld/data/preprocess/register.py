@@ -57,13 +57,43 @@ class RegResult:
     failed: np.ndarray       # [N] bool，True = 配准失败（恒等）
     method: np.ndarray       # [N] str: 'ref'/'klt'/'fm'/'flat'
     ref_idx: np.ndarray      # [N] int，每帧所属参考帧号
+    bridge_M: np.ndarray | None = None   # [N,2,3] 参考帧相对前一参考的桥矩阵（非参考帧为 NaN）
+    bridge_rmse: np.ndarray | None = None  # [N] 桥估计的 RMSE
     extras: dict = field(default_factory=dict)
 
     def save(self, path) -> None:
         np.savez_compressed(
             path, M=self.M, rmse=self.rmse, failed=self.failed,
             method=self.method.astype("U4"), ref_idx=self.ref_idx,
+            bridge_M=self.bridge_M, bridge_rmse=self.bridge_rmse,
         )
+
+
+def align_to_anchor(M_t, ref_t: int, M_a, ref_a: int, bridge_M) -> np.ndarray:
+    """计算把第 t 帧对齐到锚点帧 a 的采样矩阵 W（M2 窗口采样器的唯一入口）。
+
+    W 满足：cv2.warpAffine(frame_t, W, (W,H), flags=…|WARP_INVERSE_MAP) 输出即对齐到
+    anchor 的帧。M_t/M_a 分别为 t/anchor 相对各自参考块的正向矩阵（ref→帧），
+    bridge_M[r] 为参考帧 r 相对前一参考 (r−25) 的正向估计（reg.npz: bridge_M）。
+
+        同块（ref_t == ref_a）：   W = M_t ∘ M_a⁻¹
+        跨块（ref_t > ref_a）：    W = M_t ∘ B[ref_t] ∘ … ∘ B[ref_a+25] ∘ M_a⁻¹
+
+    T=32 窗最多跨 1 个边界，复合链 ≤3 个矩阵；要求 t ≥ anchor（窗口锚定首帧）。
+    """
+    def hom(M):
+        return np.vstack([np.asarray(M, np.float64), [0, 0, 1]])
+
+    W = np.linalg.inv(hom(M_a))          # anchor → ref_a
+    r = ref_a
+    while r < ref_t:                     # ref_a → ref_t 逐级过桥
+        nxt = r + CFG["ref_every"]
+        if nxt > len(bridge_M) - 1 or np.isnan(bridge_M[nxt][0, 0]):
+            break                        # 无桥可依（不应发生），退化为不跨
+        W = hom(bridge_M[nxt]) @ W
+        r = nxt
+    W = hom(M_t) @ W                     # ref_t → t
+    return W[:2]
 
 
 def _identity() -> np.ndarray:
@@ -204,6 +234,10 @@ def register_sequence(frames: np.ndarray) -> RegResult:
     块内先试 ref→t 直接跟踪；失败则链式回退（从上一成功帧续推复合矩阵），
     平台累积运动超出 KLT 金字塔容量时兜底（链条每 25 帧被参考重置截断，不累积漂移）。
 
+    桥矩阵（跨块对齐的关键）：每块额外估计"下一参考帧相对本参考"的矩阵并存入
+    bridge_M[next_ref]，供 M2 采样器跨块复合（align_to_anchor）——否则 T=32 窗
+    必然跨边界（25<32），窗内背景会对新参考跳变（实测跨块相邻帧残差 5–10×块内）。
+
     frames: [N,H,W]（uint8 或 float32，NUC 校正域）。返回 RegResult。
     """
     n = len(frames)
@@ -212,13 +246,16 @@ def register_sequence(frames: np.ndarray) -> RegResult:
     failed = np.zeros(n, dtype=bool)
     method = np.empty(n, dtype="U6")
     ref_idx = np.zeros(n, dtype=np.int32)
+    bridge_M = np.full((n, 2, 3), np.nan)
+    bridge_rmse = np.full(n, np.inf, dtype=np.float32)
     n_chained = 0
 
     refs = list(range(0, n, CFG["ref_every"]))
     for r in refs:
         ref_img = frames[r]
         ref_idx[r] = r
-        block = list(range(r + 1, min(r + CFG["ref_every"], n)))
+        block_end = min(r + CFG["ref_every"], n)   # 本块末（不含下一参考帧）
+        block = list(range(r + 1, block_end))
         # 平坦参考帧：整块标记 flat（无纹理，恒等即正确对齐）
         if float(np.asarray(ref_img).std()) < CFG["flat_std_gate"]:
             method[r], method[block] = "flat", "flat"
@@ -243,5 +280,21 @@ def register_sequence(frames: np.ndarray) -> RegResult:
             failed[t] = how == "failed"
             if how != "failed":
                 last_good = t
+        # 桥估计：下一参考帧相对本参考（下一块会把它置为恒等，故必须单独存）
+        if block_end < n:
+            nr = block_end
+            if float(np.asarray(frames[nr]).std()) < CFG["flat_std_gate"]:
+                bridge_M[nr] = _identity()
+                bridge_rmse[nr] = 0.0
+                continue
+            Mb, rms_b, how_b = register_frame(ref_img, frames[nr])
+            if how_b == "failed" and nr > last_good:
+                M_p, rms_p, how_p = register_frame(frames[last_good], frames[nr])
+                if how_p != "failed":
+                    Mb = _compose(M_out[last_good], M_p)
+                    rms_b, how_b = rms_p, "chained"
+            bridge_M[nr] = Mb
+            bridge_rmse[nr] = min(rms_b, 1e6) if how_b != "failed" else np.inf
     return RegResult(M=M_out, rmse=rmse, failed=failed, method=method,
-                     ref_idx=ref_idx, extras={"n_chained": n_chained})
+                     ref_idx=ref_idx, bridge_M=bridge_M, bridge_rmse=bridge_rmse,
+                     extras={"n_chained": n_chained})

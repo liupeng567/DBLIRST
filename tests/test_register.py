@@ -17,6 +17,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from dsld.data.preprocess.register import (  # noqa: E402
     CFG,
+    align_to_anchor,
     estimate_affine_klt,
     fourier_mellin,
     register_frame,
@@ -138,3 +139,36 @@ class TestRegisterFrame:
         seq = np.stack([make_texture()] * 30).astype(np.float32)
         res = register_sequence(seq)
         assert set(res.ref_idx) == {0, 25}  # 滑动参考按 25 帧重置
+
+    def test_bridge_cross_boundary_alignment(self):
+        """跨参考块边界：桥矩阵复合后相邻帧背景残差应显著低于未对齐差分。
+
+        背景：T=32 训练窗必然跨 25 帧参考边界，若采样器只按各自参考对齐，
+        窗内会出现背景跳变（M1 实测跨块残差 5–10× 块内）。
+        """
+        ref = make_texture(240, 320)
+        frames = [ref]
+        for t in range(1, 40):
+            A = affine(0.0, 1.0, 0.5 * t, 0.25 * t)
+            frames.append(cv2.warpAffine(ref, A, (320, 240)))
+        seq = np.stack(frames).astype(np.float32)
+        res = register_sequence(seq)
+        assert res.bridge_M is not None
+        assert not np.isnan(res.bridge_M[25][0, 0]), "参考帧 25 缺桥矩阵"
+
+        # 跨块对齐：anchor=23（块0），target=26（块25）
+        W = align_to_anchor(res.M[26], int(res.ref_idx[26]), res.M[23],
+                            int(res.ref_idx[23]), res.bridge_M)
+        warped = cv2.warpAffine(seq[26], W, (320, 240),
+                                flags=cv2.INTER_LINEAR | cv2.WARP_INVERSE_MAP)
+        d_cross = float(np.abs(warped - seq[23]).mean())
+        d_raw = float(np.abs(seq[26] - seq[23]).mean())
+        assert d_cross < 0.6 * d_raw, f"跨块复合对齐无效: {d_cross:.2f} vs raw {d_raw:.2f}"
+
+        # 同块对照：复合公式在同块退化为 M_t∘M_a⁻¹，同样应有效
+        W2 = align_to_anchor(res.M[24], int(res.ref_idx[24]), res.M[22],
+                             int(res.ref_idx[22]), res.bridge_M)
+        warped2 = cv2.warpAffine(seq[24], W2, (320, 240),
+                                 flags=cv2.INTER_LINEAR | cv2.WARP_INVERSE_MAP)
+        d_same = float(np.abs(warped2 - seq[22]).mean())
+        assert d_same < 0.6 * float(np.abs(seq[24] - seq[22]).mean())
