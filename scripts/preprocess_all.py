@@ -190,6 +190,7 @@ def process_sequence(seq_id: int) -> dict:
                                                          np.zeros((0, 4), np.int32)))
         reg_in[t] = np.clip(xc16 + 128, 0, 255).astype(np.uint8)
     np.save(cache / "norm_stats.npy", stats)
+    np.save(cache / "quality.npy", lapvar.astype(np.float32))  # 逐帧清晰度（校正域拉普拉斯方差）
     t_stage["stats_qc"] = time.time() - t0
 
     # ④ 配准（滑动参考 + 质量门限 + FM 回退）
