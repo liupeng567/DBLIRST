@@ -32,7 +32,9 @@ data:
   split: train-int
   T: 32
   stride: 8
-  crop: null              # 原生 480×640 全幅（小目标禁止降采样推理/训练）
+  crop: [240, 320]        # 方案 2.6 整窗一致随机裁剪（M3 云端 A10 档，显存 ~12GB@B=4）：
+                          #   目标 5-25px 原生像素不缩放、mask 同步裁剪、随机出纯背景窗=负样本信号；
+                          #   推理仍全幅（模型全卷积）；全幅训练档改回 null（48GB 级卡）
   augment: true
   align: true             # 窗口对齐开关（消融/对照可关）
   num_workers: 0          # Windows DataLoader IPC 病态（M2 实测 workers>0 反而 11s/step）
@@ -48,7 +50,7 @@ train:
   warm_epoch: 5           # （仅 M2 SLSIoU 口径使用）
   window: {T: 32, stride: 8}
   batch:
-    windows_per_gpu: 4    # 显存 OOM 时回退 2×accum4
+    windows_per_gpu: 4    # crop 档等效 8 窗/优化步（4×accum2）；全幅档：48GB 卡 4×2、8GB 卡 2×accum4
     accum: 2
   optim: {name: adamw, lr: 3.0e-4, wd: 0.01, warmup: 1000, cosine_min: 3.0e-5}
   amp: bf16               # 门控/τ/状态更新在核心内强制 fp32（4.8-①）
