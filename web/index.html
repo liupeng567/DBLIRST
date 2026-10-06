@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>DSLD 检测效果检视台</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+<header class="menubar">
+  <div class="brand">DSLD<span>双状态液态动力学 · 检视台</span></div>
+  <nav class="menus" id="menus"></nav>
+  <div class="menubar-status">
+    <span class="chip chip-idle" id="chip-backend">后端 未连接</span>
+    <span class="chip chip-idle" id="chip-weight">权重 未加载</span>
+    <span class="chip chip-idle" id="chip-detect">检测 待机</span>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="side-head">
+      <input id="side-filter" type="search" placeholder="过滤 路径 / 帧号 / 目标" spellcheck="false" autocomplete="off">
+      <div class="side-sub" id="side-sub">未加载图像</div>
+    </div>
+    <div class="side-list" id="side-list" tabindex="0"></div>
+    <div class="side-foot">
+      <span id="side-count">0 / 0</span>
+      <span class="grow"></span>
+      <button class="mini" id="btn-scroll" title="滚动到当前帧">定位</button>
+      <button class="mini" id="btn-copy" title="复制全部图像路径">复制</button>
+    </div>
+    <div class="side-resize" id="side-resize" title="拖动调宽（上限 20%）"></div>
+  </aside>
+
+  <main class="main">
+    <div class="viewbar">
+      <div class="seg" id="view-seg">
+        <button data-view="raw" title="仅原图 (1)">原图</button>
+        <button data-view="det" title="仅模型检测结果 (2)">检测</button>
+        <button data-view="gt" title="仅 GT 标注 (3)">GT</button>
+        <button data-view="overlay" title="检测 × GT 叠加 (4)">叠加</button>
+        <button data-view="trio" class="on" title="原图 / 检测 / GT 三联 (5)">三联对比</button>
+      </div>
+      <div class="viewbar-right">
+        <div class="chips">
+          <span class="chip-sm det" id="chip-det">检测 —</span>
+          <span class="chip-sm gt" id="chip-gt">GT —</span>
+          <span class="chip-sm" id="chip-score">—</span>
+          <span class="chip-sm warn" id="chip-engine">引擎 —</span>
+        </div>
+        <div class="zoomctl">
+          <button class="mini" id="zoom-out" title="缩小 (-)">−</button>
+          <span class="mono" id="zoom-label">100%</span>
+          <button class="mini" id="zoom-in" title="放大 (+)">+</button>
+          <button class="mini" id="zoom-fit" title="适应窗口 (0)">适应</button>
+          <button class="mini" id="zoom-actual" title="1:1 原始像素">1:1</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="stage" id="stage">
+      <div class="world" id="world"></div>
+      <div class="stage-empty" id="stage-empty">
+        <div class="empty-card">
+          <div class="empty-title">尚未加载图像</div>
+          <div class="empty-sub">菜单「文件」加载图像文件 / 图像文件夹 / 路径清单</div>
+          <div class="empty-keys">
+            <span><kbd>Ctrl</kbd>+<kbd>O</kbd>图像文件</span>
+            <span><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>O</kbd>文件夹</span>
+            <span><kbd>Ctrl</kbd>+<kbd>L</kbd>路径清单</span>
+            <span><kbd>Ctrl</kbd>+<kbd>W</kbd>模型权重</span>
+            <span><kbd>空格</kbd>播放</span>
+          </div>
+          <div class="empty-note">
+            左侧栏列出全部图像路径（宽度 ≤20%），右侧展示原图 / 模型检测结果 / GT 标注，<br>
+            三者对比图可保存；右下角读数随鼠标实时给出像素位置与命中框尺寸。
+          </div>
+        </div>
+      </div>
+      <div class="busy" id="busy" hidden><span class="spin"></span><span id="busy-text">推理中</span></div>
+      <div class="readout" id="readout">
+        <span class="ro-item"><span class="ro-k">面板</span><b id="ro-panel">—</b></span>
+        <span class="ro-item"><span class="ro-k">像素</span><span class="ro-v mono" id="ro-xy">—</span></span>
+        <span class="ro-item"><span class="ro-k">灰度</span><span class="ro-v mono" id="ro-gray">—</span></span>
+        <span class="ro-item"><span class="ro-k">目标</span><span class="ro-v mono ro-box" id="ro-box">—</span></span>
+        <span class="ro-dim mono" id="ro-zoom">—</span>
+      </div>
+      <div class="toast-wrap" id="toasts"></div>
+    </div>
+
+    <div class="transport">
+      <div class="tp-left">
+        <button class="tp-btn" id="btn-first" title="首帧 (Home)">⏮</button>
+        <button class="tp-btn" id="btn-prev" title="上一帧 (←)">◀</button>
+        <button class="tp-btn wide tp-play" id="btn-play" title="播放 / 暂停 (空格)">▶ 播放</button>
+        <button class="tp-btn" id="btn-next" title="下一帧 (→)">▶</button>
+        <button class="tp-btn" id="btn-last" title="末帧 (End)">⏭</button>
+        <button class="tp-btn wide" id="btn-loop" title="循环播放">循环</button>
+      </div>
+      <div class="tp-mid">
+        <input type="range" id="frame-slider" min="0" max="0" value="0" step="1">
+        <div class="tp-frame">
+          <span>帧 <b class="mono" id="frame-cur">0</b> / <span class="mono" id="frame-total">0</span></span>
+          <span class="tp-seq" id="frame-seq">—</span>
+          <span>跳至 <input id="jump-input" type="number" min="1" step="1" value="1"></span>
+        </div>
+      </div>
+      <div class="tp-right">
+        <div class="tp-speed">
+          <span>速度</span>
+          <input type="range" id="speed-range" min="1" max="30" step="1" value="8">
+          <span class="mono" id="speed-label">8 fps</span>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<footer class="statusbar">
+  <span id="st-path">—</span>
+  <span id="st-frame">—</span>
+  <span id="st-det">—</span>
+  <span id="st-score">—</span>
+  <span class="grow" style="margin-left:auto"></span>
+  <span id="st-api">—</span>
+  <span id="st-zoom">—</span>
+</footer>
+
+<div class="modal-mask" id="modal-mask" hidden></div>
+
+<input type="file" id="pick-images" accept="image/*" multiple hidden>
+<input type="file" id="pick-folder" webkitdirectory hidden>
+<input type="file" id="pick-list" accept=".txt,.csv,.json,text/plain,text/csv" hidden>
+<input type="file" id="pick-gt-folder" webkitdirectory hidden>
+<input type="file" id="pick-gt-files" accept=".txt,.xml,.json" multiple hidden>
+<input type="file" id="pick-res-folder" webkitdirectory hidden>
+<input type="file" id="pick-res-files" accept=".txt,.json" multiple hidden>
+<input type="file" id="pick-weight" accept=".pt,.pth,.ckpt,.onnx,.bin" hidden>
+
+<script src="js/util.js"></script>
+<script src="js/infer.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 | 项目 | 内容 |
 | --- | --- |
 | 版本 | v1.6（工程细化版） |
-| 日期 | 2026-10-05（v1.1：conda 环境定名 **Alirst**；新增 **main.py** 一键启动入口并保留 `scripts/train.py`。v1.2：登记 ITTD 本地路径与 SAM2.1 掩码资产；新增第 10 章逐条回应评审八问。v1.3：**骨干网络更换为 GhostNetV2**。v1.4：**落地分割辅助检测**——辅助分割头 L_aux + FCOS 式框回归头 L_box，模型输出预测框；评测主口径升级为 IoU≥0.5 框级匹配的 Precision/Recall/F1 + AP50/mAP@[.5:.95]；新增 10.9 节与消融 (k)(l)。v1.5：**seg_dataset 布局实测固化**。v1.6：**manifest 属性标定规程（新增 1.6 节）**——scene/daytime 以官方论文附录 1 为权威源（87 段天候/场地 + 六列难点已解析为 ittd_official_attributes.csv 并校验），属性字段强制 provenance 标注；**实测触发 1.3 划分重平衡条款**——val-int（65–76）全为傍晚、train-int 无外场傍晚，M0 执行对调产出 manifest v2） |
+| 日期 | 2026-10-05（v1.1：conda 环境定名 **Alirst**；新增 **main.py** 一键启动入口并保留 `scripts/train.py`。v1.2：登记 ITTD 本地路径与 SAM2.1 掩码资产；新增第 10 章逐条回应评审八问。v1.3：**骨干网络更换为 GhostNetV2**。v1.4：**落地分割辅助检测**——辅助分割头 L_aux + FCOS 式框回归头 L_box，模型输出预测框；评测主口径升级为 IoU≥0.5 框级匹配的 Precision/Recall/F1 + AP50/mAP@[.5:.95]；新增 10.9 节与消融 (k)(l)。v1.5：**seg_dataset 布局实测固化**。v1.6：**manifest 属性标定规程（新增 1.6 节）**——scene/daytime 以官方论文附录 1 为权威源（87 段天候/场地 + 六列难点已解析为 ittd_official_attributes.csv 并校验），属性字段强制 provenance 标注；**实测触发 1.3 划分重平衡条款**——val-int（65–76）全为傍晚、train-int 无外场傍晚，M0 执行对调产出 manifest v2。v1.6.1：**全文一致性梳理**——修正跨版本遗留不一致 16 处（lost-pool/类别分未同步正文、消融范围未随新增扩充、骨干更换后仓库树与测试清单未同步等，清单见 10.8 v1.6.1 行） |
 | 上游文档 | 《双状态液态动力学驱动的空地红外时敏目标检测与背景自适应抑制研究报告》 |
 | 代码工程名 | DSLD（D:\DBLIRST） |
 | 核心任务 | ITTD（序列 1–76 训练 / 77–87 验证）上的检测 + 跟踪，**虚警抑制为一等公民目标** |
@@ -107,6 +107,8 @@
                   "difficulty_tags": ["strong_clutter"], "...": "..."}]
 }
 ```
+
+> 结构示意（v1）：M0 按 1.3 执行动作完成划分重平衡后升级为 **v2**——splits 段号成员按对照表调整，schema 不变；下游一律引用 v2。
 
 校验规则（`scripts/build_manifest.py` 内置断言）：三个子集序列数 64/12/11；帧数 16,000/3,000/2,750；轨迹总数 393；无序列重复；val-official 带 read_only 标志，训练入口遇到该 split 直接抛异常；**官方属性表校验（v1.6）**：`ittd_official_attributes.csv` 87 行、序号 1–87 连续、枚举合法（白天/傍晚 × 内场/外场），并与 `instances/{v}.json` 的 `split` 字段（1–76 train / 77–87 val）交叉一致。
 
@@ -292,8 +294,8 @@ M1 验收自动检查项：① 配准成功率（`1 − reg_failed 占比`）≥
 | 阈值 | 门控阈 α_th | 0.5（校准点），工作点由 ROC 选 | — |
 | 跟踪 | 确认逻辑 M/N | 5 帧内 ≥ 3 次关联 → 确认 | 经典管道滤波 M-of-N 的可学习等价物 |
 | 跟踪 | 速度上限 | 8 px/帧（关联门外径） | 50 Hz 下车辆表观速度 0.5–5 px/帧 + 余量 |
-| 跟踪 | 遮挡滑行 | ≤ 10 帧内保持航迹（预测外推），门宽 ×2 | 对应 ITTD 遮挡难点 |
-| 跟踪 | 删除 | 连续 10 帧无关联删除 tentative；confirmed 连续 15 帧无关联删除 | — |
+| 跟踪 | 遮挡滑行 | ≤ 10 帧 coast（预测外推，门宽 ×2）；10–60 帧 lost-pool（ReID 恢复 ID，10.6） | 对应 ITTD 遮挡难点 |
+| 跟踪 | 删除 | 连续 10 帧无关联删除 tentative；confirmed 超 T_lost=60 帧删除 | — |
 | 跟踪 | 航迹质量阈 | 输出航迹需平均 α ≥ 0.4 且长度 ≥ 5 帧 | val-int 校准 |
 | 效率 | 推理分辨率 | 原生 640×480，不缩放 | 目标过小，禁止下采样推理 |
 
@@ -331,10 +333,10 @@ train:
   early_stop: {metric: fa_at_pd90, patience: 8}
 infer:
   threshold: {k: 3.0, alpha_th: 0.5}
-  track: {confirm: {M: 3, N: 5}, vmax: 8, coast: 10, delete_t: 10, delete_c: 15,
-          min_track_len: 5, min_track_alpha: 0.4}
+  track: {confirm: {M: 3, N: 5}, vmax: 8, coast: 10, t_lost: 60, delete_t: 10,
+          min_track_len: 5, min_track_alpha: 0.4}   # v1.2/v1.4: +lost-pool; 质量分含类别分EMA(6.4)
 data:
-  manifest: ittd_split_v1.json
+  manifest: ittd_split_v2.json   # M0 重平衡后版本(v1 为重平衡前对照, 见1.3/1.6)
   seg_root: D:/Datasets/kongdixiaomubiaodataset/seg_dataset   # 掩码根目录(布局见 seg_dataset_layout.md, 解析规则见10.9)
   val_official_read_only: true
 ```
@@ -500,7 +502,7 @@ $$y = \alpha \odot (x - \hat y_B)\qquad\text{（背景自适应抑制显著图�
 - 瞬时亮点：z_B 大但 r_T 低 → α 被压小；
 - 真实目标：z_B 大、r_T 高、LR 正 → α≈1，y 保留完整残差。
 
-判决链：y 上采样 ×4 → 全分辨率显著图 S → 自适应阈值 `S > μ_S + k·σ_S`（k 默认 3.0，val-int ROC 校准）→ 连通域（≥1 px @stride-2 等效 4 px 全分辨率）→ 局部极大值 + 二次曲线亚像素精化 → 点迹（位置 + 峰值得分 = α_peak × 残差 SNR）。
+判决链：y 上采样 ×4 → 全分辨率显著图 S → 自适应阈值 `S > μ_S + k·σ_S`（k 默认 3.0，val-int ROC 校准）→ 连通域（≥1 px @stride-2 等效 4 px 全分辨率）→ 局部极大值 + 二次曲线亚像素精化 → 点迹（位置 + 峰值得分 = α_peak × 残差 SNR）。（v1.4 口径更新：检测主路已改为**框回归头输出预测框**——见 6.1/10.9；本显著图阈值链保留为中心校验、P_d-F_a ROC 扫描与 BSF/SCRG 抑制层统计的辅助链路，两条链共享同一 α 与残差，不冲突。）
 
 ### 5.4 外环：场景级 τ 自适应（复述要点）
 
@@ -528,13 +530,14 @@ $$y = \alpha \odot (x - \hat y_B)\qquad\text{（背景自适应抑制显著图�
             ┌────────┐  5帧内≥3次关联   ┌───────────┐
  新点迹 ──► │tentative│ ──────────────► │ confirmed  │──► 输出
             └───┬────┘                  └─────┬─────┘
-        连续10帧无关联                    连续15帧无关联
-                └────► 删除                 │ 遮挡期≤10帧: coast(预测外推, 门宽×2)
-                                          └────► 删除
+        连续10帧无关联                    遮挡>10帧: 转lost态(10.6, T_lost=60)
+                └────► 删除                 │ ≤10帧: coast(预测外推, 门宽×2) → lost池匹配恢复ID
+                                          └────► 超T_lost删除
 ```
 
 - **确认逻辑 M-of-N**（3/5）：把传统管道滤波"管道内 N 帧出现 M 次"内化为航迹确认规则，且关联门由 h_T 预测锚点驱动（6.3），比固定几何管道强。
 - tentative 航迹不输出，从源头过滤孤立瞬现点迹——与门控 r_T 支路形成双保险。
+- **lost 态（v1.2 补充，机制详见 10.6）**：confirmed 航迹遮挡超 coast 窗口（10 帧）不直接删除，转 lost 态并保存外推轨迹 + 不确定度 + ReID 描述子记忆（T_lost 默认 60 帧）；期间新生 tentative 航迹先与 lost 池在（位置, 时间）窗内匹配，命中恢复原 ID，超 T_lost 删除。
 
 ### 6.3 数据关联（检测-跟踪一体化的落点）
 
@@ -545,14 +548,14 @@ $$y = \alpha \odot (x - \hat y_B)\qquad\text{（背景自适应抑制显著图�
 
 ### 6.4 航迹级虚警判决
 
-航迹质量分 = mean(α) × min(1, len/10) × mean(r_T)。输出过滤：质量分 ≥ 阈值（默认等效 mean α ≥ 0.4）且长度 ≥ 5 帧。该阈值在 val-int 上以官方评分函数为目标一维搜索确定——**直接对"虚警 −2 分"的不对称代价做航迹级优化**。
+航迹质量分 = mean(α) × min(1, len/10) × mean(r_T) × cls_score（v1.2/v1.4：cls_score = ROI 判别头车辆概率的航迹级 EMA，非车辆时敏目标在此被降权，10.7）。输出过滤：质量分 ≥ 阈值（默认等效 mean α ≥ 0.4，随 cls_score 联乘在 val-int 一并校准）且长度 ≥ 5 帧。该阈值在 val-int 上以官方评分函数为目标一维搜索确定——**直接对"虚警 −2 分"的不对称代价做航迹级优化**。
 
 ### 6.5 交汇与遮挡场景专用处理
 
 | 场景 | 机制 |
 | --- | --- |
 | 多目标交汇（轨迹交叠） | 速度方向代价 + 关联门收窄；交汇期间若两点迹共享同一门内，按马氏距离最近者关联，落选者由 coast 滑行 3–5 帧后重新捕获 |
-| 遮挡（框消失 ≥ 10 帧） | confirmed 航迹 coast 最多 10 帧（Kalman 外推 + h_T 状态保持），重捕时 ID 不变；超时删除，重现为新航迹 |
+| 遮挡（框消失 ≥ 10 帧） | ≤ 10 帧：coast（Kalman 外推 + h_T 状态保持），重捕时 ID 不变；10–60 帧：转 lost-pool（ReID + 运动学匹配恢复 ID，10.6）；超 T_lost=60 帧：删除，复现为新航迹 |
 | 平台晃动残余 | 配准已在 2.4 消解绝大部分；关联门前先减该帧全局仿射位移，实现"先配准后关联" |
 
 ### 6.6 输出格式与官方评分对接
@@ -619,7 +622,7 @@ B阶段模型 ─► train-int 全量推理 ─► FP 判定: 点迹/航迹未�
 
 - 窗口级分层采样：按 (scene × daytime × strong_clutter) 分层轮转，保证每批 16 窗中 ≥ 1 窗来自强杂波序列、≥ 2 窗来自傍晚序列。
 - SCR 分层 Curriculum：阶段 B 前 10k step 以 SCR > 3 的窗口为主，之后放开全量（避免冷启动即啃最硬骨头导致门控过早偏置）。
-- 类平衡：每窗保证含 ≥ 1 条 GT 轨迹（负样本窗仅来自 C 阶段回放与合成注入）。
+- 类平衡：每窗保证含 ≥ 1 条 GT 轨迹（负样本窗来自 C 阶段回放、合成注入与 seg_dataset 空标注帧切出的纯背景窗三个来源，均登记进分层采样——纯背景窗见 10.9）。
 
 ### 7.5 优化细节
 
@@ -703,7 +706,7 @@ D:\DBLIRST\DSLD\
 ├─ data/               # raw/ cache/ manifests/  (gitignore, 仅 manifest 入库)
 ├─ dsld/
 │  ├─ data/            # dataset.py, mask_loader.py, preprocess/{register,normalize,augment,encode}.py, manifest.py
-│  ├─ models/          # encoder.py, liquid/{cfc_cell,dual_state}.py, gating.py, heads.py, dsld_net.py
+│  ├─ models/          # encoder.py, encoder_ghostnetv2.py(v1.3 vendor), liquid/{cfc_cell,dual_state}.py, gating.py, heads.py, dsld_net.py
 │  ├─ tracking/        # associate.py, track_manager.py, output.py
 │  ├─ losses/          # seg.py, recon.py, decouple.py, consist.py
 │  ├─ train/           # trainer.py, schedule.py, mine.py
@@ -711,7 +714,8 @@ D:\DBLIRST\DSLD\
 │  └─ utils/           # seed.py, ema.py, vis.py, log.py
 ├─ scripts/            # download_ittd.py, build_manifest.py, preprocess_all.py,
 │                      # train.py(保留,直连训练脚本), infer.py, eval.py, mine_hard.py, export_trt.py
-├─ tests/              # test_official_score.py, test_register.py, test_cfc_shapes.py, test_manifest.py
+├─ tests/              # test_official_score.py, test_register.py, test_cfc_shapes.py, test_manifest.py,
+│                      # test_encoder_taps.py(v1.3), test_mask_loader.py(v1.5)
 └─ experiments/        # <name>/{config.yaml, ckpt/, tb/, metrics.jsonl}
 ```
 
@@ -722,19 +726,19 @@ D:\DBLIRST\DSLD\
 3. **按轮训练 + 进度条**：训练以"轮"（epoch）为单位组织，1 轮 = 完整遍历一次分层采样计划（train-int 等效批 16 窗 ≈ 112 step/轮；总轮数由 3.3 迭代总量折算：预训练 ≈ 200 轮、微调 ≈ 357 轮、挖掘 ≈ 90 轮/份，迭代总量与早停逻辑不变）。每轮一条 tqdm 进度条实时显示批进度、累计 loss、lr、显存与 ETA，外层另挂总轮进度条（`Epoch k/357`）。
 4. **轮摘要与断点**：每轮结束打印轮摘要（平均 loss、lr、本轮耗时），每逢 quick-eval 轮（每 2,500 step ≈ 22 轮）附加 F_a@P_d、BSF、τ_B/τ_T 分位数与 "★ new best" 标记，全部写入 tensorboard 与 `metrics.jsonl`；checkpoint 按轮保存（见规范要点④）。
 
-规范要点：① **conda 环境统一命名 Alirst**（`environment.yml` 锁版本：PyTorch 2.x + cuda 12.x、ncps（CfC 参考实现）、hydra-core、tqdm、opencv、motmetrics、thop），全部运行命令以 `conda activate Alirst && python main.py ...` 为准；② `tests/` 四件套进 CI 冒烟（1 窗 32 帧 CPU 上 < 2 分钟跑通 train→infer→eval 全链）；③ 每次实验自动快照 config + manifest hash + git commit（main.py 启动时同步打印）；④ checkpoint 命名 `{stage}_{seed}_{epoch}.pt`，EMA 与 raw 分开保存；⑤ 启动入口分工：根目录 `main.py` 为一键启动入口（打印配置/权重加载 → 按轮训练（进度条）→ 自动衔接评估），`scripts/train.py` 保留为直连训练脚本（共用同一训练逻辑，供流水线与调试直连）；评估入口唯一（`scripts/eval.py`），禁止各实验自写统计。
+规范要点：① **conda 环境统一命名 Alirst**（`environment.yml` 锁版本：PyTorch 2.x + cuda 12.x、ncps（CfC 参考实现）、hydra-core、tqdm、opencv、motmetrics、thop），全部运行命令以 `conda activate Alirst && python main.py ...` 为准；② `tests/` 套件（官方评分/配准/CfC 形状/manifest/编码器引出点/掩码解析六件）进 CI 冒烟（1 窗 32 帧 CPU 上 < 2 分钟跑通 train→infer→eval 全链）；③ 每次实验自动快照 config + manifest hash + git commit（main.py 启动时同步打印）；④ checkpoint 命名 `{stage}_{seed}_{epoch}.pt`，EMA 与 raw 分开保存；⑤ 启动入口分工：根目录 `main.py` 为一键启动入口（打印配置/权重加载 → 按轮训练（进度条）→ 自动衔接评估），`scripts/train.py` 保留为直连训练脚本（共用同一训练逻辑，供流水线与调试直连）；评估入口唯一（`scripts/eval.py`），禁止各实验自写统计。
 
 ### 9.2 里程碑计划（总周期 ≈ 14 周，2×RTX 4090）
 
 | 里程碑 | 周期 | 工作内容 | 验收标准（Gate） | 交付物 |
 | --- | --- | --- | --- | --- |
-| **M0 基建** | 第 1 周 | Alirst 环境搭建（environment.yml 锁版本）、main.py 一键入口 + scripts/train.py 训练脚本骨架（配置/权重打印、轮进度条）、ITTD/IRDST/SIATD 下载与校验、manifest 生成、官方属性表落库与**划分重平衡（1.3/1.6 节 → manifest v2）**、官方评分复刻器 + 合成用例 | 复刻器三组用例通过；manifest 断言通过；重平衡前后分布对照表入库；main.py 1 轮 dry-run 正常打印配置与权重状态且进度条推进 | Alirst environment.yml、main.py + scripts/train.py、ittd_official_attributes.csv、manifest v2、evaluator |
+| **M0 基建** | 第 1 周 | Alirst 环境搭建（environment.yml 锁版本）、main.py 一键入口 + scripts/train.py 训练脚本骨架（配置/权重打印、轮进度条）、ITTD/IRDST/SIATD 下载与校验、manifest 生成、seg_dataset 预检（check_seg_dataset.py：对齐率/压制实例/框一致性）、官方属性表落库与**划分重平衡（1.3/1.6 节 → manifest v2）**、官方评分复刻器 + 合成用例 | 复刻器三组用例通过；manifest 断言通过；seg_dataset 预检对齐率 ≥ 99%；重平衡前后分布对照表入库；main.py 1 轮 dry-run 正常打印配置与权重状态且进度条推进 | Alirst environment.yml、main.py + scripts/train.py、ittd_official_attributes.csv、manifest v2、evaluator |
 | **M1 预处理** | 第 2–3 周 | 2.2–2.9 全流程实现与缓存构建、QC 可视化 | 配准成功率 ≥ 98%、RMSE P95 ≤ 0.5 px、吞吐 ≥ 200 帧/s | 全量缓存 + QC 报告 |
 | **M2 基线** | 第 4–5 周 | 复现 MSHNet（单帧）与一个离散时序基线（多尺度帧差 + 3D conv，等参数量）；跑通 eval 全链 | 两基线在 val-int 指标入库，F1 与文献同量级（±3pt） | 基线 checkpoint + 指标基线表 |
 | **M3 双状态核心** | 第 6–8 周 | 4.2–4.8 实现（先单尺度后双尺度）、截断 BPTT、τ 监控、单状态 vs 双状态首消融 | 训练 50k 无 NaN；τ_B 中位数 ∈ [24,128] 且 τ_T ∈ [3,12]；F_a 较单状态降 ≥ 30% @同 P_d | DSLD-core ckpt + τ 曲线图 |
 | **M4 门控与抑制** | 第 9–10 周 | 5.1–5.6 实现、软/硬门控对比、内外环闭环、阈值校准 | strong_clutter 子集 F_a 较单帧基线降 ≥ 10×；BSF ≥ 2.0、SCRG ≥ 1.5 | 门控 ckpt + ROC/BSF 报告 |
 | **M5 跟踪一体化** | 第 11 周 | 6.1–6.6 实现、航迹级阈值对官方代价校准 | val-official 总分 ≥ 最优多帧基线 + 2%；IDsw ≤ 基线 | 端到端 ckpt + 官方分报告 |
-| **M6 消融与泛化** | 第 12–13 周 | 消融 a–f（单/双状态、τ 分立/共享、有无门控、减性/乘性、CfC/GRU、跨场景 day→dusk 与内→外）+ IRDST-Real/ITSDT-15K zero-shot + 3 seeds | 消融表完整、置信区间给出；跨场景 F_a 劣化 ≤ 3×（基线 ≥ 10×） | 全部消融表（论文 Table 骨架） |
+| **M6 消融与泛化** | 第 12–13 周 | 消融 a–l（a–f：单/双状态、τ 分立/共享、有无门控、减性/乘性、CfC/GRU、跨场景 day→dusk 与内→外；g–l：空域形态判据、ROI 判别头、L_seg 监督口径、教师掩码课程、L_aux 有无、掩码精修——10.8/10.9）+ IRDST-Real/ITSDT-15K zero-shot + 3 seeds | 消融表完整、置信区间给出；跨场景 F_a 劣化 ≤ 3×（基线 ≥ 10×） | 全部消融表（论文 Table 骨架） |
 | **M7 产出** | 第 14 周 | 难例挖掘两轮收官、分子集报告、可解释性图（τ 曲线/α 图/FP 直方图）、模型导出 | 8.5 全部 Gate 复核通过；论文级图表齐备 | 终版模型库 + 技术报告 + 论文初稿图表包 |
 
 ### 9.3 算力与资源预算
@@ -768,7 +772,7 @@ D:\DBLIRST\DSLD\
 | --- | --- |
 | 方法图（框架/单元/门控） | 4.1、5.2 结构图（M4 出图） |
 | 主结果表 | 8.1 三层指标 + 分子集（M5/M7） |
-| 消融表 a–f | 3.5、M6 |
+| 消融表 a–l | 3.5、10.8/10.9、M6 |
 | 机理证据图 | τ_B/τ_T 有效值随场景曲线、α 门控热图序列、FP 挖掘直方图（M4/M7） |
 | 效率对比 | 4.7 参数表 + FPS 实测（M7） |
 
@@ -792,7 +796,7 @@ D:\DBLIRST\DSLD\
 **核心回答：不做输入级硬划分。"背景输入"是功能性定义——慢动力学能预测的部分即背景；分离由"时间尺度先验 + 监督分工 + 教师掩码 + 推理自举"四层机制完成。**
 
 1. **结构先验层**：两通道初始接收同一归一化观测，差异在动力学时间尺度被硬约束（τ_B ∈ [16,256] 帧使 h_B 只能拟合缓变成分，τ_T ∈ [2,16] 帧使 h_T 只对瞬变敏感）。目标通道输入 x_T = x − ŷ_B 不是预先挑好的"目标"，而是**慢动力学的预测新息**（经典 Kalman 新息检测的可学习版）："背景输入"= 慢通道能解释的，"目标输入"= 慢通道解释不了的残差。
-2. **监督分工层**：时间尺度先验只提供可分性，角色分配靠损失完成——L_recon（仅非目标区）逼 ŷ_B 贴合背景；L_seg/L_cons 逼目标响应集中在 GT 轨迹；L_dec 防两通道坍缩为同一函数（4.7 节）。
+2. **监督分工层**：时间尺度先验只提供可分性，角色分配靠损失完成——L_recon（仅非目标区）逼 ŷ_B 贴合背景；L_seg/L_cons 逼目标响应集中在 GT 轨迹；L_dec 防两通道坍缩为同一函数（7.1 节）。
 3. **教师掩码层（v1.2 新增）**：训练期 M_tgt 直接取 SAM2.1 GT 掩码膨胀结果，背景通道从结构上"从未见过"目标像素，杜绝慢通道把真目标学成背景的退化解；训练后期按课程混合自生成掩码（前期教师 100% → 后期 50/50），使推理期自反馈闭环与训练条件一致（消融 j）。
 4. **推理自举层**：预热 8 帧内两通道同吃原始输入、α 缓存不判决；残差峰形成候选，M-of-N（3/5 帧）确认后自反馈掩码才激活。**时序自洽**：τ_B ≥ 16 帧意味着慢通道把目标"吸收"进 ŷ_B 至少需 16 帧，而确认逻辑在第 8–13 帧即建立掩码保护——先有保护、后有吸收风险，"先有鸡还是先有蛋"在此时序窗口内被结构性化解。
 5. **永不硬分离**：输出 y = α⊙(x−ŷ_B) 是软归因，全流程不存在"该像素属于背景输入还是目标输入"的二值判决；消融 (a) 单状态对照验证双状态必要性。
@@ -860,9 +864,11 @@ D:\DBLIRST\DSLD\
 
 **v1.6 修订**：新增 **1.6 属性标定规程**——manifest 字段三分类（确定性断言 / 官方权威源 / 统计抽验），scene/daytime 由官方论文附录 1 逐段权威给定（解析为 `ittd_official_attributes.csv`，87/87 校验 + split 交叉验证），全部属性字段强制 provenance/confidence；**实测发现并触发 1.3 划分重平衡**（val-int 全为傍晚、train-int 无外场傍晚），M0 执行对调产出 manifest v2；difficulty tags 中 5 个改由官方列直接映射（crossing/occlusion/static_target/distractor_present/motion_blur），3 个保持自动计算。
 
+**v1.6.1 修订（一致性梳理）**：跨版本遗留不一致修正——① 6.2 状态机图与 6.5 遮挡行、3.4 表 I、3.6 YAML 补 lost 态与 T_lost=60（对齐 10.6，废弃 delete_c=15 旧口径）；② 6.4 航迹质量分补乘 cls_score（对齐 10.7）；③ 5.3 判决链标注框回归头为检测主路、显著图链降为辅助（对齐 6.1/10.9）；④ 7.4 负样本来源补纯背景窗（对齐 10.9）；⑤ M6 与 9.5 消融范围 a–f 扩为 a–l（对齐 10.8/10.9）；⑥ 1.5 JSON 标注 v1 示意 + 3.6 manifest 指向 v2（对齐 1.3）；⑦ 10.1 误引"4.7 节"改"7.1 节"；⑧ 9.1 仓库树补 encoder_ghostnetv2.py 与 test_encoder_taps.py/test_mask_loader.py、规范要点②改六件套；⑨ M0 内容补 seg_dataset 预检；⑩ 10.9 消融 (k) 与 (i) 关系澄清。
+
 **新增消融**：(g) 静止/同速子集上空域形态判据有无对比；(h) ROI 判别头有无对干扰虚警的影响；(i) 掩码监督 vs 框填充监督；(j) 教师掩码课程 vs 纯自反馈掩码。
 
-**M0 增补任务**：本地数据集完整性校验；SAM2.1 掩码 QC（`scripts/check_seg_dataset.py` 预检：对齐率/压制实例/JSON 框-XML 框一致性 + 抽样可视化）；确认干扰目标（行人/电瓶车）标注是否存在。（v1.5：seg_dataset 布局已实测固化，原"目录结构探查"任务取消）
+**M0 增补任务**：本地数据集完整性校验；SAM2.1 掩码 QC（`scripts/check_seg_dataset.py` 预检：对齐率/压制实例/JSON 框-XML 框一致性 + 抽样可视化）；确认干扰目标（行人/电瓶车）标注是否存在；官方属性表落库（ittd_official_attributes.csv）与划分重平衡（1.3/1.6 → manifest v2）。（v1.5：seg_dataset 布局已实测固化，原"目录结构探查"任务取消）
 
 ### 10.9 分割辅助检测与预测框输出（v1.4）
 
@@ -896,7 +902,7 @@ seg_dataset/
 
 **评测主口径升级（8.1）**：IoU≥0.5 框级匹配下的 **Precision / Recall / F1、AP50 与 mAP@[.5:.95]**（COCO 式全点插值；`dsld/eval/map_iou.py` 实现，pycocotools 交叉校验；G-检测门限见 8.5）。三层指标体系更新为：**框级检测（IoU/mAP/P/R）+ 虚警抑制（F_a/BSF/SCRG）+ 航迹（官方分/IDF1）**；中心命中口径保留为辅助诊断。
 
-**新增消融**：(k) 有无 L_aux 掩码辅助监督对 mAP/F_a 的影响；(l) 掩码 logits 框精修开/关。
+**新增消融**：(k) 有无 L_aux 掩码辅助监督对 mAP/F_a 的影响；(l) 掩码 logits 框精修开/关。（(k) 是 v1.2 消融 (i) 在 v1.4 架构下的细化——掩码监督现经辅助头 L_aux 实现；(i) 保留为 L_seg 监督目标用框填充 vs 用实例掩码的口径对比，两者不重复。）
 
 ---
 
@@ -948,7 +954,7 @@ def train(model, cfg):
 state = None                                     # h_T/h_B/M_tgt/r_T 跨窗携带
 for win in sliding_windows(seq, T=32, stride=24):
     outs = dsld_core(win, state=state); state = outs.state
-    S = upsample4(outs.alpha * (win - outs.y_b)) # 全分辨率显著图
+    S = upsample4(outs.alpha * (win - outs.y_b)) # 全分辨率显著图(中心校验/抑制层统计用)
     if warmup_frames(win): continue              # 每窗前 8 帧预热不判决
     cands = box_head_decode(outs)                # v1.4: FCOS 框解码 + centerness 过滤 + 峰值中心校验
     cands = nms_iou(mask_refine(cands), 0.5)     # v1.4: 掩码精修(可选) + IoU NMS
