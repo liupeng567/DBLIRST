@@ -53,6 +53,15 @@ train:
   optim: {name: adamw, lr: 3.0e-4, wd: 0.01, warmup: 1000, cosine_min: 3.0e-5}
   amp: bf16               # 门控/τ/状态更新在核心内强制 fp32（4.8-①）
   loss: {seg: 1.0, recon: 0.5, decouple: 0.1}   # 7.1：M3 先接入 ①②③
+  quick_eval:             # 7.5：val-int 固定子集（前 4 段 × 5 固定起点窗）快评，
+    enabled: true         #   每every优化步记录 F_a@P_d/BSF代理/α 分布/τ 分位 → metrics.jsonl
+    every: 2500
+    n_seqs: 4
+    n_windows: 5
+  early_stop:             # 表 T 早停（F_a@P_d 最小化，patience 8 个快评周期）；
+    enabled: false        #   M3 Gate 取证期保持 false（min_steps 前不判停），阶段 B 微调开启
+    patience: 8
+    min_steps: 10000
 
 infer:
   threshold: {k: 3.0, alpha_th: 0.5}

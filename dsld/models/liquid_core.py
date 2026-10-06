@@ -231,7 +231,9 @@ class DualStateLiquidCore(nn.Module):
     def tau_report(self) -> dict[str, float]:
         """τ 监控（4.8 / M3 Gate：τ_B 中位 ∈[24,128]，τ_T ∈[3,12]）。逐单元分位数。"""
         def qs(v: torch.Tensor) -> dict[str, float]:
-            p = torch.quantile(v, torch.tensor([0.1, 0.5, 0.9], dtype=v.dtype))
+            p = torch.quantile(v.detach().float(),
+                               torch.tensor([0.1, 0.5, 0.9], dtype=torch.float32,
+                                            device=v.device))
             return {"p10": round(float(p[0]), 2), "median": round(float(p[1]), 2),
                     "p90": round(float(p[2]), 2)}
 

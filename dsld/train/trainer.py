@@ -345,6 +345,166 @@ def _dsld_core_loss(
     return loss, parts
 
 
+QUICK_THR = [0.3, 0.5, 0.7, 0.9]  # 快评精简阈值扫描（全链 7 点）
+
+
+def _quick_eval(
+    model: nn.Module,
+    cfg,
+    device: str,
+    manifest_path: str | None = None,
+    cache_root: str | None = None,
+) -> dict:
+    """方案 7.5 快评：val-int 固定子集（前 n_seqs 段 × n_windows 个固定起点窗）。
+
+    口径与 eval 全链一致：窗口对齐锚点 → 前向 → 概率回投原始帧坐标（预热帧不计）
+    → IoU≥0.5 框级 P/R/F1 + F_a 双口径 + F_a@P_d=0.90 工作点（复用 fa_at_pd90 同一
+    实现）。另记录：背景吸收监控（背景残差 RMS、残差 SCR=目标框/背景残差——M3 无
+    抑制图的过渡口径，方案 8.1 的 BSF/SCRG 待 M4 以 5.3 抑制图重算）、α 分布
+    （临时门控图统计）、τ 分位数。子集与起点确定性（np.linspace 固定），跨期可比；
+    子集描述（seq_id+starts）随记录落盘。
+    """
+    import cv2
+    import numpy as np
+
+    from dsld.data.manifest import load_manifest
+    from dsld.data.preprocess.normalize import correct_frame, normalize_frame
+    from dsld.data.preprocess.register import (
+        is_identity_warp,
+        warp_frame,
+        window_anchor_warps,
+    )
+    from dsld.eval.infer_seq import gt_boxes_from_cache, load_seq_cache
+    from dsld.eval.map_iou import evaluate_boxes
+    from dsld.eval.mask_to_boxes import Box, mask_to_boxes
+
+    T = int(cfg.train.window.T)
+    warmup = min(8, max(1, T // 4))  # T=32 → 8（2.5 推理口径）；小 T 冒烟按比例
+    qe = cfg.train.get("quick_eval") or {}
+    n_seqs = int(qe.get("n_seqs", 4))
+    n_windows = int(qe.get("n_windows", 5))
+    manifest_path = manifest_path or str(REPO / "data" / "manifests" / str(cfg.data.manifest))
+    cache_root = cache_root or str(cfg.data.get("cache_root", REPO / "data" / "cache" / "ittd"))
+    manifest = load_manifest(manifest_path)
+    seqs = manifest["splits"]["val-int"]["seqs"][:n_seqs]
+
+    all_boxes: dict[float, list] = {t: [] for t in QUICK_THR}
+    all_gts: list[Box] = []
+    n_frames_eval = 0
+    alpha_all: list[float] = []
+    bg_resid_all: list[float] = []
+    bg_frac_all: list[float] = []
+    resid_scr_all: list[float] = []
+    subset_desc: list[dict] = []
+
+    was_training = model.training
+    model.eval()
+    try:
+        with torch.no_grad():
+            for sid in seqs:
+                cache = load_seq_cache(cache_root, int(sid), with_reg=True)
+                frames_u8 = cache["frames"]
+                n, H_img, W_img = frames_u8.shape
+                starts = np.linspace(0, n - T, n_windows).astype(int)  # 固定起点
+                subset_desc.append({"seq_id": int(sid), "starts": starts.tolist()})
+                for s in starts:
+                    Ws = window_anchor_warps(cache["reg"], int(s), T)
+                    win = np.empty((T, H_img, W_img), np.float32)
+                    for j in range(T):
+                        f = s + j
+                        xc = correct_frame(np.asarray(frames_u8[f]), cache["nuc"], cache["dead"])
+                        win[j] = normalize_frame(xc, float(cache["stats"][f, 0]),
+                                                 float(cache["stats"][f, 1]))
+                    for j in range(1, T):
+                        if not is_identity_warp(Ws[j]):
+                            win[j] = warp_frame(win[j], Ws[j])
+                    x = torch.from_numpy(win[:, None])[None].to(device)
+                    out = model(x, quality=None)
+                    logits = out["logits"] if isinstance(out, dict) else out
+                    prob = torch.sigmoid(logits.float()[0, :, 0]).cpu().numpy()  # [T,H,W]
+                    # 输出回投原始帧坐标（与 infer_temporal 同一语义）
+                    for j in range(warmup, T):
+                        if not is_identity_warp(Ws[j]):
+                            prob[j] = cv2.warpAffine(
+                                prob[j], np.asarray(Ws[j], np.float32), (W_img, H_img),
+                                flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REPLICATE)
+                    alpha = out["alpha"].float().cpu().numpy()  # [1,T,1,h,w]
+                    alpha_all.extend(
+                        float(v) for v in alpha[0, warmup:, 0].ravel()[::16])  # 抽样 1/16
+                    # 背景吸收监控（M3 口径，无标度）：背景残差 RMS + 残差 SCR
+                    # （GT 框内残差均值 / 背景残差中位——目标应高残差、背景应被吸收；
+                    #   方案 8.1 的 BSF/SCRG 需抑制图，M4 起以 5.3 输出重算）
+                    x_main = out["x_main"][0, -1].float().cpu().numpy()  # [C,h,w]
+                    resid = np.abs(x_main - out["y_b"][0, -1].float().cpu().numpy()).mean(0)
+                    m_tgt = out["m_tgt"][0, -1, 0].float().cpu().numpy()
+                    gt2 = np.zeros_like(resid)
+                    fno_last = int(s + T)  # 末帧 1-based 帧号
+                    for f, x1, y1, x2, y2 in cache["labels"]["boxes"]:
+                        if int(f) == fno_last:
+                            gt2[max(y1 // 2, 0):y2 // 2 + 1, max(x1 // 2, 0):x2 // 2 + 1] = 1.0
+                    # 背景集合只按 GT 排除（m_tgt 随训练扩散会把背景集合挤空，指标退化）
+                    bg = gt2 < 0.5
+                    if bg.sum() > 100:
+                        bg_med = float(np.median(resid[bg]))
+                        bg_resid_all.append(float(np.sqrt((resid[bg] ** 2).mean())))
+                        bg_frac_all.append(float(bg.mean()))
+                        if gt2.sum() > 0:
+                            resid_scr_all.append(float(resid[gt2 > 0.5].mean()
+                                                       / max(bg_med, 1e-6)))
+                    for j in range(warmup, T):
+                        fno = int(s + j + 1)  # 1-based 帧号
+                        for t in QUICK_THR:
+                            all_boxes[t].extend(
+                                mask_to_boxes(prob[j], frame=fno, thr=t, min_area=4))
+                        n_frames_eval += 1
+                    valid = {int(s + j + 1) for j in range(warmup, T)}
+                    all_gts.extend(g for g in gt_boxes_from_cache(cache) if g.frame in valid)
+    finally:
+        model.train(was_training)
+
+    sweep = [evaluate_boxes(all_boxes[t], all_gts, n_frames_eval) for t in QUICK_THR]
+    primary = next(s for s in sweep if s["iou_thr"] == 0.5)
+    from scripts.eval_baseline import fa_at_pd90  # 同一工作点实现，口径零偏差
+
+    pd90 = fa_at_pd90(sweep)
+    rec = {
+        "n_seqs": len(seqs), "n_frames": n_frames_eval, "n_gt": len(all_gts),
+        "subset": subset_desc,
+        "primary": primary, "thr_sweep": sweep,
+        "fa_frm_pd90": round(pd90["fa_frm"], 6),
+        "fa_pix_e6_pd90": round(pd90["fa_pix_e6"], 4),
+        "recall_pd90": round(pd90["recall"], 6),
+        "pd90_available": bool(pd90.get("available", False)),
+        "bg_resid_rms": round(float(np.median(bg_resid_all)), 6) if bg_resid_all else 0.0,
+        "bg_frac": round(float(np.median(bg_frac_all)), 4) if bg_frac_all else 0.0,
+        "resid_scr": round(float(np.median(resid_scr_all)), 4) if resid_scr_all else 0.0,
+        "alpha_mean": round(float(np.mean(alpha_all)), 4) if alpha_all else 0.0,
+        "alpha_frac_high": (round(float(np.mean(np.array(alpha_all) > 0.5)), 4)
+                            if alpha_all else 0.0),
+        "alpha_p99": (round(float(np.percentile(alpha_all, 99)), 4)
+                      if alpha_all else 0.0),
+    }
+    if cfg.model.type == "dsld_core":
+        rec.update(model.tau_report())
+    return rec
+
+
+def early_stop_step(state: dict, fa_frm: float, es_cfg: dict) -> bool:
+    """表 T 早停（纯函数）：监控 F_a@P_d 最小化，patience 个 eval 周期无改善即停。
+
+    state = {"best": float, "patience": int}（原地更新）；fa_frm=inf（P_d 未达
+    0.90 的 eval 周期）不计改善只计耐心。返回 True 表示应终止训练。
+    """
+    if not es_cfg.get("enabled", False):
+        return False
+    patience = int(es_cfg.get("patience", 8))
+    if fa_frm < state["best"] - 1e-9:
+        state["best"], state["patience"] = fa_frm, 0
+        return False
+    state["patience"] += 1
+    return state["patience"] >= patience
+
+
 def run_training(cfg) -> dict:
     """完整训练入口：返回轮历史摘要。train.resume 指向 ckpt 时断点续训。"""
     t_start = time.strftime("%Y-%m-%d %H:%M:%S")
@@ -401,6 +561,13 @@ def run_training(cfg) -> dict:
     history = []
     outer = tqdm(range(start_epoch + 1, cfg.train.epochs + 1), desc="epoch", position=0)
     global_step = resume_step
+    qe_cfg = OmegaConf.to_container(cfg.train.quick_eval, resolve=True) \
+        if cfg.train.get("quick_eval") else {}
+    es_cfg = OmegaConf.to_container(cfg.train.early_stop, resolve=True) \
+        if cfg.train.get("early_stop") else {}
+    es_state = {"best": float("inf"), "patience": 0}
+    es_min_steps = int(es_cfg.get("min_steps", 0))
+    stopped = False
     for epoch in outer:
         model.train()
         pbar = tqdm(loader, desc=f"train {epoch}", position=1, leave=False)
@@ -448,6 +615,32 @@ def run_training(cfg) -> dict:
                     sched.step()
                 optim.zero_grad()
                 global_step += 1
+                # 7.5 快评：每 every 优化步在 val-int 固定子集快评（dsld_core）
+                if (qe_cfg.get("enabled", False) and cfg.model.type == "dsld_core"
+                        and global_step > 0 and global_step % int(qe_cfg.get("every", 2500)) == 0):
+                    qrec = {"kind": "quick_eval", "time": time.strftime("%H:%M:%S"),
+                            "epoch": epoch, "step": global_step,
+                            **_quick_eval(model, cfg, device)}
+                    with open(metrics_path, "a", encoding="utf-8") as fp:
+                        fp.write(json.dumps(qrec) + "\n")
+                    tqdm.write(
+                        f"[quick_eval @step {global_step}] "
+                        f"P_d={qrec['recall_pd90']:.3f} F_a_frm@pd90={qrec['fa_frm_pd90']:.4f}"
+                        f"（可达={qrec['pd90_available']}）"
+                        f" F1@0.5={qrec['primary']['f1']:.3f}"
+                        f" 背景残差RMS={qrec['bg_resid_rms']:.4f}"
+                        f" 残差SCR={qrec['resid_scr']:.2f} α均值={qrec['alpha_mean']:.3f}"
+                        f" τ_B={qrec.get('tau_b_median', '-')} τ_T={qrec.get('tau_t_median', '-')}")
+                    if global_step >= es_min_steps and early_stop_step(
+                            es_state, qrec["fa_frm_pd90"] if qrec["pd90_available"] else float("inf"),
+                            es_cfg):
+                        tqdm.write(f"[early_stop] 连续 {es_state['patience']} 个快评周期 F_a@P_d "
+                                   f"无改善（best={es_state['best']:.4f}），第 {epoch} 轮终止")
+                        stopped = True
+            if stopped:
+                break
+        if stopped:
+            break
             total_loss += loss.item()
             n_steps += 1
             mem = torch.cuda.memory_allocated() / 2**30 if device == "cuda" else 0.0
