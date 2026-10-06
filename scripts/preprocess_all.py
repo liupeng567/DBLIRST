@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 import time
 from multiprocessing import Pool
@@ -43,8 +44,11 @@ from dsld.data.preprocess.normalize import (  # noqa: E402
 from dsld.data.preprocess.register import register_sequence  # noqa: E402
 
 REPO = Path(__file__).resolve().parents[1]
-ITTD_ROOT = Path(r"D:\Datasets\面向空地应用的红外时敏目标检测跟踪数据集")
-SEG_ROOT = Path(r"D:\Datasets\kongdixiaomubiaodataset\seg_dataset")
+# 路径可被环境变量覆盖（云端 Linux 重预处理用；默认保持本机 D:\ 路径）
+ITTD_ROOT = Path(os.environ.get(
+    "DSLD_ITTD_ROOT", r"D:\Datasets\面向空地应用的红外时敏目标检测跟踪数据集"))
+SEG_ROOT = Path(os.environ.get(
+    "DSLD_SEG_ROOT", r"D:\Datasets\kongdixiaomubiaodataset\seg_dataset"))
 H, W, N_FRAMES = 480, 640, 250
 FRAMES_PER_SEQ = N_FRAMES
 
