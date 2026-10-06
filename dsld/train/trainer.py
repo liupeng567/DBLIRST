@@ -637,10 +637,6 @@ def run_training(cfg) -> dict:
                         tqdm.write(f"[early_stop] 连续 {es_state['patience']} 个快评周期 F_a@P_d "
                                    f"无改善（best={es_state['best']:.4f}），第 {epoch} 轮终止")
                         stopped = True
-            if stopped:
-                break
-        if stopped:
-            break
             total_loss += loss.item()
             n_steps += 1
             mem = torch.cuda.memory_allocated() / 2**30 if device == "cuda" else 0.0
@@ -648,6 +644,10 @@ def run_training(cfg) -> dict:
                 loss=f"{loss.item():.4f}", lr=f"{optim.param_groups[0]['lr']:.2e}",
                 mem=f"{mem:.2f}G", gn=f"{float(gn):.2f}",
             )
+            if stopped:
+                break
+        if stopped:
+            break
         avg = total_loss / max(1, n_steps)
         rec = {
             "time": time.strftime("%H:%M:%S"), "epoch": epoch,
