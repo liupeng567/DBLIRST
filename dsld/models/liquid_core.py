@@ -229,14 +229,19 @@ class DualStateLiquidCore(nn.Module):
             return outs
 
     def tau_report(self) -> dict[str, float]:
-        """τ 监控（4.8 / M3 Gate：τ_B 中位 ∈[24,128]，τ_T ∈[3,12]）。"""
-        def med(v: torch.Tensor) -> float:
-            return round(float(v.median()), 2)
+        """τ 监控（4.8 / M3 Gate：τ_B 中位 ∈[24,128]，τ_T ∈[3,12]）。逐单元分位数。"""
+        def qs(v: torch.Tensor) -> dict[str, float]:
+            p = torch.quantile(v, torch.tensor([0.1, 0.5, 0.9], dtype=v.dtype))
+            return {"p10": round(float(p[0]), 2), "median": round(float(p[1]), 2),
+                    "p90": round(float(p[2]), 2)}
 
         out: dict[str, float] = {}
         if self.mode == "dual":
-            out["tau_b_median"] = med(self.ch_bg.tau())
-            out["tau_t_median"] = med(self.ch_tg.tau())
+            for k, v in qs(self.ch_bg.tau()).items():
+                out[f"tau_b_{k}"] = v
+            for k, v in qs(self.ch_tg.tau()).items():
+                out[f"tau_t_{k}"] = v
         else:
-            out["tau_single_median"] = med(self.ch_tg.tau())
+            for k, v in qs(self.ch_tg.tau()).items():
+                out[f"tau_single_{k}"] = v
         return out
