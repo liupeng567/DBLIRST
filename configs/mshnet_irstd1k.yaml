@@ -1,0 +1,29 @@
+# M2-L1 文献复现层：MSHNet @ IRSTD-1k（官方管线全口径对拍）
+# 目标：mIoU 67.87 / P_d 92.86 / F_a 8.88e-6（官方 README 重检版），±3pt Gate
+defaults:
+  - base
+  - _self_
+
+experiment:
+  name: mshnet_irstd1k_L1
+  stage: L1
+
+model:
+  type: mshnet
+  in_ch: 3            # 官方 RGB（灰度图 convert('RGB') 复制三通道）
+
+data:
+  source: irstd1k     # 走 Irstd1k 官方数据管线（trainval 800，256²，ImageNet 归一化）
+  mode: frame
+  irstd1k_root: D:/Datasets/IRSTD-1k/IRSTD-1k
+  manifest: ittd_split_v3.json   # 占位（print_environment 用，IRSTD-1k 不消费）
+
+train:
+  epochs: 400         # 官方口径（200 step/轮 × 400 = 80k step）
+  save_every: 100
+  warm_epoch: 5
+  grad_clip: 0.0
+  amp: none
+  window: {T: 1}
+  batch: {windows_per_gpu: 4, accum: 1}   # 官方 batch=4
+  optim: {name: adagrad, lr: 0.05}        # 官方优化器
