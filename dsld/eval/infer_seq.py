@@ -2,30 +2,44 @@
 
 推理约定（方案 2.5 / 3.4）：
   - 原生 640×480 分辨率，不缩放；
-  - MSHNet 单帧：逐帧前向（批内多帧仅是加速）；
-  - T-MSD3D 时序：滑窗 T=32、步距 24、窗尾补窗；每窗前 8 帧为预热，输出不参与
-    判决；重叠覆盖帧取 sigmoid 概率平均（2.5"α 图平均"口径）。
+  - MSHNet 单帧：逐帧前向（批内多帧仅是加速），原始帧坐标（与 frame 模式训练一致）；
+  - T-MSD3D 时序 / DSLD：滑窗 T=32、步距 24、窗尾补窗；每窗前 8 帧为预热，输出不
+    参与**判决**；重叠覆盖帧取 sigmoid 概率平均（2.5"α 图平均"口径）；
+  - 时序窗口与训练侧同口径对齐：每窗对齐到窗口首帧（锚点，align_to_anchor 复合
+    reg.npz + WARP_INVERSE_MAP），模型输出（锚点坐标系）再按同一 W **回投原始帧
+    坐标**后再做重叠平均与 GT 对比（输入侧 INVERSE_MAP 采样对齐 / 输出侧默认正向
+    回投，同一矩阵的两次语义）。
+
 归一化与训练侧同一实现（correct_frame + normalize_frame），无域偏移。
 """
 
 from __future__ import annotations
 
+import cv2
 import numpy as np
 import torch
 
 from dsld.data.preprocess.normalize import correct_frame, normalize_frame
+from dsld.data.preprocess.register import (
+    is_identity_warp,
+    warp_frame,
+    window_anchor_warps,
+)
 from dsld.eval.mask_to_boxes import Box, mask_to_boxes
 
 
-def load_seq_cache(cache_root: str, seq_id: int) -> dict:
+def load_seq_cache(cache_root: str, seq_id: int, with_reg: bool = False) -> dict:
     d = f"{cache_root}/seq_{seq_id:04d}"
-    return {
+    out = {
         "frames": np.load(f"{d}/frames.u8.npy", mmap_mode="r"),
         "stats": np.load(f"{d}/norm_stats.npy"),
         "nuc": np.load(f"{d}/nuc_field.npy").astype(np.float32),
         "dead": np.load(f"{d}/deadpix.npy"),
         "labels": np.load(f"{d}/labels.npz"),
     }
+    if with_reg:  # 时序推理窗口对齐用（M1 口径：bridge_M 跨块复合）
+        out["reg"] = dict(np.load(f"{d}/reg.npz"))
+    return out
 
 
 def normalize_seq(seq: dict) -> np.ndarray:
@@ -56,9 +70,15 @@ def infer_mshnet(
 
 @torch.no_grad()
 def infer_temporal(
-    model, seq: dict, device: str, T: int = 32, stride: int = 24, warmup: int = 8
+    model, seq: dict, device: str, T: int = 32, stride: int = 24, warmup: int = 8,
+    align: bool = True,
 ) -> np.ndarray:
-    """时序基线：滑窗推理 + 预热排除 + 重叠平均。返回 [N,H,W]（前 warmup 帧为 0）。"""
+    """时序基线：滑窗推理 + 预热排除 + 重叠平均。返回 [N,H,W]（前 warmup 帧为 0）。
+
+    align=True（默认）：每窗输入先对齐到窗口首帧锚点（与训练侧 IttdWindows 同口径），
+    输出概率图再回投原始帧坐标后参与重叠平均——回投 = warpAffine(同 W，默认正向)。
+    """
+    reg = seq.get("reg") if align else None
     frames = torch.from_numpy(normalize_seq(seq))
     n = len(frames)
     model.eval()
@@ -69,9 +89,25 @@ def infer_temporal(
     if not starts or starts[-1] != n - T:
         starts.append(n - T)  # 尾窗补齐（覆盖末尾帧）
     for s in starts:
-        x = frames[s : s + T, None][None]  # [1,T,1,H,W]
-        logits = model(x.to(device))  # [1,T,1,H,W]
+        Ws = window_anchor_warps(reg, s, T) if reg is not None else None
+        win = frames[s : s + T].numpy()
+        if Ws is not None:
+            for j in range(1, T):
+                if not is_identity_warp(Ws[j]):
+                    win[j] = warp_frame(win[j], Ws[j])
+        x = torch.from_numpy(win[:, None])[None]  # [1,T,1,H,W]
+        out = model(x.to(device))
+        logits = out["logits"] if isinstance(out, dict) else out
         prob = torch.sigmoid(logits.float()[0, :, 0]).cpu().numpy()  # [T,H,W]
+        if Ws is not None:
+            # 输出回投原始帧坐标：回投与输入对齐同一 W（默认正向语义）
+            for j in range(warmup, T):
+                if not is_identity_warp(Ws[j]):
+                    h, w = prob[j].shape
+                    prob[j] = cv2.warpAffine(
+                        prob[j], np.asarray(Ws[j], np.float32), (w, h),
+                        flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REPLICATE,
+                    )
         valid = prob[warmup:]  # 前 warmup 帧预热不判决
         prob_sum[s + warmup : s + T] += valid
         prob_cnt[s + warmup : s + T] += 1

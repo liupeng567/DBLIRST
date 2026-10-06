@@ -80,6 +80,11 @@ def align_to_anchor(M_t, ref_t: int, M_a, ref_a: int, bridge_M) -> np.ndarray:
         跨块（ref_t > ref_a）：    W = M_t ∘ B[ref_t] ∘ … ∘ B[ref_a+25] ∘ M_a⁻¹
 
     T=32 窗最多跨 1 个边界，复合链 ≤3 个矩阵；要求 t ≥ anchor（窗口锚定首帧）。
+
+    桥缺失（NaN）语义：register_sequence 对平坦参考块跳过桥估计（M1 缓存中的已知
+    缺口），此时该桥取恒等并**继续复合链**（平坦块本身即按"恒等即正确对齐"标注，
+    register.py:260）——不能 break，否则后续 M_t 会作用在错误的参考坐标系上。
+    配准失败的桥在缓存中已存为恒等（bridge_rmse=inf），不经过此分支。
     """
     def hom(M):
         return np.vstack([np.asarray(M, np.float64), [0, 0, 1]])
@@ -88,12 +93,53 @@ def align_to_anchor(M_t, ref_t: int, M_a, ref_a: int, bridge_M) -> np.ndarray:
     r = ref_a
     while r < ref_t:                     # ref_a → ref_t 逐级过桥
         nxt = r + CFG["ref_every"]
-        if nxt > len(bridge_M) - 1 or np.isnan(bridge_M[nxt][0, 0]):
+        if nxt > len(bridge_M) - 1:
             break                        # 无桥可依（不应发生），退化为不跨
-        W = hom(bridge_M[nxt]) @ W
+        B = bridge_M[nxt]
+        if np.isnan(B[0, 0]):
+            B = _identity()              # 平坦块缺口 → 恒等续链，保持参考系列一致
+        W = hom(B) @ W
         r = nxt
     W = hom(M_t) @ W                     # ref_t → t
     return W[:2]
+
+
+IDENT2 = np.array([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0]], dtype=np.float64)
+
+
+def is_identity_warp(W: np.ndarray, atol: float = 1e-3) -> bool:
+    """准恒等判定（静态相机序列整窗免重采样，避免双重插值模糊）。"""
+    return bool(np.allclose(np.asarray(W, np.float64), IDENT2, atol=atol))
+
+
+def window_anchor_warps(reg, start: int, T: int) -> np.ndarray:
+    """窗口 [start, start+T) 各帧对齐到锚点帧 start 的采样矩阵 [T,2,3]。
+
+    reg 为载入的 reg.npz（dict，含 M/ref_idx/bridge_M）或 RegResult。返回的
+    Ws[i] 满足 warpAffine(frame_{start+i}, Ws[i], flags=…|WARP_INVERSE_MAP) 输出
+    即锚点坐标系帧；Ws[0] 恒为恒等（锚点帧本身不重采样）。要求 start+T ≤ N。
+    """
+    M = reg["M"] if isinstance(reg, dict) else reg.M
+    ref_idx = reg["ref_idx"] if isinstance(reg, dict) else reg.ref_idx
+    bridge = reg["bridge_M"] if isinstance(reg, dict) else reg.bridge_M
+    n = len(M)
+    if start < 0 or start + T > n:
+        raise IndexError(f"窗口 [{start},{start+T}) 越界（N={n}）")
+    Ws = np.repeat(IDENT2[None], T, axis=0).astype(np.float64)
+    ref_a = int(ref_idx[start])
+    for i in range(1, T):
+        t = start + i
+        Ws[i] = align_to_anchor(M[t], int(ref_idx[t]), M[start], ref_a, bridge)
+    return Ws
+
+
+def warp_frame(img: np.ndarray, W: np.ndarray, border_mode: int = cv2.BORDER_REPLICATE) -> np.ndarray:
+    """把 img 按采样矩阵 W 对齐到锚点坐标系（WARP_INVERSE_MAP 采样，register.py 约定）。"""
+    h, w = img.shape[:2]
+    return cv2.warpAffine(
+        img, np.asarray(W, np.float32), (w, h),
+        flags=cv2.INTER_LINEAR | cv2.WARP_INVERSE_MAP, borderMode=border_mode,
+    )
 
 
 def _identity() -> np.ndarray:

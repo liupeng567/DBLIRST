@@ -133,7 +133,7 @@ def load_checkpoint(model: nn.Module, ckpt: str | None, optimizer=None) -> tuple
 
 
 def build_model(cfg) -> nn.Module:
-    """按 cfg.model.type 分发：dryrun（M0）/ mshnet·msd3d（M2 基线）。"""
+    """按 cfg.model.type 分发：dryrun（M0）/ mshnet·msd3d（M2 基线）/ dsld_core（M3）。"""
     mtype = cfg.model.type
     if mtype == "dryrun":
         from dsld.models.dryrun_net import DryRunNet
@@ -149,7 +149,25 @@ def build_model(cfg) -> nn.Module:
         ch = cfg.model.get("channels", None)
         return TemporalBaseline(in_ch=cfg.model.get("in_ch", 1),
                                 channels=tuple(ch) if ch else None)
-    raise RuntimeError(f"model.type={mtype} 未实现（DSLD 液态核心于 M3 接入）")
+    if mtype == "dsld_core":
+        from dsld.models.dsld_core import DsldCore
+
+        liq = cfg.model.liquid
+        return DsldCore(
+            in_ch=cfg.model.get("in_ch", 1),
+            width=cfg.model.encoder.get("width", 1.0),
+            c_main=cfg.model.neck.get("c_main", 32),
+            c_h=liq.get("h", 32),
+            liquid_mode=liq.get("mode", "dual"),
+            tau_b=tuple(liq.tau_b.get(k) for k in ("min", "max", "init")),
+            tau_t=tuple(liq.tau_t.get(k) for k in ("min", "max", "init")),
+            mask_radius=cfg.model.feedback.get("mask_radius", 5),
+            mask_decay=cfg.model.feedback.get("mask_decay", 0.9),
+            alpha_th=cfg.model.feedback.get("alpha_th", 0.5),
+            detach_every=liq.get("detach_every", 0),
+            use_checkpoint=liq.get("use_checkpoint", False),
+        )
+    raise RuntimeError(f"model.type={mtype} 未实现")
 
 
 def build_dataloader(cfg) -> DataLoader:
@@ -216,6 +234,16 @@ def _make_optimizer(cfg, model: nn.Module):
     if name == "adagrad":
         # MSHNet 官方口径：Adagrad，恒定 lr（自适应累积自带衰减）
         return torch.optim.Adagrad(model.parameters(), lr=cfg.train.optim.lr)
+    # AdamW（表 T）：wd 不作用于 τ/门控偏置/GN——1 维参数（偏置、归一化、θ_τ/θ_β）全免 wd
+    if cfg.model.type == "dsld_core":
+        decay, no_decay = [], []
+        for n, p in model.named_parameters():
+            (no_decay if p.ndim <= 1 else decay).append(p)
+        return torch.optim.AdamW(
+            [{"params": decay, "weight_decay": cfg.train.optim.wd},
+             {"params": no_decay, "weight_decay": 0.0}],
+            lr=cfg.train.optim.lr,
+        )
     return torch.optim.AdamW(
         model.parameters(), lr=cfg.train.optim.lr, weight_decay=cfg.train.optim.wd
     )
@@ -279,6 +307,33 @@ def _baseline_loss(
     return loss / (len(aux) + 1)
 
 
+def _dsld_core_loss(
+    model: nn.Module,
+    x: torch.Tensor,
+    target: torch.Tensor,
+    quality: torch.Tensor | None,
+    weights: dict,
+) -> tuple[torch.Tensor, dict]:
+    """M3 DSLD 损失（7.1 ①②③）：L = λ₁·L_seg + λ₂·L_recon + λ₃·L_dec。
+
+    核心输出 fp32（4.8-①），损失在 autocast 外按 fp32 计算。
+    返回 (loss, 分量表)。
+    """
+    from dsld.train.losses import decouple_loss, focal_dice_loss, recon_loss
+
+    out = model(x, quality=quality)
+    seg = focal_dice_loss(out["logits"], target)
+    rec = recon_loss(out["y_b"], out["x_main"], out["m_tgt"], target)
+    parts = {"seg": float(seg), "recon": float(rec)}
+    loss = weights.get("seg", 1.0) * seg + weights.get("recon", 0.5) * rec
+    if model.liquid_mode == "dual":  # 单状态无解耦对象（消融 a 对照）
+        dec = decouple_loss(out["h_t"], out["h_b"])
+        loss = loss + weights.get("decouple", 0.1) * dec
+        parts["decouple"] = float(dec)
+    parts["total"] = float(loss)
+    return loss, parts
+
+
 def run_training(cfg) -> dict:
     """完整训练入口：返回轮历史摘要。train.resume 指向 ckpt 时断点续训。"""
     t_start = time.strftime("%Y-%m-%d %H:%M:%S")
@@ -340,6 +395,7 @@ def run_training(cfg) -> dict:
         pbar = tqdm(loader, desc=f"train {epoch}", position=1, leave=False)
         total_loss = 0.0
         n_steps = 0
+        loss_parts: dict | None = None
         optim.zero_grad()
         for step, batch in enumerate(pbar, 1):
             x = batch["windows"].to(device, non_blocking=True)
@@ -347,6 +403,21 @@ def run_training(cfg) -> dict:
             if cfg.model.type == "dryrun":  # M0 链路验证占位损失，保持不变
                 out = model(x)
                 loss = nn.functional.l1_loss(out, target)
+            elif cfg.model.type == "dsld_core":
+                quality = batch.get("quality")
+                if quality is not None:
+                    quality = quality.to(device, non_blocking=True)
+                with torch.autocast(
+                    device_type="cuda", dtype=amp_dtype, enabled=amp_dtype is not None
+                ):
+                    loss, loss_parts = _dsld_core_loss(
+                        model, x, target, quality,
+                        OmegaConf.to_container(cfg.train.loss, resolve=True)
+                        if cfg.train.get("loss") else {},
+                    )
+                if not torch.isfinite(loss):  # M3 Gate：训练 50k 无 NaN，坏步立即终止定位
+                    raise RuntimeError(
+                        f"loss NaN/Inf @ epoch{epoch} step{step} parts={loss_parts}")
             else:
                 with torch.autocast(
                     device_type="cuda", dtype=amp_dtype, enabled=amp_dtype is not None
@@ -379,6 +450,11 @@ def run_training(cfg) -> dict:
             "loss_avg": round(avg, 6), "lr": optim.param_groups[0]["lr"],
             "steps": n_steps, "global_step": global_step,
         }
+        if cfg.model.type == "dsld_core":  # τ 监控（M3 Gate 证据链）+ 范数 + 分量
+            rec.update(model.tau_report())
+            rec.update({f"norm_{k}": round(v, 4) for k, v in model.core.last_norms.items()})
+            if loss_parts:
+                rec.update({f"loss_{k}": round(v, 6) for k, v in loss_parts.items()})
         history.append(rec)
         with open(metrics_path, "a", encoding="utf-8") as fp:
             fp.write(json.dumps(rec) + "\n")

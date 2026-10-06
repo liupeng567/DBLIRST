@@ -172,3 +172,54 @@ class TestRegisterFrame:
                                  flags=cv2.INTER_LINEAR | cv2.WARP_INVERSE_MAP)
         d_same = float(np.abs(warped2 - seq[22]).mean())
         assert d_same < 0.6 * float(np.abs(seq[24] - seq[22]).mean())
+
+
+# ---- 窗口采样器对齐（M2 修复：NaN 桥续链 + window_anchor_warps） ----------------
+
+def test_align_to_anchor_nan_bridge_continues_chain():
+    """平坦参考块跳过桥估计（M1 缓存缺口，bridge_M=NaN）→ 恒等续链而非 break。
+
+    反例构造：anchor 在平坦块 0（M=I），target 在块 50，中间块 25 的桥 NaN、
+    块 50 的桥真实。若 break，则 W 漏乘 B[50]，坐标系错一级。
+    """
+    hom = lambda A: np.vstack([np.asarray(A, np.float64), [0, 0, 1]])
+    B50 = affine(0.0, 1.0, 3.0, -2.0)          # ref_25 → ref_50 的真实桥（2×3）
+    Mt = affine(0.0, 1.0, 1.0, 1.0)            # ref_50 → 第 55 帧
+    Ma = np.array([[1.0, 0, 0], [0, 1.0, 0]])  # 平坦块内 M = 恒等
+    n = 60
+    bridge = np.full((n, 2, 3), np.nan)
+    bridge[50] = B50
+    W = align_to_anchor(Mt, 50, Ma, 0, bridge)
+    expect = (hom(Mt) @ hom(B50) @ np.linalg.inv(hom(Ma)))[:2]
+    assert np.allclose(W, expect, atol=1e-9), "NaN 桥未按恒等续链复合"
+
+
+def test_window_anchor_warps_synthetic_translation():
+    """单块纯平移序列：window_anchor_warps 对每帧回收锚点帧内容。"""
+    ref = make_texture(240, 320)
+    ref = cv2.GaussianBlur(ref, (0, 0), 2.0)  # 平滑纹理：隔离双线性重采样误差与几何对齐
+    n = 40
+    frames = [ref.astype(np.float32)]
+    dts = [(0.5 * t, 0.25 * t) for t in range(1, n)]
+    for dx, dy in dts:
+        A = affine(0.0, 1.0, dx, dy)
+        frames.append(cv2.warpAffine(ref, A, (320, 240)).astype(np.float32))
+    seq = np.stack(frames)
+    M = np.zeros((n, 2, 3), np.float32)
+    M[0] = [[1, 0, 0], [0, 1, 0]]
+    for t, (dx, dy) in enumerate(dts, 1):
+        M[t] = [[1, 0, dx], [0, 1, dy]]
+    reg = {"M": M, "ref_idx": np.zeros(n, np.int32),
+           "bridge_M": np.full((n, 2, 3), np.nan)}
+
+    from dsld.data.preprocess.register import window_anchor_warps, is_identity_warp
+
+    Ws = window_anchor_warps(reg, 0, 32)
+    assert Ws.shape == (32, 2, 3)
+    assert is_identity_warp(Ws[0]), "锚点帧自身必须恒等"
+    for t in range(1, 32):
+        warped = cv2.warpAffine(seq[t], Ws[t], (320, 240),
+                                flags=cv2.INTER_LINEAR | cv2.WARP_INVERSE_MAP)
+        d = float(np.abs(warped - seq[0]).mean())
+        d_raw = float(np.abs(seq[t] - seq[0]).mean())
+        assert d < max(0.25 * d_raw, 1.2), f"帧 {t} 对齐失败: {d:.3f} vs raw {d_raw:.3f}"

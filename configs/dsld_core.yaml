@@ -1,0 +1,58 @@
+# DSLD 双状态液态核心（M3，方案 3.6 模板落地；单尺度先行，门控 M4 接入）
+experiment:
+  name: dsld_core_m3
+  stage: B
+
+model:
+  type: dsld_core
+  in_ch: 1
+  encoder:
+    type: ghostnetv2      # 截断至 stride-8，S1/S2/S3 = 16/24/40 @ /2,/4,/8（表 M 原值）
+    width: 1.0
+  neck:
+    c_main: 32            # stride-2 主尺度（with_region 双尺度于 M3 后期开启）
+  liquid:
+    mode: dual            # dual|single（消融 a：单状态对照）
+    h: 32                 # h_T = h_B = 32 @ stride-2（表 M）
+    tau_b: {min: 16, max: 256, init: 48}   # 4.2 硬约束，log 域 clip
+    tau_t: {min: 2, max: 16, init: 6}
+    detach_every: 0       # 截断 BPTT：>0 每 N 步切图（消融用；显存回退优先用 checkpoint）
+    use_checkpoint: true  # 逐帧梯度检查点：T=32 全幅 BPTT 8GB 卡可训（实测见 M3 报告）
+  feedback:
+    mask_radius: 5        # 4.5 内环：高 α 峰值膨胀半径
+    mask_decay: 0.9       # 反馈掩码逐帧衰减
+    alpha_th: 0.5         # "高 α 峰值"阈值（表 I 门控阈）
+
+data:
+  manifest: ittd_split_v2.json
+  seg_root: D:/Datasets/kongdixiaomubiaodataset/seg_dataset
+  ittd_root: D:/Datasets/面向空地应用的红外时敏目标检测跟踪数据集
+  val_official_read_only: true
+  mode: window            # 时序窗口（整窗对齐锚点，M1 bridge_M 口径）
+  split: train-int
+  T: 32
+  stride: 8
+  crop: null              # 原生 480×640 全幅（小目标禁止降采样推理/训练）
+  augment: true
+  align: true             # 窗口对齐开关（消融/对照可关）
+  num_workers: 0          # Windows DataLoader IPC 病态（M2 实测 workers>0 反而 11s/step）
+  limit_seqs: 0
+
+train:
+  seed: 0
+  epochs: 2               # 占位防误启动；全量按 7.2-B 40k step ≈178 轮显式指定
+  save_every: 1
+  grad_clip: 1.0          # 液态递推防梯度爆炸（表 T 必选）
+  ckpt: null
+  resume: null
+  warm_epoch: 5           # （仅 M2 SLSIoU 口径使用）
+  window: {T: 32, stride: 8}
+  batch:
+    windows_per_gpu: 4    # 显存 OOM 时回退 2×accum4
+    accum: 2
+  optim: {name: adamw, lr: 3.0e-4, wd: 0.01, warmup: 1000, cosine_min: 3.0e-5}
+  amp: bf16               # 门控/τ/状态更新在核心内强制 fp32（4.8-①）
+  loss: {seg: 1.0, recon: 0.5, decouple: 0.1}   # 7.1：M3 先接入 ①②③
+
+infer:
+  threshold: {k: 3.0, alpha_th: 0.5}

@@ -133,13 +133,14 @@ def eval_split(
     subset_gt: dict[str, list] = defaultdict(list)
     subset_frames: dict[str, int] = defaultdict(int)
     for sid in seqs:
-        cache = load_seq_cache(cache_root, sid)
+        cache = load_seq_cache(cache_root, sid, with_reg=model_type != "mshnet")
         n_frames = int(meta_by_id[sid]["n_frames"])
         n_frames_total += n_frames
         if model_type == "mshnet":
             prob = infer_mshnet(model, cache, device)
         else:
-            prob = infer_temporal(model, cache, device, T=32, stride=24, warmup=8)  # 方案 2.5 推理约定
+            # 方案 2.5 推理约定；时序窗口与训练侧同口径对齐（reg.npz bridge_M 复合）
+            prob = infer_temporal(model, cache, device, T=32, stride=24, warmup=8)
         boxes_by_thr = boxes_at_thresholds(prob, THR_SWEEP)
         for t, bl in boxes_by_thr.items():
             all_boxes[t].extend(bl)
