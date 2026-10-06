@@ -89,19 +89,39 @@ def test_feedback_mask_decay_and_dilation():
 
 
 def test_feedback_mask_alpha_threshold():
-    """α_th 语义 + 零初始化中性门：α≡0.5 不越过 α_th=0.5（背景不被打码）。"""
+    """评审 2.1：gate 偏置 −2 初始化，α 基线 ≈0.119 与 α_th=0.5 解耦（不再刀刃）。"""
     core = DualStateLiquidCore(c_in=4, c_h=8, mask_radius=2, mask_decay=0.9,
                                alpha_th=0.5)
     core.eval()
     out = core(torch.rand(1, 3, 4, 16, 16))
-    # 零初始化 gate_head ⇒ α≡0.5，(α>0.5)=空 ⇒ 掩码恒 0
-    assert torch.allclose(out["alpha"], torch.full_like(out["alpha"], 0.5), atol=1e-6)
-    assert float(out["m_tgt"].abs().max()) == 0.0
+    # 偏置 −2 + 零权重 ⇒ α≡σ(−2)≈0.119（远离阈值 0.5，训练早期抖动不可能成片越阈）
+    assert torch.allclose(out["alpha"], torch.full_like(out["alpha"], 0.1192029),
+                          atol=1e-4)
+    assert float(out["m_tgt"].abs().max()) == 0.0  # 掩码零起步，双通道输入不被窒息
+    assert float(core.last_norms["m_frac"]) == 0.0
+    assert abs(float(core.last_norms["alpha_mean"]) - 0.1192029) < 1e-4
     # 偏置抬高（模拟确认响应）：α≈0.88 > 阈 → 掩码全 1
     with torch.no_grad():
         core.gate_head.bias.fill_(2.0)
     out = core(torch.rand(1, 3, 4, 16, 16))
     assert float(out["m_tgt"].min()) == 1.0
+
+
+def test_effective_tau_and_bound_f():
+    """评审 2.3：tau_report 输出动力学空间有效时间常数；bound_f 使 τ/|f| 有下界。"""
+    core = DualStateLiquidCore(c_in=4, c_h=8)
+    core.eval()
+    rep = core(torch.rand(1, 3, 4, 16, 16)) or None
+    r = core.tau_report()
+    assert "eff_tau_b" in r and "eff_tau_t" in r and r["eff_tau_b"] > 0
+    # 自由 f：网络可学 f∝τ 抵消 clip（监控可见，无结构保证）
+    bound = DualStateLiquidCore(c_in=4, c_h=8, bound_f=0.5)
+    bound.eval()
+    bound(torch.rand(1, 3, 4, 16, 16))
+    rb = bound.tau_report()
+    # bound_f=0.5 ⇒ |f|≤0.5 ⇒ eff_tau = τ/|f| ≥ τ/0.5 = 2τ
+    assert rb["eff_tau_b"] >= 2 * rb["tau_b_median"] - 1e-6
+    assert rb["eff_tau_t"] >= 2 * rb["tau_t_median"] - 1e-6
 
 
 def test_dual_vs_single_modes_forward():
@@ -166,6 +186,20 @@ def test_dsld_core_forward_backward_smoke():
     assert g is not None and torch.isfinite(g).all()  # τ 收到梯度（消融 b 前提）
     n = sum(p.numel() for p in m.parameters())
     assert n < 5e6  # 方案硬闸门：Params ≤ 5M
+
+
+def test_recon_loss_valid_frac_sentinel():
+    """评审 2.1：recon_loss 暴露有效像素占比（静默零可观测）。"""
+    from dsld.train.losses import recon_loss as rl_fn
+
+    B, T = 1, 2
+    x = torch.zeros(B, T, 1, 32, 32)
+    y_b = torch.zeros(B, T, 1, 32, 32)
+    box = torch.zeros(B, T, 1, 64, 64)
+    rl_fn(y_b, x, torch.zeros(B, T, 1, 32, 32), box)
+    assert getattr(rl_fn, "last_valid_frac", 0.0) > 0.99  # 无排除 → 几乎全有效
+    rl_fn(y_b, x, torch.zeros(B, T, 1, 32, 32), torch.ones(B, T, 1, 64, 64))
+    assert getattr(rl_fn, "last_valid_frac", 1.0) < 1e-3  # 全排除 → 哨兵≈0
 
 
 def test_recon_loss_excludes_target_and_top_residual():

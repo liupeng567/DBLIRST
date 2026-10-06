@@ -125,9 +125,10 @@ def main() -> int:
     }
 
     gate_success = (1 - n_failed / max(1, total_frames - n_flat)) >= 0.98
-    gate_rmse = float(np.percentile(rmse_p95, 100)) <= 0.5 if len(rmse_p95) else False
-    # 全帧 RMSE P95（跨段聚合口径：各段 P95 的最大值 ≤ 0.5）
-    gate_rmse = bool(rmse_p95.max() <= 0.5)
+    # Gate② 诚实语义（评审 2.2a）：rmse_p95 现为 KLT 帧像素域分位，但 KLT 仅在
+    # RMSE≤0.5 时被接受——本 Gate 验证的是"接受门限被满足"（循环口径），独立精度
+    # 证据见 M1 扩展审计（背景残差中位 1.42 灰度级、热图峰距 GT 中心 99.9%≤2px）
+    gate_rmse = bool(rmse_p95.max() <= 0.5) if len(rmse_p95) else False
     gate_nonzero = bool(((nz_mean >= 0.05) & (nz_mean <= 0.95)).all())
 
     # ④ 热图峰值一致性（抽 12 段 × 每 10 帧检查，全量太慢）
@@ -234,8 +235,8 @@ def main() -> int:
         "| Gate | 结果 | 数值 |", "| --- | --- | --- |",
         f"| ① 配准成功率 ≥98% | {'PASS' if gate_success else 'FAIL'} | "
         f"{report['reg']['success_rate_overall']:.4%}（失败 {n_failed} 帧 / 平坦 {n_flat} 帧另计） |",
-        f"| ② RMSE P95 ≤0.5px | {'PASS' if gate_rmse else 'FAIL'} | "
-        f"逐段 P95 最大 {rmse_p95.max():.3f}px |",
+        f"| ② KLT 帧像素 RMSE P95 ≤0.5px（接受门限满足性，非独立精度证据） | "
+        f"{'PASS' if gate_rmse else 'FAIL'} | 逐段 P95 最大 {rmse_p95.max():.3f}px |",
         f"| ③ 非零占比 ∈[5%,95%] | {'PASS' if gate_nonzero else 'FAIL'} | "
         f"段均值范围 [{nz_mean.min():.3f}, {nz_mean.max():.3f}] |",
         f"| ④ 热图峰值=框数 ≥99% | {'PASS' if gate_peaks else 'FAIL'} | "

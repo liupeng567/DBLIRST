@@ -2,8 +2,12 @@
 
 设计要点（对照方案条文）：
   - CfC 更新（4.2）：p = σ(−f·Δt/τ − β·α_prev)，h' = p⊙g + (1−p)⊙m；
-    τ 在 log 域硬 clip 到 [τ_min, τ_max]（背景 [16,256] init 48，目标 [2,16] init 6），
-    双状态时间尺度分立假设由结构保证（消融 b 去约束）。
+    τ 在 log 域硬 clip 到 [τ_min, τ_max]（背景 [16,256] init 48，目标 [2,16] init 6）。
+    **诚实边界（评审 2.3）**：τ 的硬 clip 只约束参数空间；有效时间尺度是 f·Δt/τ，
+    f 为自由的 1×1 卷积输出，网络可学 f∝τ 抵消 clip——结构上真正分立双状态的只有
+    ①级联输入（h_T 只吃残差）与 ②τ 初始化/clip 的先验。因此 Gate 必须测有效速率：
+    tau_report 同时输出 eff_tau = τ/|f|（动力学空间），liquid.bound_f>0 时对 f 施加
+    tanh 上界使 τ/|f| ≥ τ/bound_f 成为结构性质（消融决定是否启用）。
   - 逐位置算子（4.6）：f/g/m 全部 1×1 conv（[h, x_in] 拼接输入），空间全并行、
     时间维 Python 串行；输入前 3×3 depthwise conv 提供邻域上下文。
   - 级联（4.3/4.4）：x_B = x⊙(1−M)（内环掩码清零）→ h_B → ŷ_B →
@@ -41,8 +45,11 @@ class _LiquidChannel(nn.Module):
     """单条液态通道：f/g/m 1×1 头 + log 域 τ 硬约束 + 可选保持项 + 逐头 FiLM。"""
 
     def __init__(self, c_in: int, c_h: int, tau_min: float, tau_max: float,
-                 tau_init: float, keep: bool = False, scene_dim: int = 5):
+                 tau_init: float, keep: bool = False, scene_dim: int = 5,
+                 f_bound: float = 0.0):
         super().__init__()
+        self.f_bound = float(f_bound)  # >0 时 f = bound·tanh(f/bound)，使 τ/|f| ≥ τ/bound
+        self.last_f_abs = 1.0  # 最近一帧 mean|f|（有效速率监控用，动力学空间）
         self.f_head = nn.Conv2d(c_in + c_h, c_h, 1)
         self.g_head = nn.Conv2d(c_in + c_h, c_h, 1)
         self.m_head = nn.Conv2d(c_in + c_h, c_h, 1)
@@ -76,6 +83,10 @@ class _LiquidChannel(nn.Module):
             o = o * (1.0 + gamma[:, :, None, None]) + beta[:, :, None, None]
             outs.append(o)
         f, g, m = outs
+        if self.f_bound > 0:
+            f = self.f_bound * torch.tanh(f / self.f_bound)
+        with torch.no_grad():  # 有效速率监控（评审 2.3）：门控速率 = |f|·Δt/τ
+            self.last_f_abs = float(f.abs().mean())
         tau = self.tau()  # [C_h]，fp32
         gate = -f * (dt / tau[None, :, None, None])
         if self.keep and alpha_prev is not None:
@@ -133,6 +144,7 @@ class DualStateLiquidCore(nn.Module):
         alpha_th: float = 0.5,
         detach_every: int = 0,
         use_checkpoint: bool = False,
+        bound_f: float = 0.0,
         scene_dim: int = 5,
     ):
         super().__init__()
@@ -149,20 +161,26 @@ class DualStateLiquidCore(nn.Module):
         self.bg_head = nn.Conv2d(c_h, c_in, 1)  # ŷ_B：背景一步预测（特征域）
         self.gate_head = nn.Conv2d(c_in + c_h, 1, 1)  # M3 临时门控（M4 换三重门控）
         nn.init.zeros_(self.gate_head.weight)
-        nn.init.zeros_(self.gate_head.bias)  # 零初始化：α≡0.5 中性起步，峰值语义由 α_th 控制
+        # 偏置 −2：α 初始 ≈ σ(−2) = 0.119，与 α_th=0.5 阈值解耦。评审 2.1 教训：
+        # 零初始化（α≡0.5）+ 严格 > 0.5 判定是刀刃条件——训练一拍后 α 以 0.0003 裕度
+        # 越阈（smoke_qe 实测 frac_high=0.94+），反馈掩码铺满全图 → 双通道输入 ≈0
+        #（自我窒息）→ L_recon 有效像素为空静默归零。低置信起步 = "无证据不掩码"。
+        nn.init.constant_(self.gate_head.bias, -2.0)
         # 分割头（7.1①）：输入 [α⊙(x−ŷ_B), h_T]（64ch @ 1.0×），监督直接施加在
         # 物理抑制通路上，梯度同时回传门控与双状态
         self.seg_head = nn.Conv2d(c_in + c_h, 1, 1)
         if mode == "dual":
-            self.ch_bg = _LiquidChannel(c_in, c_h, *tau_b, keep=False, scene_dim=scene_dim)
-            self.ch_tg = _LiquidChannel(c_in, c_h, *tau_t, keep=True, scene_dim=scene_dim)
+            self.ch_bg = _LiquidChannel(c_in, c_h, *tau_b, keep=False, scene_dim=scene_dim,
+                                        f_bound=bound_f)
+            self.ch_tg = _LiquidChannel(c_in, c_h, *tau_t, keep=True, scene_dim=scene_dim,
+                                        f_bound=bound_f)
         else:  # 消融 a：单状态（τ 范围并集，无结构分立）
             tau_single = (min(tau_b[0], tau_t[0]), max(tau_b[1], tau_t[1]),
                           math.sqrt(tau_b[2] * tau_t[2]))
             self.ch_bg = None
             self.ch_tg = _LiquidChannel(c_in, c_h, *tau_single, keep=True,
-                                        scene_dim=scene_dim)
-        self.last_norms: dict[str, float] = {}  # 4.8-③ 隐状态范数监控（最近一窗）
+                                        scene_dim=scene_dim, f_bound=bound_f)
+        self.last_norms: dict[str, float] = {}  # 4.8-③ 隐状态范数 + 掩码/门控运行统计
 
     # ---- 单帧递推 ----------------------------------------------------------
     def _step_frame(self, h_t, h_b, x, M, alpha_prev, scene, t, T):
@@ -182,10 +200,12 @@ class DualStateLiquidCore(nn.Module):
             y_b = self.bg_head(h_t)
             x_res = x - y_b
         alpha = torch.sigmoid(self.gate_head(torch.cat([x_res, h_t], dim=1)))
-        with torch.no_grad():  # 4.8-③ 范数监控（方案阈：>100 触发检查）
+        with torch.no_grad():  # 4.8-③ 范数监控（方案阈：>100 触发检查）+ 窒息哨兵
             self.last_norms = {
                 "h_t_rms": float(h_t.pow(2).mean().sqrt()),
                 "h_b_rms": float(h_b.pow(2).mean().sqrt()),
+                "m_frac": float(M.mean()),        # 反馈掩码覆盖率：>0.5 即窒息告警
+                "alpha_mean": float(alpha.mean()),  # 门控基线（init ≈ 0.119）
             }
         return h_t, h_b, y_b, alpha, x_res
 
@@ -243,7 +263,13 @@ class DualStateLiquidCore(nn.Module):
                 out[f"tau_b_{k}"] = v
             for k, v in qs(self.ch_tg.tau()).items():
                 out[f"tau_t_{k}"] = v
+            # 动力学空间有效时间常数 τ/|f|（评审 2.3：θ_τ 分位是参数空间量，
+            # Gate 的尺度分离证据必须看有效速率；比值 eff_b/eff_t 才是分立度）
+            out["eff_tau_b"] = round(out["tau_b_median"] / max(self.ch_bg.last_f_abs, 1e-3), 2)
+            out["eff_tau_t"] = round(out["tau_t_median"] / max(self.ch_tg.last_f_abs, 1e-3), 2)
         else:
             for k, v in qs(self.ch_tg.tau()).items():
                 out[f"tau_single_{k}"] = v
+            out["eff_tau_single"] = round(
+                out["tau_single_median"] / max(self.ch_tg.last_f_abs, 1e-3), 2)
         return out

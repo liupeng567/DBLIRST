@@ -74,9 +74,11 @@ def fa_at_pd90(sweep: list[dict]) -> dict:
         best = max(sweep, key=lambda s: s["recall"])
         return {"available": False, "note": f"P_d=0.90 未达（最高 R={best['recall']:.3f}）",
                 "recall": best["recall"], "fa_frm": best["fa_frm"],
-                "fa_pix_e6": best["fa_pix_e6"], "thr": best["iou_thr"]}
+                "fa_pix_e6": best["fa_pix_e6"],
+                "thr": best.get("conf_thr", best["iou_thr"])}
     best = min(ok, key=lambda s: s["fa_frm"])
-    return {"available": True, "thr": best["iou_thr"], "recall": best["recall"],
+    return {"available": True, "thr": best.get("conf_thr", best["iou_thr"]),
+            "recall": best["recall"],
             "fa_frm": best["fa_frm"], "fa_pix_e6": best["fa_pix_e6"],
             "precision": best["precision"], "f1": best["f1"]}
 
@@ -189,7 +191,8 @@ def eval_split(
     # 主阈值指标 + AP + 阈值扫描
     primary = evaluate_boxes(all_boxes[PRIMARY_THR], all_gts, n_frames_total)
     ap = evaluate_ap(all_boxes[PRIMARY_THR], all_gts)
-    sweep = [evaluate_boxes(all_boxes[t], all_gts, n_frames_total) for t in THR_SWEEP]
+    sweep = [{**evaluate_boxes(all_boxes[t], all_gts, n_frames_total), "conf_thr": t}
+             for t in THR_SWEEP]
     result = {
         "split": split,
         "n_seqs": len(seqs), "n_frames": n_frames_total,

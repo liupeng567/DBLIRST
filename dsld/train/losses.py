@@ -119,6 +119,8 @@ def focal_dice_loss(pred_log: torch.Tensor, target: torch.Tensor,
 def recon_loss(y_b: torch.Tensor, x_feat: torch.Tensor, m_tgt: torch.Tensor,
                target_box: torch.Tensor, box_dilate: int = 3,
                top_ratio: float = 0.05) -> torch.Tensor:
+    """有效像素占比记录在 recon_loss.last_valid_frac（评审 2.1：有效像素为空时本函数
+    返回 0 不告警，背景通道监督静默消失——调用方须检查该属性并在指标中落盘）。"""
     """L_recon（7.1②）：L1(ŷ_B, x)，仅在背景掩码内计算。
 
     排除三类像素（防背景通道吸收目标/亮点虚警）：
@@ -144,8 +146,10 @@ def recon_loss(y_b: torch.Tensor, x_feat: torch.Tensor, m_tgt: torch.Tensor,
     k = int(v_flat.shape[-1] * top_ratio)
     if k > 0:
         thr = r_flat.topk(k, dim=-1).values[..., -1:]  # [B,T,1]
-        v_flat = v_flat * (r_flat < thr)
+        # `<=`：并列值（如平场残差全零）不整片剔除——top-5% 是软守卫不是精确截断
+        v_flat = v_flat * (r_flat <= thr)
     valid = v_flat.view(B, T, 1, H, W)
+    recon_loss.last_valid_frac = float(valid.mean())  # 窒息哨兵：≈0 即反馈掩码铺满全图
     denom = (valid.sum() * x_feat.shape[2]).clamp_min(1.0)  # 逐元素均值（含通道维）
     return ((x_feat - y_b).abs() * valid).sum() / denom
 

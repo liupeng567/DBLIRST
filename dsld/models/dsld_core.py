@@ -77,6 +77,7 @@ class DsldCore(nn.Module):
         alpha_th: float = 0.5,
         detach_every: int = 0,
         use_checkpoint: bool = False,
+        bound_f: float = 0.0,
         out_scale: int = 2,  # logits 上采样倍率（stride-2 → 原生）
     ):
         super().__init__()
@@ -86,7 +87,7 @@ class DsldCore(nn.Module):
         self.core = DualStateLiquidCore(
             c_in=c_main, c_h=c_h, mode=liquid_mode, tau_b=tau_b, tau_t=tau_t,
             mask_radius=mask_radius, mask_decay=mask_decay, alpha_th=alpha_th,
-            detach_every=detach_every, use_checkpoint=use_checkpoint,
+            detach_every=detach_every, use_checkpoint=use_checkpoint, bound_f=bound_f,
         )
         self.out_scale = out_scale
         self.liquid_mode = liquid_mode

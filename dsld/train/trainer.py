@@ -169,6 +169,7 @@ def build_model(cfg) -> nn.Module:
             alpha_th=cfg.model.feedback.get("alpha_th", 0.5),
             detach_every=liq.get("detach_every", 0),
             use_checkpoint=liq.get("use_checkpoint", False),
+            bound_f=liq.get("bound_f", 0.0),
         )
     raise RuntimeError(f"model.type={mtype} 未实现")
 
@@ -335,7 +336,8 @@ def _dsld_core_loss(
     out = model(x, quality=quality)
     seg = focal_dice_loss(out["logits"], target)
     rec = recon_loss(out["y_b"], out["x_main"], out["m_tgt"], target)
-    parts = {"seg": float(seg), "recon": float(rec)}
+    parts = {"seg": float(seg), "recon": float(rec),
+             "recon_valid_frac": round(getattr(recon_loss, "last_valid_frac", 1.0), 6)}
     loss = weights.get("seg", 1.0) * seg + weights.get("recon", 0.5) * rec
     if model.liquid_mode == "dual":  # 单状态无解耦对象（消融 a 对照）
         dec = decouple_loss(out["h_t"], out["h_b"])
@@ -462,8 +464,9 @@ def _quick_eval(
     finally:
         model.train(was_training)
 
-    sweep = [evaluate_boxes(all_boxes[t], all_gts, n_frames_eval) for t in QUICK_THR]
-    primary = next(s for s in sweep if s["iou_thr"] == 0.5)
+    sweep = [{**evaluate_boxes(all_boxes[t], all_gts, n_frames_eval), "conf_thr": t}
+             for t in QUICK_THR]
+    primary = next(s for s in sweep if s["conf_thr"] == 0.5)
     from scripts.eval_baseline import fa_at_pd90  # 同一工作点实现，口径零偏差
 
     pd90 = fa_at_pd90(sweep)
@@ -568,6 +571,22 @@ def run_training(cfg) -> dict:
     es_state = {"best": float("inf"), "patience": 0}
     es_min_steps = int(es_cfg.get("min_steps", 0))
     stopped = False
+    recon_warned = False
+
+    def save_ckpt(name: str, epoch_no: int) -> None:
+        torch.save(
+            {
+                "model": model.state_dict(),
+                "optimizer": optim.state_dict(),
+                "epoch": epoch_no,
+                "global_step": global_step,
+                "cfg": OmegaConf.to_container(cfg),
+                "history": history,
+            },
+            ckpt_dir / name,
+        )
+        tqdm.write(f"[ckpt] 已保存 {ckpt_dir / name}（含优化器状态，可断点续训）")
+
     for epoch in outer:
         model.train()
         pbar = tqdm(loader, desc=f"train {epoch}", position=1, leave=False)
@@ -636,7 +655,14 @@ def run_training(cfg) -> dict:
                             es_cfg):
                         tqdm.write(f"[early_stop] 连续 {es_state['patience']} 个快评周期 F_a@P_d "
                                    f"无改善（best={es_state['best']:.4f}），第 {epoch} 轮终止")
+                        save_ckpt(f"{cfg.experiment.stage}_{cfg.train.seed}_earlystop.pt",
+                                  epoch)  # 早停轮必须落盘（评审 次要#3）
                         stopped = True
+            if (not recon_warned and loss_parts
+                    and loss_parts.get("recon_valid_frac", 1.0) < 0.01):
+                tqdm.write(f"[WARN] L_recon 有效像素占比 {loss_parts['recon_valid_frac']:.4f}"
+                           " < 1%——反馈掩码疑似铺满全图（通道窒息），检查 norm_m_frac / alpha_mean")
+                recon_warned = True
             total_loss += loss.item()
             n_steps += 1
             mem = torch.cuda.memory_allocated() / 2**30 if device == "cuda" else 0.0
@@ -668,18 +694,6 @@ def run_training(cfg) -> dict:
             f"steps={n_steps}"
         )
         if epoch % cfg.train.save_every == 0 or epoch == cfg.train.epochs:
-            name = f"{cfg.experiment.stage}_{cfg.train.seed}_{epoch}.pt"
-            torch.save(
-                {
-                    "model": model.state_dict(),
-                    "optimizer": optim.state_dict(),
-                    "epoch": epoch,
-                    "global_step": global_step,
-                    "cfg": OmegaConf.to_container(cfg),
-                    "history": history,
-                },
-                ckpt_dir / name,
-            )
-            tqdm.write(f"[ckpt] 已保存 {ckpt_dir / name}（含优化器状态，可断点续训）")
+            save_ckpt(f"{cfg.experiment.stage}_{cfg.train.seed}_{epoch}.pt", epoch)
     print(f"\n训练结束：第 {start_epoch + 1}–{cfg.train.epochs} 轮完成，metrics → {metrics_path}")
     return {"history": history, "exp_dir": str(exp_dir)}

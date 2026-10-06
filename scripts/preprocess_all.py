@@ -295,6 +295,8 @@ def process_sequence(seq_id: int) -> dict:
     blur_ratio = float((lapvar < 0.3 * blur_med).mean()) if blur_med > 0 else 0.0
 
     reg_ok = ~(reg.failed | (reg.method == "flat"))
+    klt_ok = reg_ok & np.isin(reg.method, ["klt", "klt2"])
+    fm_ok = reg_ok & np.isin(reg.method, ["fm", "fm2"])
     n_flat = int((reg.method == "flat").sum())
     meta = {
         "seq_id": seq_id,
@@ -312,8 +314,13 @@ def process_sequence(seq_id: int) -> dict:
             "n_fm2": int((reg.method == "fm2").sum()),
             "n_chained": int(reg.extras.get("n_chained", 0)),
             "success_rate": float(reg_ok.mean()),
-            "rmse_p50": float(np.percentile(reg.rmse[reg_ok], 50)) if reg_ok.any() else None,
-            "rmse_p95": float(np.percentile(reg.rmse[reg_ok], 95)) if reg_ok.any() else None,
+            # rmse 语义拆分（评审 2.2a）：KLT 帧的 rmse 是像素域内点 RMSE、且仅当
+            # ≤0.5px 才被接受（受门限截断，P95 是"门限满足性"而非独立精度证据）；
+            # FM 帧的 rmse 字段存 1−corr（无量纲），绝不可与像素值混入同一分位。
+            "rmse_p50": float(np.percentile(reg.rmse[klt_ok], 50)) if klt_ok.any() else None,
+            "rmse_p95": float(np.percentile(reg.rmse[klt_ok], 95)) if klt_ok.any() else None,
+            "fm_corr_med": (float(np.median(1.0 - reg.rmse[fm_ok])) if fm_ok.any() else None),
+            "fm_corr_min": (float((1.0 - reg.rmse[fm_ok]).min()) if fm_ok.any() else None),
         },
         "nonzero_frac": {"min": float(nonzero.min()), "mean": float(nonzero.mean()),
                          "max": float(nonzero.max())},
