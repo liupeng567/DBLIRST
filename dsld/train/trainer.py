@@ -27,6 +27,9 @@ from dsld.train.losses import SLSIoULoss
 
 REPO = Path(__file__).resolve().parents[2]
 
+# 训练全程输入尺寸恒定（全幅 480×640 / crop 档 240×320），启用 cuDNN 自动算法调优
+torch.backends.cudnn.benchmark = True
+
 
 def md5_of(path: Path) -> str:
     h = hashlib.md5()
@@ -226,7 +229,15 @@ def build_dataloader(cfg) -> DataLoader:
         persistent_workers=cfg.data.get("num_workers", 2) > 0,
         pin_memory=True,
         drop_last=True,
+        worker_init_fn=_dl_worker_init,
     )
+
+
+def _dl_worker_init(_wid: int) -> None:
+    # 多 worker 下禁用 cv2 内部线程池：每窗 32 次 warpAffine 若各开线程池，
+    # 与 num_workers 进程叠加造成 CPU 超订（M1 预处理同款教训）
+    import cv2
+    cv2.setNumThreads(0)
 
 
 def _make_optimizer(cfg, model: nn.Module):
