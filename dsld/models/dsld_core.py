@@ -10,6 +10,10 @@
 
 时序接口与 M2 基线对齐：forward([B,T,1,H,W]) → dict(logits=[B,T,1,H,W], ...)。
 编码器/颈走外部 autocast（bf16），核心强制 fp32（4.8-①）。
+
+M3 阶段 A 返工（2026-10-07）：核心换 λ 域指数泄漏动力学（liquid_core.py 顶部
+docstring），装配层新增 s_max/kappa_max/m_scale/state_dependent 与掩码
+m_max/softness 透传；τ 区间改不相交 [24,192]/[2,8]；旧 ckpt 不兼容。
 """
 
 from __future__ import annotations
@@ -70,13 +74,19 @@ class DsldCore(nn.Module):
         c_main: int = 32,
         c_h: int = 32,
         liquid_mode: str = "dual",
-        tau_b: tuple[float, float, float] = (16.0, 256.0, 48.0),
-        tau_t: tuple[float, float, float] = (2.0, 16.0, 6.0),
+        tau_b: tuple[float, float, float] = (24.0, 192.0, 48.0),
+        tau_t: tuple[float, float, float] = (2.0, 8.0, 6.0),
         mask_radius: int = 5,
         mask_decay: float = 0.9,
-        alpha_th: float = 0.5,
+        alpha_th: float = 0.6,
+        mask_m_max: float = 0.8,
+        mask_softness: float = 0.0,
         detach_every: int = 0,
         use_checkpoint: bool = False,
+        s_max: float = 0.7,
+        kappa_max: float = 0.5,
+        m_scale: float = 0.5,
+        state_dependent: bool = False,
         bound_f: float = 0.0,
         out_scale: int = 2,  # logits 上采样倍率（stride-2 → 原生）
     ):
@@ -87,7 +97,10 @@ class DsldCore(nn.Module):
         self.core = DualStateLiquidCore(
             c_in=c_main, c_h=c_h, mode=liquid_mode, tau_b=tau_b, tau_t=tau_t,
             mask_radius=mask_radius, mask_decay=mask_decay, alpha_th=alpha_th,
-            detach_every=detach_every, use_checkpoint=use_checkpoint, bound_f=bound_f,
+            mask_m_max=mask_m_max, mask_softness=mask_softness,
+            detach_every=detach_every, use_checkpoint=use_checkpoint,
+            s_max=s_max, kappa_max=kappa_max, m_scale=m_scale,
+            state_dependent=state_dependent, bound_f=bound_f,
         )
         self.out_scale = out_scale
         self.liquid_mode = liquid_mode

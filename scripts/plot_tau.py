@@ -2,8 +2,10 @@
 
 用法：python scripts/plot_tau.py experiments/dsld_core_m3/metrics.jsonl \
           --out experiments/dsld_core_m3/tau_curves.png
-M3 Gate 判据（方案 9.2）：τ_B 中位 ∈ [24,128] 且 τ_T 中位 ∈ [3,12]；
-附 3.5-① 调参证据（τ 上限/γ 敏感性看 p10–p90 带宽的迁移方向）。
+返工后 Gate 口径（阶段 A）：tau_scale_ratio ≥ 3 为构造性质（重点看 lam_at_bound
+未把自由度吃死）；θ_λ 基准分位（tau_b_*/tau_t_*）降为必要非充分，判据带即通道
+硬区间 [24,192] / [2,8]——曲线顶到带边 = 调制/保持被终 clamp 吃掉（配合
+lam_at_bound_* 判读）。实现值 tau_eff_*（动力学空间）以虚线叠加。
 """
 
 from __future__ import annotations
@@ -59,12 +61,19 @@ def main() -> None:
     ax = axes[0]
     band(ax, rows, "tau_b", "tab:blue", "τ_B（背景慢通道）")
     band(ax, rows, "tau_t", "tab:red", "τ_T（目标快通道）")
-    ax.axhspan(24, 128, color="tab:blue", alpha=0.06)
-    ax.axhspan(3, 12, color="tab:red", alpha=0.06)
+    # 实现值（动力学空间）叠加：虚线阶梯
+    for prefix, color, label in (("tau_eff_b", "tab:blue", "τ_eff_B 实现值"),
+                                 ("tau_eff_t", "tab:red", "τ_eff_T 实现值")):
+        ep = [r["epoch"] for r in rows if prefix in r]
+        if ep:
+            val = [r[prefix] for r in rows if prefix in r]
+            ax.plot(ep, val, color=color, ls="--", lw=1.0, label=label)
+    ax.axhspan(24, 192, color="tab:blue", alpha=0.06)  # 返工后通道硬区间
+    ax.axhspan(2, 8, color="tab:red", alpha=0.06)
     ax.set_yscale("log")
     ax.set_xlabel("epoch")
     ax.set_ylabel("τ（帧）")
-    ax.set_title("双状态液态核心 τ 迁移（M3 Gate：τ_B∈[24,128]，τ_T∈[3,12]）")
+    ax.set_title("双状态液态核心 τ 迁移（返工后：区间构造分立，关注 lam_at_bound 顶边）")
     ax.legend(fontsize=8)
     ax.grid(alpha=0.3)
 

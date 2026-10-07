@@ -14,6 +14,8 @@
 
 from __future__ import annotations
 
+import warnings
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -118,15 +120,19 @@ def focal_dice_loss(pred_log: torch.Tensor, target: torch.Tensor,
 
 def recon_loss(y_b: torch.Tensor, x_feat: torch.Tensor, m_tgt: torch.Tensor,
                target_box: torch.Tensor, box_dilate: int = 3,
-               top_ratio: float = 0.05) -> torch.Tensor:
-    """有效像素占比记录在 recon_loss.last_valid_frac（评审 2.1：有效像素为空时本函数
-    返回 0 不告警，背景通道监督静默消失——调用方须检查该属性并在指标中落盘）。"""
-    """L_recon（7.1②）：L1(ŷ_B, x)，仅在背景掩码内计算。
+               top_ratio: float = 0.05, min_valid_frac: float = 0.01,
+               strict: bool = True) -> torch.Tensor:
+    """L_recon（7.1②，返工 B-2）：L1(ŷ_B, x)，仅在背景掩码内计算。
 
     排除三类像素（防背景通道吸收目标/亮点虚警）：
       ① 目标框膨胀 3px（GT 框填充掩码 maxpool）；
       ② 内环反馈掩码 m_tgt；
       ③ 剩余区域残差 |x−ŷ_B| top-5%（可能尚未标注的瞬时亮点，7.1② "最后一项是关键"）。
+
+    窒息拦截（返工 B-2，评审 2.1）：有效像素占比 < min_valid_frac 说明反馈掩码铺满
+    全图、本损失已失去监督意义——旧实现静默返回 0（loss_recon=0 实录）。strict=True
+    抛 RuntimeError 与 trainer 的"loss NaN 即停"同策略（坏状态立即终止定位，不烧 GPU）；
+    长跑无人值守可切 strict=False（只告警属性落盘）。
     x_feat/y_b/m_tgt 为 stride-2 域 [B,T,C(1),H,W]；target_box 为原生分辨率
     [B,T,1,2H,2W]，经 maxpool(2) 下采样（膨胀先在全分辨率做，保几何精度）。
     """
@@ -150,19 +156,33 @@ def recon_loss(y_b: torch.Tensor, x_feat: torch.Tensor, m_tgt: torch.Tensor,
         v_flat = v_flat * (r_flat <= thr)
     valid = v_flat.view(B, T, 1, H, W)
     recon_loss.last_valid_frac = float(valid.mean())  # 窒息哨兵：≈0 即反馈掩码铺满全图
+    if recon_loss.last_valid_frac < min_valid_frac:
+        msg = (f"L_recon 有效像素占比 {recon_loss.last_valid_frac:.4f} < {min_valid_frac}"
+               "——反馈掩码疑似铺满全图（背景通道窒息），L_recon 已失去监督意义")
+        if strict:
+            raise RuntimeError(msg)
+        warnings.warn(msg, RuntimeWarning, stacklevel=2)
     denom = (valid.sum() * x_feat.shape[2]).clamp_min(1.0)  # 逐元素均值（含通道维）
     return ((x_feat - y_b).abs() * valid).sum() / denom
 
 
-def decouple_loss(h_t: torch.Tensor, h_b: torch.Tensor, eps: float = 1e-6) -> torch.Tensor:
-    """L_dec（7.1③）：逐帧逐位置 cos²(h̄_T, h̄_B)，防双通道坍缩到同一表示。
+def decouple_loss(h_t: torch.Tensor, h_b: torch.Tensor, eps: float = 1e-6,
+                  min_norm: float = 1e-2, norm_weight: float = 1.0) -> torch.Tensor:
+    """L_dec（7.1③，返工 B-3）：带范数下限的软正交，防双通道坍缩到同一表示。
 
-    h̄ 取通道隐状态本身（C 维向量）。范围 [0,1]，正交 → 0。
+    旧式 cos² = dot²/(n_t·n_b+eps)² 在任一状态塌缩到 0 时给出 0——恰好放过它本该
+    防止的坍缩（h_T≡0 时损失为 0）。修复两点：
+      ① 分母 clamp_min 设下限，"双零"不再把 cos² 抹平；
+      ② 显式惩罚范数低于 min_norm 的单元（norm floor，VICReg variance 项的同族替代），
+        坍缩必然产生正损失。
+    值域：cos² ∈ [0,1]（Cauchy–Schwarz，clamp 仅作数值保险）+ 非负 norm floor。
     """
     h_t = h_t.float()
     h_b = h_b.float()
     dot = (h_t * h_b).sum(dim=2)                                   # [B,T,H,W]
     nt = h_t.norm(dim=2)
     nb = h_b.norm(dim=2)
-    cos2 = (dot / (nt * nb + eps)) ** 2
-    return cos2.mean()
+    cos2 = (dot / (nt * nb).clamp_min(min_norm * min_norm)) ** 2
+    cos2 = cos2.clamp(max=1.0)
+    norm_floor = F.relu(min_norm - torch.minimum(nt, nb)).mean()   # 坍缩哨兵
+    return cos2.mean() + norm_weight * norm_floor

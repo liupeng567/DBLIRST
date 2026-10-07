@@ -156,6 +156,7 @@ def build_model(cfg) -> nn.Module:
         from dsld.models.dsld_core import DsldCore
 
         liq = cfg.model.liquid
+        fb = cfg.model.feedback
         return DsldCore(
             in_ch=cfg.model.get("in_ch", 1),
             width=cfg.model.encoder.get("width", 1.0),
@@ -164,12 +165,18 @@ def build_model(cfg) -> nn.Module:
             liquid_mode=liq.get("mode", "dual"),
             tau_b=tuple(liq.tau_b.get(k) for k in ("min", "max", "init")),
             tau_t=tuple(liq.tau_t.get(k) for k in ("min", "max", "init")),
-            mask_radius=cfg.model.feedback.get("mask_radius", 5),
-            mask_decay=cfg.model.feedback.get("mask_decay", 0.9),
-            alpha_th=cfg.model.feedback.get("alpha_th", 0.5),
+            mask_radius=fb.get("mask_radius", 5),
+            mask_decay=fb.get("mask_decay", 0.9),
+            alpha_th=fb.get("alpha_th", 0.6),
+            mask_m_max=fb.get("m_max", 0.8),
+            mask_softness=fb.get("softness", 0.0),
             detach_every=liq.get("detach_every", 0),
             use_checkpoint=liq.get("use_checkpoint", False),
-            bound_f=liq.get("bound_f", 0.0),
+            s_max=liq.get("s_max", 0.7),
+            kappa_max=liq.get("kappa_max", 0.5),
+            m_scale=liq.get("m_scale", 0.5),
+            state_dependent=liq.get("state_dependent", False),
+            bound_f=liq.get("bound_f", 0.0),  # 已废弃，>0 时模型内告警
         )
     raise RuntimeError(f"model.type={mtype} 未实现")
 
@@ -388,7 +395,19 @@ def _quick_eval(
     manifest_path = manifest_path or str(REPO / "data" / "manifests" / str(cfg.data.manifest))
     cache_root = cache_root or str(cfg.data.get("cache_root", REPO / "data" / "cache" / "ittd"))
     manifest = load_manifest(manifest_path)
-    seqs = manifest["splits"]["val-int"]["seqs"][:n_seqs]
+    val_seqs = manifest["splits"]["val-int"]["seqs"]
+    # 返工 A5：显式子集优先（须覆盖两种配准域——KLT 主导段 + FM 主导段 67/68，
+    # 评审 1.4：前 n 段子集 [21,22,23,38] 对 FM 配准域完全不可见）
+    seq_ids = qe.get("seq_ids") or None
+    if seq_ids:
+        missing = [s for s in seq_ids if s not in val_seqs]
+        if missing:
+            print(f"[quick_eval][WARN] seq_ids 不在 val-int，已跳过: {missing}")
+        seqs = [s for s in seq_ids if s in val_seqs]
+        if not seqs:
+            raise RuntimeError("quick_eval.seq_ids 过滤后为空（均不在 val-int）")
+    else:
+        seqs = val_seqs[:n_seqs]
 
     all_boxes: dict[float, list] = {t: [] for t in QUICK_THR}
     all_gts: list[Box] = []
@@ -470,6 +489,8 @@ def _quick_eval(
     from scripts.eval_baseline import fa_at_pd90  # 同一工作点实现，口径零偏差
 
     pd90 = fa_at_pd90(sweep)
+    # α"越阈占比"阈值跟随模型（返工 A3：α_th 0.5→0.6，监控与掩码判定同一口径）
+    alpha_th = float(getattr(getattr(model, "core", model), "alpha_th", 0.5))
     rec = {
         "n_seqs": len(seqs), "n_frames": n_frames_eval, "n_gt": len(all_gts),
         "subset": subset_desc,
@@ -482,7 +503,7 @@ def _quick_eval(
         "bg_frac": round(float(np.median(bg_frac_all)), 4) if bg_frac_all else 0.0,
         "resid_scr": round(float(np.median(resid_scr_all)), 4) if resid_scr_all else 0.0,
         "alpha_mean": round(float(np.mean(alpha_all)), 4) if alpha_all else 0.0,
-        "alpha_frac_high": (round(float(np.mean(np.array(alpha_all) > 0.5)), 4)
+        "alpha_frac_high": (round(float(np.mean(np.array(alpha_all) > alpha_th)), 4)
                             if alpha_all else 0.0),
         "alpha_p99": (round(float(np.percentile(alpha_all, 99)), 4)
                       if alpha_all else 0.0),

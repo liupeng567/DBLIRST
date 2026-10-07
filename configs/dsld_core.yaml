@@ -1,4 +1,5 @@
-# DSLD 双状态液态核心（M3，方案 3.6 模板落地；单尺度先行，门控 M4 接入）
+# DSLD 双状态液态核心（M3 阶段 A 返工版：λ 域指数泄漏 + 显式保留项 + 有界掩码；
+# 单尺度先行，门控 M4 接入。返工依据：reports/audit 独立评审 + M3_核心层推进方案 阶段 A）
 experiment:
   name: dsld_core_m3
   stage: B
@@ -14,16 +15,22 @@ model:
   liquid:
     mode: dual            # dual|single（消融 a：单状态对照）
     h: 32                 # h_T = h_B = 32 @ stride-2（表 M）
-    tau_b: {min: 16, max: 256, init: 48}   # 4.2 硬约束，log 域 clip
-    tau_t: {min: 2, max: 16, init: 6}
+    tau_b: {min: 24, max: 192, init: 48}   # 返工 A1：不相交区间（原 [16,256]），
+                                           #   τ_B/τ_T ≥ 3 为构造性质（终 clamp 保证）
+    tau_t: {min: 2, max: 8, init: 6}       # 返工 A1（原 [2,16]；保持项延长上限 = 8）
+    s_max: 0.7            # 速率调制包络 λ∈[0.50, 2.01]×λ_base（"液态"语义，终 clamp 兜底）
+    kappa_max: 0.5        # 保持项 κ = kappa_max·σ(θ_κ)，init≈0.2（τ 6→7.5，顶格 8）
+    m_scale: 0.5          # 候选精修项权重（cand = tanh(g + m_scale·m)）
+    state_dependent: false # 头输入仅 x（可行方案 §4.1：递推线性，阶段 E 并行扫描前提）；
+                           #   true = 头吃 [h,x]（状态相关 τ，LTC 完整语义，消融用）
     detach_every: 0       # 截断 BPTT：>0 每 N 步切图（消融用；显存回退优先用 checkpoint）
     use_checkpoint: true  # 逐帧梯度检查点：T=32 全幅 BPTT 8GB 卡可训（实测见 M3 报告）
-    bound_f: 0            # >0 时 f=bound·tanh(f/bound)，使有效时间尺度 τ/|f|≥τ/bound 成
-                          # 为结构性质（评审 2.3；默认 0=自由 f+有效速率监控，消融决定）
   feedback:
     mask_radius: 5        # 4.5 内环：高 α 峰值膨胀半径
     mask_decay: 0.9       # 反馈掩码逐帧衰减
-    alpha_th: 0.5         # "高 α 峰值"阈值（表 I 门控阈）
+    alpha_th: 0.6         # 返工 A3："高 α 峰值"阈值（原 0.5；与 gate 偏置 −2 的 α₀≈0.119 留裕度）
+    m_max: 0.8            # 返工 A3：掩码硬上界——(1−M) ≥ 0.2，背景通道永不被清零（结构防窒息）
+    softness: 0           # 掩码软化开关（>0 梯度可达但全图弱泄漏，默认关，见 A-4 取舍表）
 
 data:
   manifest: ittd_split_v2.json
@@ -46,9 +53,9 @@ train:
   seed: 0
   epochs: 2               # 占位防误启动；全量按 7.2-B 40k step ≈178 轮显式指定
   save_every: 1
-  grad_clip: 1.0          # 液态递推防梯度爆炸（表 T 必选）
+  grad_clip: 1.0          # 液态递推防梯度爆炸（表 T 必选；tanh 候选下状态已有界，仍保留）
   ckpt: null
-  resume: null
+  resume: null            # 返工后旧 ckpt 不兼容（θ_τ→θ_λ），必须从零重训
   warm_epoch: 5           # （仅 M2 SLSIoU 口径使用）
   window: {T: 32, stride: 8}
   batch:
@@ -57,9 +64,11 @@ train:
   optim: {name: adamw, lr: 3.0e-4, wd: 0.01, warmup: 1000, cosine_min: 3.0e-5}
   amp: bf16               # 门控/τ/状态更新在核心内强制 fp32（4.8-①）
   loss: {seg: 1.0, recon: 0.5, decouple: 0.1}   # 7.1：M3 先接入 ①②③
-  quick_eval:             # 7.5：val-int 固定子集（前 4 段 × 5 固定起点窗）快评，
-    enabled: true         #   每every优化步记录 F_a@P_d/BSF代理/α 分布/τ 分位 → metrics.jsonl
-    every: 2500
+  quick_eval:             # 7.5：val-int 固定子集快评 → metrics.jsonl
+    enabled: true
+    seq_ids: [21, 22, 23, 38, 67, 68]   # 返工 A5：显式子集覆盖两种配准域——
+                                        #   21/22/23/38 KLT 主导 + 67/68 FM 主导（评审 1.4：
+                                        #   原"前 n 段"对 FM 域完全不可见）；缺省回退前 n_seqs 段
     n_seqs: 4
     n_windows: 5
   early_stop:             # 表 T 早停（F_a@P_d 最小化，patience 8 个快评周期）；
@@ -68,4 +77,4 @@ train:
     min_steps: 10000
 
 infer:
-  threshold: {k: 3.0, alpha_th: 0.5}
+  threshold: {k: 3.0, alpha_th: 0.6}   # α_th 与 model.feedback 同步（返工 A3；eval 主读出为 logits）
