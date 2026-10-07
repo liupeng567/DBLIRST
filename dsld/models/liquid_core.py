@@ -213,11 +213,19 @@ class DualStateLiquidCore(nn.Module):
         kappa_max: float = 0.5,
         m_scale: float = 0.5,
         state_dependent: bool = False,
+        mask_source: str = "gate",      # gate|teacher（④a：GT 掩码驱动内环=机制阳性对照）
+        bg_mode: str = "learned",       # learned|ema（B1：非学习 EMA 背景对照臂）
+        ema_momentum: float = 0.9,
         scene_dim: int = 5,
     ):
         super().__init__()
         assert mode in ("dual", "single")
+        assert mask_source in ("gate", "teacher")
+        assert bg_mode in ("learned", "ema")
         self.mode = mode
+        self.mask_source = mask_source
+        self.bg_mode = bg_mode
+        self.ema_momentum = float(ema_momentum)
         self.c_h = c_h
         self.mask_radius = mask_radius
         self.mask_decay = mask_decay
@@ -253,18 +261,25 @@ class DualStateLiquidCore(nn.Module):
         self.last_norms: dict[str, float] = {}  # 4.8-③ 隐状态范数 + 掩码/门控运行统计
 
     # ---- 单帧递推 ----------------------------------------------------------
-    def _step_frame(self, h_t, h_b, x, M, alpha_prev, scene, t, T,
+    def _step_frame(self, h_t, h_b, y_b_ema, x, M, alpha_prev, scene, t, T,
                     collect_stats: bool = True):
-        """单帧递推（方案 4.6 伪代码）。返回 (h_t, h_b, ŷ_B, α, 残差 x−ŷ_B)。
+        """单帧递推（方案 4.6 伪代码）。返回 (h_t, h_b, y_b_ema, ŷ_B, α, 残差 x−ŷ_B)。
 
         collect_stats=False 跳过诊断量收集（float() 强制 GPU→CPU 同步；
         tau_report/last_norms 只消费最近一帧，训练期仅末帧收集即可）。
+        bg_mode="ema" 时 ŷ_B 换非学习指数滑动背景（B1 对照臂）：掩码处保持旧值
+        （ViBe 选择性更新语义），零初始化 ⇒ 被掩码覆盖的目标像素永不进入背景估计。
         """
         x_ctx = self.dw_ctx(x)
         if self.mode == "dual":
             x_b = x_ctx * (1.0 - M)              # 内环：背景通道输入打码（≤m_max 永不清零）
             h_b = self.ch_bg.step(h_b, x_b, scene, None, collect_stats=collect_stats)
-            y_b = self.bg_head(h_b)              # ŷ_B [B,C,H,W]
+            if self.bg_mode == "ema":
+                cand = self.ema_momentum * y_b_ema + (1.0 - self.ema_momentum) * x_ctx
+                y_b_ema = torch.where((M > 0.5).expand_as(cand), y_b_ema, cand)
+                y_b = y_b_ema
+            else:
+                y_b = self.bg_head(h_b)          # ŷ_B [B,C,H,W]
             x_res = x - y_b
             x_t = x_res * (1.0 - M)              # 级联残差输入
             h_t = self.ch_tg.step(h_t, x_t, scene, alpha_prev, collect_stats=collect_stats)
@@ -272,7 +287,12 @@ class DualStateLiquidCore(nn.Module):
             x_b = x_ctx * (1.0 - M)
             h_t = self.ch_tg.step(h_t, x_b, scene, alpha_prev, collect_stats=collect_stats)
             h_b = h_t
-            y_b = self.bg_head(h_t)
+            if self.bg_mode == "ema":
+                cand = self.ema_momentum * y_b_ema + (1.0 - self.ema_momentum) * x_ctx
+                y_b_ema = torch.where((M > 0.5).expand_as(cand), y_b_ema, cand)
+                y_b = y_b_ema
+            else:
+                y_b = self.bg_head(h_t)
             x_res = x - y_b
         alpha = torch.sigmoid(self.gate_head(torch.cat([x_res, h_t], dim=1)))
         if collect_stats:  # 4.8-③ 范数监控（tanh 候选下 |h|≤1，范数哨兵已结构性满足）
@@ -282,41 +302,56 @@ class DualStateLiquidCore(nn.Module):
                 "m_frac": float(M.mean()),        # 反馈掩码覆盖率（Gate 判据 <0.3）
                 "alpha_mean": float(alpha.mean()),  # 门控基线（init ≈ 0.119）
             }
-        return h_t, h_b, y_b, alpha, x_res
+        return h_t, h_b, y_b_ema, y_b, alpha, x_res
 
-    def forward(self, feats: torch.Tensor, quality: torch.Tensor | None = None) -> dict:
-        """feats [B,T,C,H,W] → dict(逐帧堆叠输出)。状态/门控/τ 强制 fp32。"""
+    def forward(self, feats: torch.Tensor, quality: torch.Tensor | None = None,
+                teacher_mask: torch.Tensor | None = None) -> dict:
+        """feats [B,T,C,H,W] → dict(逐帧堆叠输出)。状态/门控/τ 强制 fp32（4.8-①）。
+
+        teacher_mask [B,T,1,H,W]（stride-2，已膨胀下采样）：mask_source="teacher"
+        （④a 机制阳性对照）时逐帧驱动内环掩码——背景通道从第 0 帧即看不到目标，
+        ŷ_B 被迫修补 ⇒ 残差在目标处凸显；gate 模式下忽略（语义与历史完全一致）。
+        """
         with torch.autocast(device_type=feats.device.type, enabled=False):
             feats = feats.float()
             B, T, C, H, W = feats.shape
             h_t = feats.new_zeros(B, self.c_h, H, W)
             h_b = feats.new_zeros(B, self.c_h, H, W)
+            y_b_ema = feats.new_zeros(B, C, H, W)
             M = feats.new_zeros(B, 1, H, W)
             alpha_prev = feats.new_zeros(B, 1, H, W)
             if quality is not None:
                 quality = quality.float()
+            if teacher_mask is not None:
+                teacher_mask = teacher_mask.float()
             outs = {k: [] for k in ("logits", "y_b", "alpha", "h_t", "h_b", "m_tgt")}
             for t in range(T):
                 x = feats[:, t]
                 scene = scene_stats(x, quality, t, T)
+                if teacher_mask is not None and self.mask_source == "teacher":
+                    M = teacher_mask[:, t]  # ④a：教师掩码逐帧驱动（同帧完美保护）；
+                    #  gate 模式下即使误传 teacher 也必须忽略（语义防护在核心层兜底）
                 collect = t == T - 1  # 诊断量仅末帧收集（tau_report/norms 只读最近一帧）
                 if self.use_checkpoint and self.training:
-                    h_t, h_b, y_b, alpha, x_res = checkpoint(
-                        self._step_frame, h_t, h_b, x, M, alpha_prev, scene, t, T,
-                        collect, use_reentrant=False)
+                    (h_t, h_b, y_b_ema, y_b, alpha, x_res) = checkpoint(
+                        self._step_frame, h_t, h_b, y_b_ema, x, M, alpha_prev,
+                        scene, t, T, collect, use_reentrant=False)
                 else:
-                    h_t, h_b, y_b, alpha, x_res = self._step_frame(
-                        h_t, h_b, x, M, alpha_prev, scene, t, T, collect)
+                    (h_t, h_b, y_b_ema, y_b, alpha, x_res) = self._step_frame(
+                        h_t, h_b, y_b_ema, x, M, alpha_prev, scene, t, T, collect)
                 outs["logits"].append(self.seg_head(torch.cat([alpha * x_res, h_t], dim=1)))
                 outs["y_b"].append(y_b)
                 outs["alpha"].append(alpha)
                 outs["h_t"].append(h_t)
                 outs["h_b"].append(h_b)
-                # 反馈掩码（4.5）：高 α 峰值膨胀 ∪ decay·M_prev，上界 m_max（返工 A3）
-                M = update_feedback_mask(alpha, M, self.mask_radius,
-                                         self.mask_decay, self.alpha_th,
-                                         self.mask_m_max, self.mask_softness)
-                outs["m_tgt"].append(M)
+                if teacher_mask is not None:
+                    outs["m_tgt"].append(M)  # 教师模式：所用掩码即 GT
+                else:
+                    # 反馈掩码（4.5）：高 α 峰值膨胀 ∪ decay·M_prev，上界 m_max（返工 A3）
+                    M = update_feedback_mask(alpha, M, self.mask_radius,
+                                             self.mask_decay, self.alpha_th,
+                                             self.mask_m_max, self.mask_softness)
+                    outs["m_tgt"].append(M)  # gate 模式语义不变（含当帧峰）
                 alpha_prev = alpha
                 if self.detach_every and (t + 1) % self.detach_every == 0 and t < T - 1:
                     h_t, h_b, M, alpha_prev = (h_t.detach(), h_b.detach(),

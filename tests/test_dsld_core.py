@@ -34,7 +34,12 @@ from dsld.models.liquid_core import (  # noqa: E402
     scene_stats,
     update_feedback_mask,
 )
-from dsld.train.losses import decouple_loss, focal_dice_loss, recon_loss  # noqa: E402
+from dsld.train.losses import (  # noqa: E402
+    decouple_loss,
+    focal_dice_loss,
+    gate_teacher_loss,
+    recon_loss,
+)
 
 torch.manual_seed(0)
 
@@ -425,3 +430,77 @@ def test_param_count_budget():
     total = sum(groups.values())
     assert total < 5e6
     assert groups["core"] < 2e4  # 返工后核心 ≈ 0.010M（3 头 c_in→c_h ×2 通道 + FiLM）
+
+
+# ---- 解 A/B：④a 教师掩码 / ④b 门控教师监督 / B1 EMA 背景对照臂 ----------------
+
+def test_teacher_mask_drives_inner_mask():
+    """④a：teacher 模式下内环掩码逐帧等于 GT 教师掩码（同帧完美保护）；
+    gate 模式下传入的 teacher 被忽略（α 驱动语义不变，起步 α<α_th ⇒ 掩码仍为 0）。"""
+    B, T, C, H, W = 1, 4, 4, 12, 12
+    teacher = torch.zeros(B, T, 1, H, W)
+    teacher[:, :, :, 4:7, 4:7] = 1.0  # 目标块全帧存在
+    core_t = DualStateLiquidCore(c_in=C, c_h=8, mask_source="teacher")
+    out_t = core_t(torch.rand(B, T, C, H, W), teacher_mask=teacher)
+    assert torch.equal(out_t["m_tgt"], teacher)  # 所用掩码逐帧即 GT
+    core_g = DualStateLiquidCore(c_in=C, c_h=8, mask_source="gate")
+    out_g = core_g(torch.rand(B, T, C, H, W), teacher_mask=teacher)
+    assert float(out_g["m_tgt"].abs().max()) == 0.0  # gate 模式忽略教师（起步不掩码）
+
+
+def test_ema_background_arm():
+    """B1：EMA 背景对照臂——恒定背景 1.0 + 全帧存在的目标块 5.0（教师掩码覆盖）：
+    背景像素 ŷ_B→(1−0.9^T)·1（EMA 正常累积）；目标像素被掩码全程保护、永不进入
+    背景估计 ⇒ ŷ_B≡0 ⇒ 残差=完整目标信号（SCR 上界行为）。"""
+    B, T, C, H, W = 1, 32, 4, 12, 12
+    x = torch.ones(B, T, C, H, W)
+    x[:, :, :, 4:7, 4:7] = 5.0
+    teacher = torch.zeros(B, T, 1, H, W)
+    teacher[:, :, :, 4:7, 4:7] = 1.0
+    core = DualStateLiquidCore(c_in=C, c_h=8, mask_source="teacher", bg_mode="ema")
+    with torch.no_grad():                        # dw_ctx 置恒等（中心 1），排除卷积混合
+        core.dw_ctx.weight.zero_()
+        core.dw_ctx.weight[:, :, 1, 1] = 1.0
+    out = core(x, teacher_mask=teacher)
+    y_last = out["y_b"][0, -1]                   # [C,H,W]
+    expected_bg = 1.0 - 0.9 ** T                 # EMA 从 0 累积 32 帧
+    assert abs(float(y_last[:, :3, :3].mean()) - expected_bg) < 0.02  # 背景：EMA 收敛
+    assert float(y_last[:, 4:7, 4:7].abs().max()) == 0.0              # 目标：永久保护 ⇒ 0
+    resid = (x[0, -1] - y_last).abs()             # 核心级无 x_main（DsldCore 才附加）
+    assert float(resid[:, 4:7, 4:7].mean()) > 10 * float(resid[:, :3, :3].mean())
+
+
+def test_gate_teacher_loss_balanced():
+    """④b：平衡 BCE 不变量——α≡0.5 时损失恒为 2·ln2（与框大小无关）；
+    完美门控 → 0；空帧只计背景项 → ln2。"""
+    B, T, H2, W2 = 1, 2, 8, 8
+    alpha = torch.full((B, T, 1, H2, W2), 0.5)
+    for box_area, expect in ((16, 2 * math.log(2)), (0, math.log(2))):
+        box = torch.zeros(B, T, 1, 2 * H2, 2 * W2)
+        if box_area:
+            box[:, :, :, :int(box_area ** 0.5) * 2, :int(box_area ** 0.5) * 2] = 1.0
+        l = gate_teacher_loss(alpha, box)
+        assert abs(float(l) - expect) < 1e-4, f"box_area={box_area}: {float(l)} vs {expect}"
+    # 完美门控：目标处 1、背景处 0 → 损失≈0（膨胀边界内插值）
+    box = torch.zeros(B, T, 1, 2 * H2, 2 * W2)
+    box[:, :, :, 8:16, 8:16] = 1.0
+    box4 = box.flatten(0, 1)                     # max_pool2d 仅支持 4D
+    gt = torch.nn.functional.max_pool2d(
+        torch.nn.functional.max_pool2d(box4, 7, stride=1, padding=3), 2, 2
+    ).view(B, T, 1, H2, W2)
+    alpha_perfect = torch.where(gt > 0.5, torch.ones_like(alpha), torch.zeros_like(alpha))
+    # clamp(1e-4, 1−1e-4) 下限使理想 0/1 门控的损失恰为 ~2e-4（两平衡项各 ~1e-4）
+    assert float(gate_teacher_loss(alpha_perfect, box)) < 5e-4
+
+
+def test_dsld_loss_gate_term_wired():
+    """trainer 接线：loss.gate>0 时分量表出现 gate 项且有限；teacher 掩码全程可传。"""
+    from dsld.train.trainer import _dsld_core_loss
+
+    model = DsldCore(width=0.8, c_main=16, c_h=8, mask_source="teacher")
+    x = torch.rand(1, 2, 1, 64, 80)
+    target = (torch.rand(1, 2, 1, 64, 80) > 0.995).float()
+    loss, parts = _dsld_core_loss(model, x, target, None,
+                                  {"seg": 1.0, "recon": 0.5, "decouple": 0.1, "gate": 0.2})
+    assert "gate" in parts and parts["gate"] >= 0.0
+    assert torch.isfinite(loss)

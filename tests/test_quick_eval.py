@@ -71,11 +71,15 @@ def test_quick_eval_end_to_end_synthetic(tmp_path):
     for key in ("primary", "thr_sweep", "fa_frm_pd90", "fa_pix_e6_pd90",
                 "recall_pd90", "pd90_available", "bg_resid_rms", "resid_scr", "bg_frac",
                 "alpha_mean", "alpha_frac_high", "alpha_p99",
-                "quality_med",
+                "quality_med", "per_seq", "stratified",
                 "tau_b_median", "tau_t_median",
                 "tau_eff_b", "tau_eff_t", "tau_scale_ratio",
                 "lam_at_bound_b", "lam_at_bound_t"):
         assert key in rec, f"缺快评字段 {key}"
+    # C2 分层：合成段无属性 → 归 clean 组；per_seq 每段一行
+    assert rec["stratified"]["clean"]["n_seqs"] == 1
+    assert rec["stratified"]["distractor"]["n_seqs"] == 0
+    assert len(rec["per_seq"]) == 1 and rec["per_seq"][0]["seq_id"] == seq_id
     assert np.isfinite(rec["fa_frm_pd90"]) and np.isfinite(rec["bg_resid_rms"])
     assert 0.0 <= rec["alpha_mean"] <= 1.0
     assert rec["primary"]["iou_thr"] == 0.5

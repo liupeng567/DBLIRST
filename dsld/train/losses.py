@@ -166,6 +166,33 @@ def recon_loss(y_b: torch.Tensor, x_feat: torch.Tensor, m_tgt: torch.Tensor,
     return ((x_feat - y_b).abs() * valid).sum() / denom
 
 
+def gate_teacher_loss(alpha_map: torch.Tensor, target_box: torch.Tensor,
+                      box_dilate: int = 3) -> torch.Tensor:
+    """α 门控教师监督（解 ④b，方案 v1.6.1 教师掩码落地）：平衡 BCE(α, GT框膨胀掩码)。
+
+    死锁诊断（5k 诊断，2026-10-07）：α 仅经 seg 头间接收梯度 → 永不开 → 掩码不形成
+    → 背景吸收目标 → 残差无信号。本项给 α 直接梯度打开正环：α 在目标处被推高 →
+    掩码形成 → 吸收停止 → 残差出信号。
+
+    alpha_map: [B,T,1,h,w] 门控概率图（stride-2，post-sigmoid）；
+    target_box: [B,T,1,2h,2w] 原生框填充掩码。
+    平衡正负项——目标像素极稀少，朴素 BCE 会被背景项淹没、把 α 推成全局 0（恰是死锁）：
+        L = BCE(α[gt], 1).mean() + BCE(α[bg], 0).mean()
+    空帧（无目标）只计背景项。平衡性不变量：α≡0.5 时 L ≡ 2·ln2，与框大小无关。
+    """
+    B, T = alpha_map.shape[:2]
+    box = target_box.float().flatten(0, 1)
+    box = F.max_pool2d(box, 2 * box_dilate + 1, stride=1, padding=box_dilate)
+    gt = F.max_pool2d(box, 2, 2).view(B, T, 1, *alpha_map.shape[-2:])
+    a = alpha_map.float().clamp(1e-4, 1.0 - 1e-4)
+    gt = (gt > 0.5)
+    pos = a[gt]
+    neg = a[~gt]
+    loss_pos = (-torch.log(pos)).mean() if pos.numel() > 0 else a.new_zeros(())
+    loss_neg = (-torch.log(1.0 - neg)).mean() if neg.numel() > 0 else a.new_zeros(())
+    return loss_pos + loss_neg
+
+
 def decouple_loss(h_t: torch.Tensor, h_b: torch.Tensor, eps: float = 1e-6,
                   min_norm: float = 1e-2, norm_weight: float = 1.0) -> torch.Tensor:
     """L_dec（7.1③，返工 B-3）：带范数下限的软正交，防双通道坍缩到同一表示。

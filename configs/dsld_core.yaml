@@ -23,6 +23,11 @@ model:
     m_scale: 0.5          # 候选精修项权重（cand = tanh(g + m_scale·m)）
     state_dependent: false # 头输入仅 x（可行方案 §4.1：递推线性，阶段 E 并行扫描前提）；
                            #   true = 头吃 [h,x]（状态相关 τ，LTC 完整语义，消融用）
+    mask_source: gate     # gate|teacher——诊断④a：teacher = GT 掩码驱动内环（机制阳性对照：
+                          #   判"掩码保护→残差 SNR"思想本身是否成立，与门控学习解耦）
+    bg_mode: learned      # learned|ema——诊断 B1：ema = 非学习指数滑动背景对照臂
+                          #   （判"学习背景相对经典背景减除有无增量"= 降级基线具体形态）
+    ema_momentum: 0.9     # B1 EMA 动量（有效窗 ~10 帧；掩码处保持旧值 = ViBe 选择性更新）
     detach_every: 0       # 截断 BPTT：>0 每 N 步切图（消融用；显存回退优先用 checkpoint）
     use_checkpoint: true  # 逐帧梯度检查点：T=32 全幅 BPTT 8GB 卡可训（实测见 M3 报告）
   feedback:
@@ -63,7 +68,8 @@ train:
     accum: 2
   optim: {name: adamw, lr: 3.0e-4, wd: 0.01, warmup: 1000, cosine_min: 3.0e-5}
   amp: bf16               # 门控/τ/状态更新在核心内强制 fp32（4.8-①）
-  loss: {seg: 1.0, recon: 0.5, decouple: 0.1}   # 7.1：M3 先接入 ①②③
+  loss: {seg: 1.0, recon: 0.5, decouple: 0.1, gate: 0.0}   # 7.1 ①②③；gate=④b α 门控
+                          #   教师监督（平衡 BCE(α, GT框掩码)），0.2 起步打破死锁环
   quick_eval:             # 7.5：val-int 固定子集快评 → metrics.jsonl
     enabled: true
     seq_ids: [21, 22, 23, 38, 67, 68]   # 返工 A5：显式子集覆盖两种配准域——

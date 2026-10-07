@@ -87,6 +87,9 @@ class DsldCore(nn.Module):
         kappa_max: float = 0.5,
         m_scale: float = 0.5,
         state_dependent: bool = False,
+        mask_source: str = "gate",   # gate|teacher（④a 机制阳性对照）
+        bg_mode: str = "learned",    # learned|ema（B1 非学习 EMA 背景对照臂）
+        ema_momentum: float = 0.9,
         out_scale: int = 2,  # logits 上采样倍率（stride-2 → 原生）
     ):
         super().__init__()
@@ -100,17 +103,27 @@ class DsldCore(nn.Module):
             detach_every=detach_every, use_checkpoint=use_checkpoint,
             s_max=s_max, kappa_max=kappa_max, m_scale=m_scale,
             state_dependent=state_dependent,
+            mask_source=mask_source, bg_mode=bg_mode, ema_momentum=ema_momentum,
         )
         self.out_scale = out_scale
         self.liquid_mode = liquid_mode
 
-    def forward(self, x: torch.Tensor, quality: torch.Tensor | None = None) -> dict:
+    def forward(self, x: torch.Tensor, quality: torch.Tensor | None = None,
+                teacher_mask: torch.Tensor | None = None) -> dict:
         B, T = x.shape[:2]
         frames = x.flatten(0, 1)                       # [B·T,1,H,W]
         s1, s2, s3 = self.encoder(frames)
         main, _ = self.neck(s1, s2, s3)                # [B·T,C,240,320]
         main = main.view(B, T, *main.shape[1:])
-        out = self.core(main, quality=quality)
+        if teacher_mask is not None and self.core.mask_source == "teacher":
+            # ④a：GT 掩码膨胀 3px（与 L_recon 排除同几何）→ maxpool 下采样到 stride-2
+            tm = teacher_mask.flatten(0, 1).float()
+            tm = F.max_pool2d(tm, 2 * 3 + 1, stride=1, padding=3)
+            tm = F.max_pool2d(tm, 2, 2)
+            core_teacher = tm.view(B, T, 1, *tm.shape[-2:])
+        else:
+            core_teacher = None  # gate 模式忽略教师（语义与历史一致）
+        out = self.core(main, quality=quality, teacher_mask=core_teacher)
         out["x_main"] = main  # 核心输入特征（L_recon 的重构目标 x）
         h, w = out["logits"].shape[-2:]
         out["logits"] = F.interpolate(

@@ -175,6 +175,9 @@ def build_model(cfg) -> nn.Module:
             kappa_max=liq.get("kappa_max", 0.5),
             m_scale=liq.get("m_scale", 0.5),
             state_dependent=liq.get("state_dependent", False),
+            mask_source=liq.get("mask_source", "gate"),
+            bg_mode=liq.get("bg_mode", "learned"),
+            ema_momentum=liq.get("ema_momentum", 0.9),
         )
     raise RuntimeError(f"model.type={mtype} 未实现")
 
@@ -336,14 +339,21 @@ def _dsld_core_loss(
     核心输出 fp32（4.8-①），损失在 autocast 外按 fp32 计算。
     返回 (loss, 分量表)。
     """
-    from dsld.train.losses import decouple_loss, focal_dice_loss, recon_loss
+    from dsld.train.losses import decouple_loss, focal_dice_loss, gate_teacher_loss, recon_loss
 
-    out = model(x, quality=quality)
+    # ④a：教师掩码模式把 GT 框掩码传入核心（gate 模式下模型内部自动忽略）
+    out = model(x, quality=quality, teacher_mask=target)
     seg = focal_dice_loss(out["logits"], target)
     rec = recon_loss(out["y_b"], out["x_main"], out["m_tgt"], target)
     parts = {"seg": float(seg), "recon": float(rec),
              "recon_valid_frac": round(getattr(recon_loss, "last_valid_frac", 1.0), 6)}
     loss = weights.get("seg", 1.0) * seg + weights.get("recon", 0.5) * rec
+    # ④b：α 门控教师监督（平衡 BCE）——打破"门不开→吸收→无残差信号"死锁环
+    gate_w = float(weights.get("gate", 0.0) or 0.0)
+    if gate_w > 0:
+        gate = gate_teacher_loss(out["alpha"], target)
+        loss = loss + gate_w * gate
+        parts["gate"] = float(gate)
     # 损失组成两臂拉平（M3 代码审核 §四）：single 模式 h_b≡h_t ⇒ cos²≡1 常数
     #（仅 norm floor 提供与 dual 相同的范数守卫）——单/双消融的损失项一致，
     # F_a 差全部归因于结构分立本身，而非正则项有无。
@@ -355,6 +365,28 @@ def _dsld_core_loss(
 
 
 QUICK_THR = [0.3, 0.5, 0.7, 0.9]  # 快评精简阈值扫描（全链 7 点）
+
+
+def _load_distractor_attrs() -> dict[int, bool]:
+    """官方属性表 → {seq_id: 是否含其他类型时敏目标干扰}（C2 分层报表用）。
+
+    数据级事实：val-int 12 段中 6 段 distractor=有——无标注动目标构成 F_a 地板，
+    时序一致性判据机理上不可拒绝；所有 F_a 结论必须分层归因。
+    """
+    import csv
+
+    path = REPO / "data" / "manifests" / "ittd_official_attributes.csv"
+    out: dict[int, bool] = {}
+    if not path.exists():
+        return out
+    with open(path, encoding="utf-8-sig") as fp:
+        for row in csv.DictReader(fp):
+            try:
+                sid = int(str(row.get("seq_id", row.get("序号", ""))).strip() or 0)
+            except ValueError:
+                continue
+            out[sid] = str(row.get("distractor", "")).strip() in ("有", "1", "True", "true")
+    return out
 
 
 def gt_mask_anchor(boxes, fno_last: int, warp, img_hw, out_hw):
@@ -446,6 +478,8 @@ def _quick_eval(
     resid_scr_all: list[float] = []
     quality_all: list[float] = []
     subset_desc: list[dict] = []
+    per_seq_rows: list[dict] = []
+    distractor_attr = _load_distractor_attrs()
 
     was_training = model.training
     model.eval()
@@ -464,6 +498,9 @@ def _quick_eval(
                     q_frames = None
                 starts = np.linspace(0, n - T, n_windows).astype(int)  # 固定起点
                 subset_desc.append({"seq_id": int(sid), "starts": starts.tolist()})
+                s_boxes: dict[float, list] = {t: [] for t in QUICK_THR}
+                s_gts: list = []
+                s_frames = 0
                 for s in starts:
                     Ws = window_anchor_warps(cache["reg"], int(s), T)
                     win = np.empty((T, H_img, W_img), np.float32)
@@ -518,11 +555,23 @@ def _quick_eval(
                     for j in range(warmup, T):
                         fno = int(s + j + 1)  # 1-based 帧号
                         for t in QUICK_THR:
-                            all_boxes[t].extend(
+                            s_boxes[t].extend(
                                 mask_to_boxes(prob[j], frame=fno, thr=t, min_area=4))
-                        n_frames_eval += 1
+                        s_frames += 1
                     valid = {int(s + j + 1) for j in range(warmup, T)}
-                    all_gts.extend(g for g in gt_boxes_from_cache(cache) if g.frame in valid)
+                    s_gts.extend(g for g in gt_boxes_from_cache(cache) if g.frame in valid)
+                # C2 分层归因：本段 primary@0.5 指标 + distractor 属性（全局归并前先记录）
+                for t in QUICK_THR:
+                    all_boxes[t].extend(s_boxes[t])
+                all_gts.extend(s_gts)
+                n_frames_eval += s_frames
+                m_seq = evaluate_boxes(s_boxes[0.5], s_gts, s_frames)
+                per_seq_rows.append({
+                    "seq_id": int(sid),
+                    "distractor": bool(distractor_attr.get(int(sid), False)),
+                    "f1": round(m_seq["f1"], 4), "recall": round(m_seq["recall"], 4),
+                    "fa_frm": round(m_seq["fa_frm"], 4), "n_gt": m_seq["n_gt"],
+                })
     finally:
         model.train(was_training)
 
@@ -532,6 +581,20 @@ def _quick_eval(
     from scripts.eval_baseline import fa_at_pd90  # 同一工作点实现，口径零偏差
 
     pd90 = fa_at_pd90(sweep)
+    # C2 分层汇总：distractor 有/无两组均值——无标注动目标构成 F_a 地板，
+    # 所有 F_a 结论必须分层归因（官方属性表 join，缺属性段归 clean）
+    strat: dict[str, dict] = {"distractor": {"n_seqs": 0, "f1": [], "recall": [], "fa_frm": []},
+                              "clean": {"n_seqs": 0, "f1": [], "recall": [], "fa_frm": []}}
+    for row in per_seq_rows:
+        g = strat["distractor"] if row["distractor"] else strat["clean"]
+        g["n_seqs"] += 1
+        for k in ("f1", "recall", "fa_frm"):
+            g[k].append(row[k])
+    for g in strat.values():
+        n = g.pop("n_seqs")
+        for k in ("f1", "recall", "fa_frm"):
+            g[k] = round(sum(g[k]) / len(g[k]), 4) if g[k] else 0.0
+        g["n_seqs"] = n
     # α"越阈占比"阈值跟随模型（返工 A3：α_th 0.5→0.6，监控与掩码判定同一口径）
     alpha_th = float(getattr(getattr(model, "core", model), "alpha_th", 0.5))
     rec = {
@@ -546,6 +609,8 @@ def _quick_eval(
         "bg_frac": round(float(np.median(bg_frac_all)), 4) if bg_frac_all else 0.0,
         "resid_scr": round(float(np.median(resid_scr_all)), 4) if resid_scr_all else 0.0,
         "quality_med": round(float(np.median(quality_all)), 4) if quality_all else 0.0,
+        "per_seq": per_seq_rows,
+        "stratified": strat,
         "alpha_mean": round(float(np.mean(alpha_all)), 4) if alpha_all else 0.0,
         "alpha_frac_high": (round(float(np.mean(np.array(alpha_all) > alpha_th)), 4)
                             if alpha_all else 0.0),
