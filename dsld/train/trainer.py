@@ -346,15 +346,45 @@ def _dsld_core_loss(
     parts = {"seg": float(seg), "recon": float(rec),
              "recon_valid_frac": round(getattr(recon_loss, "last_valid_frac", 1.0), 6)}
     loss = weights.get("seg", 1.0) * seg + weights.get("recon", 0.5) * rec
-    if model.liquid_mode == "dual":  # 单状态无解耦对象（消融 a 对照）
-        dec = decouple_loss(out["h_t"], out["h_b"])
-        loss = loss + weights.get("decouple", 0.1) * dec
-        parts["decouple"] = float(dec)
+    # 损失组成两臂拉平（M3 代码审核 §四）：single 模式 h_b≡h_t ⇒ cos²≡1 常数
+    #（仅 norm floor 提供与 dual 相同的范数守卫）——单/双消融的损失项一致，
+    # F_a 差全部归因于结构分立本身，而非正则项有无。
+    dec = decouple_loss(out["h_t"], out["h_b"])
+    loss = loss + weights.get("decouple", 0.1) * dec
+    parts["decouple"] = float(dec)
     parts["total"] = float(loss)
     return loss, parts
 
 
 QUICK_THR = [0.3, 0.5, 0.7, 0.9]  # 快评精简阈值扫描（全链 7 点）
+
+
+def gt_mask_anchor(boxes, fno_last: int, warp, img_hw, out_hw):
+    """末帧 GT 框 → 锚点坐标系 stride-2 掩码（M3 代码审核口径修正）。
+
+    残差图 x_main 处于锚点（窗口首帧）坐标系；旧实现把末帧原始坐标框直接下采样
+    叠加，窗内平台位移未补偿，resid_scr/bg_resid_rms 失真。此处对 GT 掩码施加与
+    末帧相同的 warp（WARP_INVERSE_MAP 语义，register.window_anchor_warps 口径），
+    再 2×2 块最大下采样到核心分辨率。
+    boxes: [(f, x1, y1, x2, y2), ...] 原始帧像素坐标；warp: 2×3 矩阵或 None（恒等）；
+    img_hw=(H,W) 原生分辨率；out_hw=(h,w) 核心特征分辨率。
+    """
+    import cv2
+    import numpy as np
+
+    H, W = int(img_hw[0]), int(img_hw[1])
+    g = np.zeros((H, W), np.float32)
+    for f, x1, y1, x2, y2 in boxes:
+        if int(f) == fno_last:
+            g[max(int(y1), 0):int(y2), max(int(x1), 0):int(x2)] = 1.0
+    if warp is not None:
+        # 与 warp_frame 同一采样语义（WARP_INVERSE_MAP——reg.M 是 ref→帧 正向矩阵，
+        # 对齐到锚点必须逆采样；M1 教训"勿再取逆"）。掩码用 NEAREST 保二值。
+        g = cv2.warpAffine(g, np.asarray(warp, np.float32), (W, H),
+                           flags=cv2.INTER_NEAREST | cv2.WARP_INVERSE_MAP,
+                           borderMode=cv2.BORDER_REPLICATE)
+    h2, w2 = int(out_hw[0]), int(out_hw[1])
+    return g[:h2 * 2, :w2 * 2].reshape(h2, 2, w2, 2).max(axis=(1, 3))
 
 
 def _quick_eval(
@@ -364,14 +394,14 @@ def _quick_eval(
     manifest_path: str | None = None,
     cache_root: str | None = None,
 ) -> dict:
-    """方案 7.5 快评：val-int 固定子集（前 n_seqs 段 × n_windows 个固定起点窗）。
+    """方案 7.5 快评：val-int 固定子集（显式 seq_ids 或前 n_seqs 段 × 固定起点窗）。
 
     口径与 eval 全链一致：窗口对齐锚点 → 前向 → 概率回投原始帧坐标（预热帧不计）
     → IoU≥0.5 框级 P/R/F1 + F_a 双口径 + F_a@P_d=0.90 工作点（复用 fa_at_pd90 同一
-    实现）。另记录：背景吸收监控（背景残差 RMS、残差 SCR=目标框/背景残差——M3 无
-    抑制图的过渡口径，方案 8.1 的 BSF/SCRG 待 M4 以 5.3 抑制图重算）、α 分布
-    （临时门控图统计）、τ 分位数。子集与起点确定性（np.linspace 固定），跨期可比；
-    子集描述（seq_id+starts）随记录落盘。
+    实现）。另记录：背景吸收监控（背景残差 RMS、残差 SCR——GT 框经末帧 warp 对齐到
+    锚点坐标系，与残差图同坐标系；M3 无抑制图的过渡口径，BSF/SCRG 待 M4 以 5.3
+    抑制图重算）、窗口质量中位数（与训练同口径喂 FiLM）、α 分布、τ 分位数。
+    子集与起点确定性（np.linspace 固定），跨期可比；子集描述（seq_id+starts）随记录落盘。
     """
     import cv2
     import numpy as np
@@ -416,6 +446,7 @@ def _quick_eval(
     bg_resid_all: list[float] = []
     bg_frac_all: list[float] = []
     resid_scr_all: list[float] = []
+    quality_all: list[float] = []
     subset_desc: list[dict] = []
 
     was_training = model.training
@@ -426,6 +457,13 @@ def _quick_eval(
                 cache = load_seq_cache(cache_root, int(sid), with_reg=True)
                 frames_u8 = cache["frames"]
                 n, H_img, W_img = frames_u8.shape
+                # M1 逐帧清晰度（与 IttdWindows 同口径：窗口中位数标量 → FiLM 第 5 维；
+                # 训练传窗质量而快评传 None 的口径偏移已修——评审 M3代码审核 §三）
+                try:
+                    q_frames = np.load(str(Path(cache_root) / f"seq_{int(sid):04d}"
+                                           / "quality.npy"))
+                except Exception:
+                    q_frames = None
                 starts = np.linspace(0, n - T, n_windows).astype(int)  # 固定起点
                 subset_desc.append({"seq_id": int(sid), "starts": starts.tolist()})
                 for s in starts:
@@ -440,7 +478,13 @@ def _quick_eval(
                         if not is_identity_warp(Ws[j]):
                             win[j] = warp_frame(win[j], Ws[j])
                     x = torch.from_numpy(win[:, None])[None].to(device)
-                    out = model(x, quality=None)
+                    q_win = (float(np.median(q_frames[s:s + T]))
+                             if q_frames is not None else None)
+                    if q_win is not None:
+                        quality_all.append(q_win)
+                    quality = torch.tensor([q_win], device=device) \
+                        if q_win is not None else None
+                    out = model(x, quality=quality)
                     logits = out["logits"] if isinstance(out, dict) else out
                     prob = torch.sigmoid(logits.float()[0, :, 0]).cpu().numpy()  # [T,H,W]
                     # 输出回投原始帧坐标（与 infer_temporal 同一语义）
@@ -458,11 +502,12 @@ def _quick_eval(
                     x_main = out["x_main"][0, -1].float().cpu().numpy()  # [C,h,w]
                     resid = np.abs(x_main - out["y_b"][0, -1].float().cpu().numpy()).mean(0)
                     m_tgt = out["m_tgt"][0, -1, 0].float().cpu().numpy()
-                    gt2 = np.zeros_like(resid)
+                    # GT 框随末帧 warp 到锚点坐标（评审修正：残差在锚点坐标系，
+                    # 直接用末帧原始坐标会使 resid_scr 被平台位移污染）
                     fno_last = int(s + T)  # 末帧 1-based 帧号
-                    for f, x1, y1, x2, y2 in cache["labels"]["boxes"]:
-                        if int(f) == fno_last:
-                            gt2[max(y1 // 2, 0):y2 // 2 + 1, max(x1 // 2, 0):x2 // 2 + 1] = 1.0
+                    warp_last = None if is_identity_warp(Ws[T - 1]) else Ws[T - 1]
+                    gt2 = gt_mask_anchor(cache["labels"]["boxes"], fno_last, warp_last,
+                                         (H_img, W_img), resid.shape)
                     # 背景集合只按 GT 排除（m_tgt 随训练扩散会把背景集合挤空，指标退化）
                     bg = gt2 < 0.5
                     if bg.sum() > 100:
@@ -502,6 +547,7 @@ def _quick_eval(
         "bg_resid_rms": round(float(np.median(bg_resid_all)), 6) if bg_resid_all else 0.0,
         "bg_frac": round(float(np.median(bg_frac_all)), 4) if bg_frac_all else 0.0,
         "resid_scr": round(float(np.median(resid_scr_all)), 4) if resid_scr_all else 0.0,
+        "quality_med": round(float(np.median(quality_all)), 4) if quality_all else 0.0,
         "alpha_mean": round(float(np.mean(alpha_all)), 4) if alpha_all else 0.0,
         "alpha_frac_high": (round(float(np.mean(np.array(alpha_all) > alpha_th)), 4)
                             if alpha_all else 0.0),
