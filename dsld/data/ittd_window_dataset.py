@@ -35,7 +35,7 @@ import numpy as np
 from torch.utils.data import Dataset
 
 from dsld.data.manifest import load_manifest
-from dsld.data.preprocess.normalize import CLIP, correct_frame, normalize_frame
+from dsld.data.preprocess.normalize import correct_frame, normalize_frame
 from dsld.data.preprocess.register import (
     is_identity_warp,
     warp_frame,

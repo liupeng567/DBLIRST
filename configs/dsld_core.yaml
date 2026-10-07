@@ -75,6 +75,3 @@ train:
     enabled: false        #   M3 Gate 取证期保持 false（min_steps 前不判停），阶段 B 微调开启
     patience: 8
     min_steps: 10000
-
-infer:
-  threshold: {k: 3.0, alpha_th: 0.6}   # α_th 与 model.feedback 同步（返工 A3；eval 主读出为 logits）

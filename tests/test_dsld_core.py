@@ -259,12 +259,6 @@ def test_mask_zero_below_threshold():
     assert abs(float(out["m_tgt"].min()) - 0.8) < 1e-7  # 全图掩码也只到 m_max
 
 
-def test_bound_f_deprecated_warns():
-    """bound_f 兼容位：>0 触发 DeprecationWarning（旧 config 不静默失效）。"""
-    with pytest.warns(DeprecationWarning):
-        DualStateLiquidCore(c_in=4, c_h=8, bound_f=0.5)
-
-
 def test_state_dependent_heads_variant():
     """消融开关：state_dependent=true 时头吃 [h,x]（状态相关 τ 语义，递推非线性）；
     默认 false = x-only（阶段 E 并行扫描前提，可行方案 §4.1）。"""

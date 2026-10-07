@@ -13,7 +13,6 @@ import hashlib
 import json
 import math
 import subprocess
-import sys
 import time
 from pathlib import Path
 
@@ -176,7 +175,6 @@ def build_model(cfg) -> nn.Module:
             kappa_max=liq.get("kappa_max", 0.5),
             m_scale=liq.get("m_scale", 0.5),
             state_dependent=liq.get("state_dependent", False),
-            bound_f=liq.get("bound_f", 0.0),  # 已废弃，>0 时模型内告警
         )
     raise RuntimeError(f"model.type={mtype} 未实现")
 

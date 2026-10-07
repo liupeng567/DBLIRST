@@ -29,6 +29,3 @@ train:
     windows_per_gpu: 4
     accum: 2
   optim: {lr: 3.0e-4, wd: 0.01, warmup: 0, cosine_min: 3.0e-5}
-
-infer:
-  threshold: {k: 3.0, alpha_th: 0.5}

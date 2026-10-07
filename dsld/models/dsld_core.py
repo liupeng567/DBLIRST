@@ -87,7 +87,6 @@ class DsldCore(nn.Module):
         kappa_max: float = 0.5,
         m_scale: float = 0.5,
         state_dependent: bool = False,
-        bound_f: float = 0.0,
         out_scale: int = 2,  # logits 上采样倍率（stride-2 → 原生）
     ):
         super().__init__()
@@ -100,7 +99,7 @@ class DsldCore(nn.Module):
             mask_m_max=mask_m_max, mask_softness=mask_softness,
             detach_every=detach_every, use_checkpoint=use_checkpoint,
             s_max=s_max, kappa_max=kappa_max, m_scale=m_scale,
-            state_dependent=state_dependent, bound_f=bound_f,
+            state_dependent=state_dependent,
         )
         self.out_scale = out_scale
         self.liquid_mode = liquid_mode

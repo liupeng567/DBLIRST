@@ -34,7 +34,6 @@ M3_核心层推进方案 阶段 A（A1–A4）。旧实现（CfC Default 式 p·
 
 诚实边界：
   - 旧 ckpt 不兼容（θ_τ→θ_λ 语义变更，参数化不同），从零重训；
-  - bound_f 已废弃（指数形式下无意义）：传 >0 会告警；
   - 掩码对静态热点杂波存在"打码→残差自持"锁定模式（ViBe 选择性更新两难的反面），
     由 M4 尺度选择性抑制对冲，M3 Gate 判读 F_a 时须知；
   - 单状态消融（10.8-a）mode="single"：单流 τ 区间取并集 [2,192]，L_dec 在 single
@@ -44,7 +43,6 @@ M3_核心层推进方案 阶段 A（A1–A4）。旧实现（CfC Default 式 p·
 from __future__ import annotations
 
 import math
-import warnings
 
 import torch
 import torch.nn as nn
@@ -93,7 +91,6 @@ class _LiquidChannel(nn.Module):
             r = kappa_init / kappa_max
             self.theta_kappa = nn.Parameter(torch.tensor(math.log(r / (1.0 - r))))
         # 诊断：实现出来的动力学量（评审 2.3 / 设计文档 §4.4——Gate 证据必须是动力学空间）
-        self.last_f_abs = 0.0
         self.last_tau_eff = float(tau_init)
         self.last_lam_min = self.lam_lo
         self.last_lam_max = self.lam_hi
@@ -114,11 +111,14 @@ class _LiquidChannel(nn.Module):
         return self.kappa_max * torch.sigmoid(self.theta_kappa)
 
     def step(self, h: torch.Tensor, x_in: torch.Tensor, scene: torch.Tensor,
-             alpha_prev: torch.Tensor | None, dt: float = 1.0) -> torch.Tensor:
+             alpha_prev: torch.Tensor | None, dt: float = 1.0,
+             collect_stats: bool = True) -> torch.Tensor:
         """单步泄漏式更新。h/x_in: [B,C,H,W]；scene: [B,5]；alpha_prev: [B,1,H,W]。
 
         h' = a⊙h + (1−a)⊙cand,  a = exp(−Δt·λ),
         λ = clamp(λ_base·exp(s_max·tanh(f))·(1−κ·α_prev), λ_lo, λ_hi)
+        collect_stats=False 时跳过诊断量（float() 会强制 GPU→CPU 同步，训练期
+        仅末帧收集，语义不变——tau_report/last_norms 只消费最近一帧）。
         """
         inp = torch.cat([h, x_in], dim=1) if self.state_dependent else x_in
         outs = []
@@ -138,14 +138,14 @@ class _LiquidChannel(nn.Module):
         a = torch.exp(-dt * lam)                    # 保留系数 ∈ (0,1)，构造性夹住
         # ③ 有界写候选：tanh ⇒ 逐元素 |h| ≤ max(|h_prev|, 1)，结构上不可能发散
         cand = torch.tanh(g + self.m_scale * m)
-        with torch.no_grad():  # 实现出来的动力学量（Gate 证据），逐帧刷新
-            self.last_f_abs = float(f.abs().mean())
-            self.last_tau_eff = float((1.0 / lam).mean())
-            self.last_lam_min = float(lam.min())
-            self.last_lam_max = float(lam.max())
-            eps = 1e-6
-            self.last_lam_frac_at_bound = float(
-                ((lam <= self.lam_lo + eps) | (lam >= self.lam_hi - eps)).float().mean())
+        if collect_stats:  # 实现出来的动力学量（Gate 证据）：仅末帧收集，避免逐帧同步
+            with torch.no_grad():
+                self.last_tau_eff = float((1.0 / lam).mean())
+                self.last_lam_min = float(lam.min())
+                self.last_lam_max = float(lam.max())
+                eps = 1e-6
+                self.last_lam_frac_at_bound = float(
+                    ((lam <= self.lam_lo + eps) | (lam >= self.lam_hi - eps)).float().mean())
         return a * h + (1.0 - a) * cand
 
 
@@ -213,15 +213,9 @@ class DualStateLiquidCore(nn.Module):
         kappa_max: float = 0.5,
         m_scale: float = 0.5,
         state_dependent: bool = False,
-        bound_f: float = 0.0,   # 已废弃：>0 时告警（旧 config 兼容位）
         scene_dim: int = 5,
     ):
         super().__init__()
-        if bound_f > 0:
-            warnings.warn(
-                "liquid.bound_f 已废弃：指数泄漏形式下 τ 直接约束衰减（终 clamp），"
-                "f_bound 的'小则失效、大则不生效'两难不再存在。请从 config 移除。",
-                DeprecationWarning, stacklevel=2)
         assert mode in ("dual", "single")
         self.mode = mode
         self.c_h = c_h
@@ -259,24 +253,29 @@ class DualStateLiquidCore(nn.Module):
         self.last_norms: dict[str, float] = {}  # 4.8-③ 隐状态范数 + 掩码/门控运行统计
 
     # ---- 单帧递推 ----------------------------------------------------------
-    def _step_frame(self, h_t, h_b, x, M, alpha_prev, scene, t, T):
-        """单帧递推（方案 4.6 伪代码）。返回 (h_t, h_b, ŷ_B, α, 残差 x−ŷ_B)。"""
+    def _step_frame(self, h_t, h_b, x, M, alpha_prev, scene, t, T,
+                    collect_stats: bool = True):
+        """单帧递推（方案 4.6 伪代码）。返回 (h_t, h_b, ŷ_B, α, 残差 x−ŷ_B)。
+
+        collect_stats=False 跳过诊断量收集（float() 强制 GPU→CPU 同步；
+        tau_report/last_norms 只消费最近一帧，训练期仅末帧收集即可）。
+        """
         x_ctx = self.dw_ctx(x)
         if self.mode == "dual":
             x_b = x_ctx * (1.0 - M)              # 内环：背景通道输入打码（≤m_max 永不清零）
-            h_b = self.ch_bg.step(h_b, x_b, scene, None)
+            h_b = self.ch_bg.step(h_b, x_b, scene, None, collect_stats=collect_stats)
             y_b = self.bg_head(h_b)              # ŷ_B [B,C,H,W]
             x_res = x - y_b
             x_t = x_res * (1.0 - M)              # 级联残差输入
-            h_t = self.ch_tg.step(h_t, x_t, scene, alpha_prev)
+            h_t = self.ch_tg.step(h_t, x_t, scene, alpha_prev, collect_stats=collect_stats)
         else:  # 消融 a：单状态——同一液态流兼任背景记忆与目标读出，无级联
             x_b = x_ctx * (1.0 - M)
-            h_t = self.ch_tg.step(h_t, x_b, scene, alpha_prev)
+            h_t = self.ch_tg.step(h_t, x_b, scene, alpha_prev, collect_stats=collect_stats)
             h_b = h_t
             y_b = self.bg_head(h_t)
             x_res = x - y_b
         alpha = torch.sigmoid(self.gate_head(torch.cat([x_res, h_t], dim=1)))
-        with torch.no_grad():  # 4.8-③ 范数监控（有界候选下 |h|≤1，范数哨兵已结构性满足）
+        if collect_stats:  # 4.8-③ 范数监控（tanh 候选下 |h|≤1，范数哨兵已结构性满足）
             self.last_norms = {
                 "h_t_rms": float(h_t.pow(2).mean().sqrt()),
                 "h_b_rms": float(h_b.pow(2).mean().sqrt()),
@@ -300,13 +299,14 @@ class DualStateLiquidCore(nn.Module):
             for t in range(T):
                 x = feats[:, t]
                 scene = scene_stats(x, quality, t, T)
+                collect = t == T - 1  # 诊断量仅末帧收集（tau_report/norms 只读最近一帧）
                 if self.use_checkpoint and self.training:
                     h_t, h_b, y_b, alpha, x_res = checkpoint(
                         self._step_frame, h_t, h_b, x, M, alpha_prev, scene, t, T,
-                        use_reentrant=False)
+                        collect, use_reentrant=False)
                 else:
                     h_t, h_b, y_b, alpha, x_res = self._step_frame(
-                        h_t, h_b, x, M, alpha_prev, scene, t, T)
+                        h_t, h_b, x, M, alpha_prev, scene, t, T, collect)
                 outs["logits"].append(self.seg_head(torch.cat([alpha * x_res, h_t], dim=1)))
                 outs["y_b"].append(y_b)
                 outs["alpha"].append(alpha)
