@@ -15,3 +15,6 @@ outputs/
 *.npy
 *.pt
 *.pth
+
+# 回退演练用的临时 git worktree 检出（不入库）
+.worktrees/
