@@ -6,6 +6,8 @@ experiments/
 /tmp/
 .hydra/
 outputs/
+# 从 git 历史取回的旧实现参考副本（重建期临时对照用）
+.ref/
 
 # 大文件
 *.bmp

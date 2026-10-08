@@ -194,6 +194,125 @@ def test_align_to_anchor_nan_bridge_continues_chain():
     assert np.allclose(W, expect, atol=1e-9), "NaN 桥未按恒等续链复合"
 
 
+# ---- 掩码几何口径（L4：GT 锚点对齐 + 教师掩码与 L_recon 同几何） ----------------
+
+from dsld.data.preprocess.register import (  # noqa: E402
+    IDENT2,
+    box_fill,
+    dilate_mask,
+    downsample_max,
+    gt_mask_anchor,
+    gt_masks_anchor,
+    warp_frame,
+)
+
+
+def _centroid(m: np.ndarray) -> tuple[float, float]:
+    ys, xs = np.nonzero(m)
+    return float(xs.mean()), float(ys.mean())
+
+
+def test_box_fill_area_uses_inclusive_endpoints():
+    """含端点口径单测（ittd_parse.py:5）：面积 = (x2−x1+1)(y2−y1+1)。
+
+    若误按不含端点实现，小目标掩码每框少 1 行 1 列——20×12 的框少 3% 面积，
+    而 5px 级目标少 ~30%，L_seg 与残差统计的 GT 位置被系统性缩小（判据 ② 的
+    resid_scr 分子直接受损）。这条断言就是防它。
+    """
+    boxes = np.array([[5, 10, 20, 14, 24]], np.int32)  # (f, x1,y1,x2,y2)：5×5 框
+    m = box_fill(boxes, (48, 64), frame=5)
+    assert m.sum() == (14 - 10 + 1) * (24 - 20 + 1) == 25
+    assert m[20:25, 10:15].all()
+    for (yy, xx) in ((19, 12), (25, 12), (21, 9), (21, 15)):  # 四侧各越界 1px
+        assert m[yy, xx] == 0.0, f"框外像素 ({yy},{xx}) 被填进 GT"
+
+    other = box_fill(boxes, (48, 64), frame=6)
+    assert other.sum() == 0.0, "frame 过滤必须按 1-based 标注帧号精确取帧（不得隐式换算）"
+
+
+def test_gt_mask_anchor_identity_and_integer_translation_both_ways():
+    """GT 锚点对齐：恒等与整数平移**双向**回收（L4 强制口径）。"""
+    H, W = 64, 80
+    boxes = np.array([[7, 20, 30, 27, 38]], np.int32)  # 帧 7（1-based）的 8×9 框
+    cx0, cy0 = 23.5, 34.0  # 含端点框中心
+
+    # 恒等：out_hw 必须等于 (H,W) 才走"不下采样"分支
+    m_id = gt_mask_anchor(boxes, 7, None, (H, W), (H, W))
+    assert m_id.sum() == 8 * 9
+    assert np.allclose(_centroid(m_id), (cx0, cy0)), "恒等 warp 不应移动 GT"
+
+    # 正向：W 把 ref→帧 平移 +t，配准后内容在锚点系移动 −t（WARP_INVERSE_MAP 采样）
+    for tx, ty in ((5, 3), (-4, -6), (0, 7)):
+        Wm = np.array([[1.0, 0, tx], [0, 1.0, ty]], np.float32)
+        m = gt_mask_anchor(boxes, 7, Wm, (H, W), (H, W))
+        assert abs(m.sum() - 72) <= 2, f"整数平移不应改变掩码面积（{m.sum()} ≠ 72）"
+        got = _centroid(m)
+        assert abs(got[0] - (cx0 - tx)) < 0.6 and abs(got[1] - (cy0 - ty)) < 0.6, (
+            f"t=({tx},{ty}) GT 锚点回收错向：{got} ≠ {(cx0 - tx, cy0 - ty)}")
+
+
+def test_gt_mask_anchor_direction_is_falsified():
+    """方向证伪：误用正向 M（漏 WARP_INVERSE_MAP）必须与 warp_frame 输出**不**同治。
+
+    这条断言的作用是"能红"：45859f2 实录首版正是漏了旗标，被同治性单测抓出。
+    """
+    H, W = 64, 80
+    boxes = np.array([[7, 20, 30, 27, 38]], np.int32)
+    Wm = np.array([[1.0, 0, 6], [0, 1.0, 4]], np.float32)
+    # 造一个"GT 位置就是亮目标"的合成帧：帧系 (row 30..38, col 20..27) 有块
+    frame = np.zeros((H, W), np.float32)
+    frame[30:39, 20:28] = 1.0
+    aligned = warp_frame(frame, Wm)  # 正确的锚点系帧（内容移到 −t）
+    m_ok = gt_mask_anchor(boxes, 7, Wm, (H, W), (H, W))
+    m_bad = cv2.warpAffine(box_fill(boxes, (H, W)), Wm, (W, H), flags=cv2.INTER_NEAREST)
+    # 正确：掩码覆盖的锚点系像素确实是亮块
+    assert float(aligned[m_ok > 0].mean()) > 0.9, "GT 掩码未与 warp_frame 同治"
+    # 反例：漏 INVERSE_MAP 的掩码与 warp_frame 输出不同治（落在暗区）
+    assert float(aligned[m_bad > 0].mean()) < 0.1, "错误方向竟然同治——说明约定已变，须重审"
+
+
+def test_gt_masks_anchor_frames_and_mask_share_warps():
+    """逐帧 GT 掩码与帧使用同一组 Ws（gt_masks_anchor 的"同治"契约）。"""
+    H, W, T = 48, 56, 6
+    boxes = np.array([[3, 10, 10, 14, 14], [5, 20, 30, 24, 34]], np.int32)  # 帧 3、5
+    Ws = np.repeat(IDENT2[None], T, 0).astype(np.float64)
+    Ws[2] = [[1.0, 0, 4], [0, 1.0, 2]]  # 帧 index 2 = 帧号 3 → 平移 (4,2)
+    Ws[4] = [[1.0, 0, -3], [0, 1.0, 5]]
+    m = gt_masks_anchor(boxes, 0, T, Ws, (H, W))
+    assert m.shape == (T, H, W) and set(np.unique(m)) <= {0.0, 1.0}
+    assert m[2].sum() == 25 and m[4].sum() == 25
+    assert np.allclose(_centroid(m[2]), (12 - 4, 12 - 2)), "帧 3 GT 未随 W 进锚点系"
+    assert np.allclose(_centroid(m[4]), (22 + 3, 32 - 5)), "帧 5 GT 未随 W 进锚点系"
+    assert m[[0, 1, 3, 5]].sum() == 0.0, "无标注帧不应产生 GT"
+
+
+def test_dilate_mask_matches_torch_maxpool():
+    """"膨胀 3px"在 numpy 侧与 torch 侧只有一份定义（同几何的机器证明）。"""
+    import torch
+    import torch.nn.functional as F
+
+    rng = np.random.default_rng(3)
+    for px in (1, 3, 5):
+        m = (rng.random((2, 3, 37, 41)) > 0.97).astype(np.float32)
+        np_out = dilate_mask(m, px)
+        tt = F.max_pool2d(torch.from_numpy(m.reshape(-1, *m.shape[-2:])),
+                          2 * px + 1, stride=1, padding=px).reshape(m.shape)
+        assert np.array_equal(np_out, tt.numpy()), f"px={px} 膨胀口径不一致"
+    assert np.array_equal(dilate_mask(np.ones((5, 5), np.float32), 0), np.ones((5, 5)))
+
+
+def test_downsample_max_keeps_small_target_one_pixel():
+    """总方案 2.7-② 的构造保证：<2px 框在 stride-2 图上必留 1px，无需特判分支。"""
+    for (y, x) in ((0, 0), (1, 1), (7, 8), (10, 11)):
+        g = box_fill(np.array([[1, x, y, x, y]], np.int32), (12, 16))  # 1×1 框
+        d = downsample_max(g[None], 2)[0]
+        assert d.shape == (6, 8) and d.sum() == 1.0, f"({y},{x}) 1px 目标丢失"
+        assert d[y // 2, x // 2] == 1.0, f"({y},{x}) 保留位置错块"
+    with pytest.raises(ValueError):
+        downsample_max(np.zeros((1, 1), np.float32), 2)
+    assert downsample_max(np.zeros((3, 7, 9), np.float32), 2).shape == (3, 3, 4), "奇数边裁齐"
+
+
 def test_window_anchor_warps_synthetic_translation():
     """单块纯平移序列：window_anchor_warps 对每帧回收锚点帧内容。"""
     ref = make_texture(240, 320)
