@@ -121,14 +121,14 @@ def load_checkpoint(model: nn.Module, ckpt: str | None) -> None:
 
 
 def build_model(cfg) -> nn.Module:
-    """dryrun = M0 占位网络；其余走 M3 装配（键→kwargs 的唯一读取处在 dsld/train/build.py）。"""
+    """M0: 占位网络；M3 起按 cfg.model.type 分发到真实 DSLD 模型。"""
     from dsld.models.dryrun_net import DryRunNet
 
-    if cfg.model.type == "dryrun":
-        return DryRunNet(in_ch=cfg.model.in_ch, width=cfg.model.width)
-    from dsld.train.build import build_model as _build_dsld
-
-    return _build_dsld(cfg)
+    if cfg.model.type != "dryrun":
+        raise RuntimeError(
+            f"model.type={cfg.model.type} 尚未实现（真实模型于 M3 双状态液态核心阶段接入）"
+        )
+    return DryRunNet(in_ch=cfg.model.in_ch, width=cfg.model.width)
 
 
 def build_dataloader(cfg) -> DataLoader:
@@ -163,12 +163,6 @@ def run_training(cfg) -> dict:
     model.to(device)
     report_model_params(model)
     load_checkpoint(model, cfg.train.get("ckpt", None))
-    if cfg.model.type != "dryrun":
-        raise NotImplementedError(
-            f"model.type={cfg.model.type}：装配与损失已就绪（冒烟 tests/test_dsld_core.py、"
-            "计时 scripts/bench_core.py），但本循环仍是 M0 dryrun 的逐帧 L1 口径——"
-            "四分量损失接线、梯度累积、§5.5 哨兵 strict 拦截、EMA 与 teacher→gate 课程"
-            "都在 P2 落地，不用 dryrun 循环跑真实训练")
 
     loader = build_dataloader(cfg)
     optim = torch.optim.AdamW(
