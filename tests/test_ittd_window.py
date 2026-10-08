@@ -511,3 +511,54 @@ def test_real_cache_end_to_end_batch(tmp_path):
     assert b["windows"].dtype.is_floating_point
     assert isinstance(b["scene"], list) and len(b["scene"]) == 2
     assert b["seq_id"].tolist()[0] in ds.manifest["splits"]["val-int"]["seqs"]
+
+
+# --------------------------------------------------------------------------- #
+# 6) Δt 口径（容器补帧 → 实采 ≈33⅓ Hz）
+# --------------------------------------------------------------------------- #
+def test_slot_gaps_synthetic_padding_pattern(tmp_path):
+    """显式"2 实采 + 1 补帧"流（周期-3，与真实缓存同构）：dt 必须逐槽精确回收。"""
+    n = N_F
+    # 补帧槽 = t % 3 == 0（t>0）：内容编号 value(t) = t − t//3
+    frames = np.stack([np.full((24, 32), (t - t // 3) % 250, np.uint8) for t in range(n)])
+    write_fake_cache(tmp_path, boxes=[[1, 4, 4, 7, 7]], trans=ident_trans(n),
+                     frames=frames, h=24, w=32)
+    ds = ds_from_fake(tmp_path, T=16, stride=8, crop=None)
+    got = ds._load_seq(1)["dt"]
+    want = [1.0, 1.0, 1.0, 0.0, 2.0, 1.0, 0.0, 2.0, 1.0, 0.0, 2.0, 1.0]
+    assert got[:12].tolist() == want, f"dt 回收错：{got[:12].tolist()}"
+    assert float((got[1:] == 0).mean()) == pytest.approx(1 / 3, abs=0.01)
+    # 守恒式：Σ_{s≤t} dt = ≤t 的最后一个新曝光槽号 + 1（补帧槽不吞时间也不 duplicated 计）
+    for t in (1, 3, 4, 6, 9, 12, 60, 249):
+        last_new = max(s for s in range(t + 1) if got[s] > 0)
+        assert abs(float(got[:t + 1].sum()) - (last_new + 1)) < 1e-6, f"t={t} 时间不守恒"
+
+
+def test_dt_real_cache_padding_is_one_third_and_zero_iff_duplicate():
+    """真实缓存：dt=0 当且仅当字节级重复；值域 ⊆{0,1,2}；补帧占比 ≈1/3（周期-3 格点）。"""
+    ds = IttdWindows(MANIFEST, CACHE, split="val-int", T=32, stride=8, crop=None,
+                     augment=False, align=False, limit_seqs=0, seed=0)
+    sid = 21
+    dt = ds._load_seq(sid)["dt"]
+    fr = np.asarray(ds._load_seq(sid)["frames"])
+    dup = np.array([np.array_equal(fr[t], fr[t - 1]) for t in range(1, len(fr))])
+    assert np.array_equal(dt[1:] == 0, dup), "dt=0 与字节级重复帧不一一对应"
+    assert set(np.unique(dt).tolist()) <= {0.0, 1.0, 2.0}, f"dt 值域异常 {np.unique(dt)}"
+    assert abs(float((dt[1:] == 0).mean()) - 1 / 3) < 0.02, "补帧占比偏离 1/3 周期-3 结构"
+    it = ds[ds.index.index((sid, 0))]
+    assert it["dt"].shape == (32,) and it["dt"].dtype == np.float32
+    assert float(it["dt"].sum()) > 20, "32 槽窗的时间预算被吞掉（去重/补帧处理错误）"
+
+
+def test_augmented_frame_copy_does_not_rewrite_dt(tmp_path):
+    """增强造成的"重复帧"不是传感器补帧：dt 保持实测值（物理时间照样流逝）。"""
+    frames = np.stack([np.full((24, 32), 10 + (t % 5), np.uint8) for t in range(N_F)])
+    write_fake_cache(tmp_path, boxes=[[1, 4, 4, 7, 7]], trans=ident_trans(N_F),
+                     frames=frames, h=24, w=32)
+    ds = ds_from_fake(tmp_path, T=16, stride=8, crop=None, augment=True,
+                      feature_stride=1, seed=1)
+    dt_before = ds._load_seq(1)["dt"].copy()
+    assert set(dt_before.tolist()) == {1.0}, "该合成流不应含补帧槽"
+    it = ds[0]
+    assert np.array_equal(it["dt"], dt_before[:16]), "dt 被增强改写了（应只反映传感器曝光）"
+    assert float(it["dt"].sum()) > 0

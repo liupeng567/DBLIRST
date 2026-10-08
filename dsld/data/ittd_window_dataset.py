@@ -20,6 +20,10 @@
 
 域约定（错一处即静默毒化动力学）：
   - 帧号 1-based（标注）/ 0-based（缓存数组）；框坐标**含端点**（ittd_parse.py:5）。
+  - 每样本输出 `dt [T]` = 该槽距上一个**新曝光**的帧槽数（补帧槽为 0）：容器标称 50 fps
+    而传感器实采 ≈33⅓ Hz（每 3 槽 1 个字节级重复帧，严格周期-3），核心须用
+    `a = exp(−dt·λ)` 而非 Δt≡1；不变量 Σ_{s≤t} dt_s = t+1（容器时间逐槽守恒）。详见
+    `IttdWindows._slot_gaps` docstring（含"标签跟容器帧、像素跟实采帧"的插值后果）。
   - 归一化域 x_n = (clip((x−med)/σ, ±8) + 8)/16 ∈ [0,1]，故"μ+kσ"在本域精确等于
     0.5 + k/16（合成注入幅值不需 σ_raw 换算）；只有灰度级噪声需 σ_raw 换算。
   - 配准 W 与 cv2.WARP_INVERSE_MAP 配套：点由帧坐标进锚点坐标用的是 **W⁻¹**；
@@ -172,8 +176,9 @@ class IttdWindows(Dataset):
             return self._seq_cache[seq_id]
         d = f"{self.cache_root}/seq_{seq_id:04d}"
         lab = np.load(f"{d}/labels.npz")
+        frames = np.load(f"{d}/frames.u8.npy", mmap_mode="r")
         self._seq_cache[seq_id] = {
-            "frames": np.load(f"{d}/frames.u8.npy", mmap_mode="r"),
+            "frames": frames,
             "stats": np.load(f"{d}/norm_stats.npy"),
             "nuc": np.load(f"{d}/nuc_field.npy").astype(np.float32),
             "dead": np.load(f"{d}/deadpix.npy"),
@@ -181,8 +186,38 @@ class IttdWindows(Dataset):
             "track_ids": np.asarray(lab["track_ids"], np.int32),
             "reg": dict(np.load(f"{d}/reg.npz")) if self.align else None,
             "quality": np.load(f"{d}/quality.npy"),
+            "dt": self._slot_gaps(frames),
         }
         return self._seq_cache[seq_id]
+
+    @staticmethod
+    def _slot_gaps(frames: np.ndarray) -> np.ndarray:
+        """逐帧 Δt（单位 = 容器帧槽），实测而非假设——见下方机制说明。
+
+        ITTD 容器标称 50 fps，但红外传感器**最大**帧频才是 50 Hz：实测缓存里每 3 个
+        槽有 1 个与前帧**字节级完全相同**（12 段一致 83/249=33.3%，且重复位置构成
+        严格周期-3 格点、每段相位不同），即传感器实采 ≈33⅓ Hz，补帧槽既无新曝光也
+        无新时间。故：
+          · 补帧槽 Δt = 0（状态完全保持，不泄漏、不重复写入同一证据）；
+          · 新曝光槽 Δt = 距上一个新曝光的槽数（1 或 2，交替）；
+        守恒式：Σ_{s≤t} Δt_s = "≤t 的最后一个新曝光槽号"+1（t 本身是新曝光时即 t+1）
+        ——容器时间被逐槽守恒地重分配：既不因补帧多泄漏（Δt≡1 使泄漏率虚高 1.5× 且
+        把同一输入写两次），也不因去重而丢时间（去重后 Δt≡1 与本式等价）。
+        真实 50 Hz 无重复的流自动退化为 Δt≡1，故训练/推理同治（P4 推理侧同样实测）。
+        注意：GT 框坐标跟的是**容器帧**（补帧步平均仍动 0.49 px，与实采步 0.59 px 同
+        量级），即标签是 50 Hz 插值——补帧槽上"像素冻结、标签在动"，Δt=0 使状态不受
+        害，但该槽的 L_seg/L_recon 项是上一实采项的重复（权重 1.5× 于实采帧）。
+        """
+        n = len(frames)
+        dt = np.ones(n, np.float32)
+        prev = 0
+        for t in range(1, n):
+            if np.array_equal(np.asarray(frames[t]), np.asarray(frames[t - 1])):
+                dt[t] = 0.0                    # 补帧槽：无新曝光、无新时间
+            else:
+                dt[t] = float(t - prev)        # 新曝光：距上次曝光的槽数
+                prev = t
+        return dt
 
     def _load_window(self, seq: dict, start: int, Ws) -> np.ndarray:
         """[T,H,W] float32 归一化帧，已对齐到锚点坐标系（t=0 即锚点不重采样）。"""
@@ -447,6 +482,7 @@ class IttdWindows(Dataset):
             "windows": np.ascontiguousarray(win[:, None, :, :], np.float32),
             "target": np.ascontiguousarray(target, np.float32),
             "teacher_mask": np.ascontiguousarray(teacher, np.float32),
+            "dt": seq["dt"][start : start + self.T].copy(),
             "quality": quality,
             "seq_id": int(sid),
             "start0": int(start),
